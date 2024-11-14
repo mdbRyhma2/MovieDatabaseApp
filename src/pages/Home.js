@@ -54,20 +54,6 @@ export default function Home() {
     return (
         <div id="container">
           <h3>Home</h3>
-          <form onSubmit={(e) => e.preventDefault()}>
-            <input placeholder='Search'
-              value={searchParam}
-              onChange={e => setParam(e.target.value)}
-              onKeyDown={e => {
-                if (e.key === 'Enter') {
-                  e.preventDefault()
-                  submitSearch()
-                }
-              }}
-            />
-    
-          </form>
-
 
           <ul>
                 {movies.map((movie) => (
