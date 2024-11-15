@@ -1,0 +1,25 @@
+.search-filter {
+    width: 250px;
+    padding: 20px;
+    border: 1px solid #ddd;
+    margin-right: 20px;
+}
+
+.filter {
+    margin-top: 15px;
+}
+
+.filter input[type="range"]{
+    width: 100%;
+}
+
+.checkbox-group label {
+    display: block;
+}
+
+.search-button {
+    display: block;
+    width: 100%;
+    margin-top:20px;
+    padding: 5px;
+}

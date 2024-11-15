@@ -1,78 +1,46 @@
-.navbar {
-    background-color: lightgrey;
-    color: black;
-    padding: 1rem ;
-    font-family: Arial, sans-serif;
-    position: fixed;
-    width: 100%;
-    top: 0;
-    left: 0;
-    z-index: 1000;
-    box-shadow: 0 4px 6px rgba(255, 255, 255, 0.8);
+.mb-4 {
+    margin-bottom: 0!important;
 }
 
-.navbar-container {
+.desktop-nav {
+    background-color: lightgrey; /*Light grey background*/
+    padding: 15px; /*Padding for the navbar*/
     display: flex;
-    align-items: center;
     justify-content: space-between;
-    max-width: 1200px;
-    margin: 0 auto;
-    padding: 0 20px;
+    align-items: center;
 }
-
-.navabar-brand {
+.title {
     font-size: 1.5rem;
     font-weight: bold;
-    color: #ff6f61;
-    text-decoration: none;
-    margin-left: auto;
+    color: blue;
+    margin-right: 20px; /*Add spacing from the links*/
 }
-
-.navbar-links {
-    list-style: none;
-    display: flex;
-    gap: 20px;
-    align-items: center;
+.navbar {
+    flex-grow: 1; /*Allows the navbar to take up the remaining space*/
+}
+ .navbar-links {
+    list-style: none;/*Remove bullets*/
+    display: flex;/*Align links horizontally*/
     margin: 0;
     padding: 0;
-}
+    width: 100%; /*Full width of navbar*/
+    justify-content: space-around; /*Spread links evenly across the width of navbar*/
+ }
 
-.nav-item .nav-link {
-    color: black;
-    text-decoration: none;
+ .nav-item {
+    flex: 1; /*Each link takes equal space*/
+    text-align: center; /*Center text within each item*/
+ }
+
+ .nav-link {
+    text-decoration: none; /*Remove underline*/
+    color: black; /*Text color*/
     font-size: 1rem;
-    padding: 8px 16px;
-    transition: color 0.3s ease;
-}
-/* Hover effect*/
-.nav-item .nav-link:hover {
-    color: #ff6f61;
-}
+    /*padding: 10px 15px; Vertical padding around links*/
+    display: block; /*Allows the entire area to be clickable*/
+    transition: background-color 0.3s ease; /*Smooth hover effect*/
+ }
 
-/* Active link */
-.nav-item .nav-link.active {
-    border-bottom: 2px solid #ff6f61;
-}
-
-/* Search Bar */
-input[type="text"] {
-    padding: 8px;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-    font-size: 1rem;
-}
-
-/* Sign In Button */
-.navbar-button {
-    background-color: #ff6f61;
-    color: #fff;
-    border: none;
-    padding: 8px 16px;
-    border-radius: 4px;
-    cursor: pointer;
-    transition: background-color 0.3s ease;
-}
-
-.navbar-button:hover {
-    background-color: #ff3f3f;
-}
+ .nav-link:hover {
+    color: #333; /*Slightly darker color on hover*/
+ }
