@@ -1,12 +1,12 @@
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import "./Navbar.css";
-import { useAuth } from "../contexts/AuthContext";
+import { useUser } from "../context/useUser";
 
 export default function Navbar() {
+  const { user, setUser } = useUser(); // Accessing user data and the setter function
   const [searchParam, setSearchParam] = useState("");
   const navigate = useNavigate();
-  const { user, logout } = useAuth();
 
   const handleSearchSubmit = (e) => {
     e.preventDefault();
@@ -15,9 +15,11 @@ export default function Navbar() {
     }
   };
 
+  // Function for logout
   const handleLogout = () => {
-    logout();
-    navigate("/auth");
+    sessionStorage.removeItem("user");
+    setUser({ email: "", password: "" });
+    navigate("/");
   };
 
   return (
@@ -62,14 +64,16 @@ export default function Navbar() {
                 }}
               />
             </form>
+            
+            {/* Button for login and logout*/}
             <li className="nav-item">
-              {user ? (
-                <button className="navbar-button logout-button" onClick={handleLogout}>
-                  Logout
+              {user.email ? (
+                <button className="navbar-button" onClick={handleLogout}>
+                  Log Out
                 </button>
               ) : (
-                <button className="navbar-button" onClick={() => navigate("/auth")}>
-                  Sign In
+                <button className="navbar-button" onClick={() => navigate("/login")}>
+                  Login
                 </button>
               )}
             </li>
