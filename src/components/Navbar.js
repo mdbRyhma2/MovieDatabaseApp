@@ -2,15 +2,15 @@ import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import './Navbar.css';
 
+
 export default function Navbar() {
     const [searchParam, setSearchParam] = useState('');
     const navigate = useNavigate();
 
     const handleSearchSubmit = (e) => {
-        e.preventDefault();
+        e.preventDefault();  // Prevent default form submission
         if (searchParam.trim()) {
-
-            navigate(`/search?query=${searchParam}`);
+            navigate(`/search?query=${searchParam}`); // Redirect to search results
         }
     };
 
@@ -33,19 +33,25 @@ export default function Navbar() {
                         <li className="nav-item">
                             <Link className='nav-link' to='/'>Extra?</Link>
                         </li>
+                        
+                        {/* Search Form */}
                         <form onSubmit={handleSearchSubmit}>
                             <input
                                 type="text"
                                 placeholder="Search..."
                                 value={searchParam}
-                                onChange={(e) => setSearchParam(e.target.value)}
+                                onChange={(e) => setSearchParam(e.target.value)} // Update searchParam state
                                 onKeyDown={(e) => {
                                     if (e.key === 'Enter') {
-                                        handleSearchSubmit(e);
+                                        handleSearchSubmit(e); // Handle Enter key for quick search
                                     }
                                 }}
                             />
-                        </form>
+                        </form>                  
+
+                        <li className="nav-item">
+                            <button className='navbar-button' onClick={() => navigate('/search')}>Advanced search</button>
+                        </li>
                         <li className="nav-item">
                             <button className='navbar-button' onClick={() => navigate('/signin')}>Sign In</button>
                         </li>
