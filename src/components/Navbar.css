@@ -76,3 +76,11 @@ input[type="text"] {
 .navbar-button:hover {
     background-color: #ff3f3f;
 }
+
+.logout-button {
+    background-color: #dc2626;
+}
+
+.logout-button:hover {
+    background-color: #b91c1c;
+}
