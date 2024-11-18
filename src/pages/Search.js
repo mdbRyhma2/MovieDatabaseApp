@@ -5,11 +5,11 @@ import { useLocation } from 'react-router-dom';
 
 export default function Search() {
     const [movies, setMovies] = useState([]);
-    const [filteredMovies, setFilteredMovies] = useState([]);  // Initialize filteredMovies state
+    const [filteredMovies, setFilteredMovies] = useState([]); 
     const [keywords, setKeywords] = useState('');
     const location = useLocation();
 
-    const [movieLength, setMovielength] = useState(180); // Default 180 minutes (3 hours)
+    const [movieLength, setMovielength] = useState(180); 
     const [minReleaseYear, setMinReleaseYear] = useState(1900);
     const [maxReleaseYear, setMaxReleaseYear] = useState(2024);
 
@@ -39,14 +39,14 @@ export default function Search() {
                     params: params,
                 });
                 setMovies(response.data.results);
-                filterMoviesByYear(response.data.results); // Apply local filtering after fetch
+                filterMoviesByYear(response.data.results); 
             } catch (error) {
                 console.log(error.message);
             }
         }
     };
 
-    // Local filtering function
+
     const filterMoviesByYear = (moviesList) => {
         const filtered = moviesList.filter(
             (movie) => {
@@ -54,7 +54,7 @@ export default function Search() {
                 return releaseYear >= minReleaseYear && releaseYear <= maxReleaseYear;
             }
         );
-        setFilteredMovies(filtered); // Update the filtered movie list
+        setFilteredMovies(filtered); 
     };
 
     const handleSliderChange = (e) => {
@@ -63,12 +63,12 @@ export default function Search() {
 
     const handleMinYearSliderChange = (e) => {
         setMinReleaseYear(e.target.value);
-        filterMoviesByYear(movies); // Re-filter when min year changes
+        filterMoviesByYear(movies); 
     };
 
     const handleMaxYearSliderChange = (e) => {
         setMaxReleaseYear(e.target.value);
-        filterMoviesByYear(movies); // Re-filter when max year changes
+        filterMoviesByYear(movies); 
     };
 
     const handleKeyWordsChange = (e) => {

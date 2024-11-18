@@ -8,9 +8,9 @@ export default function Navbar() {
     const navigate = useNavigate();
 
     const handleSearchSubmit = (e) => {
-        e.preventDefault();  // Prevent default form submission
+        e.preventDefault(); 
         if (searchParam.trim()) {
-            navigate(`/search?query=${searchParam}`); // Redirect to search results
+            navigate(`/search?query=${searchParam}`); 
         }
     };
 
@@ -40,10 +40,10 @@ export default function Navbar() {
                                 type="text"
                                 placeholder="Search..."
                                 value={searchParam}
-                                onChange={(e) => setSearchParam(e.target.value)} // Update searchParam state
+                                onChange={(e) => setSearchParam(e.target.value)} 
                                 onKeyDown={(e) => {
                                     if (e.key === 'Enter') {
-                                        handleSearchSubmit(e); // Handle Enter key for quick search
+                                        handleSearchSubmit(e); 
                                     }
                                 }}
                             />
