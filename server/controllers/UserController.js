@@ -43,8 +43,9 @@ const postLogin = async (req, res, next) => {
     //Check if password matches
     if (!(await compare(req.body.password, user.password)))
       return next(new ApiError(invalid_credentials_message, 401));
-
+    // Create the JWT token
     const token = sign(req.body.email, process.env.JWT_SECRET_KEY);
+    // Return the user data with the token
     return res.status(200).json(createUserObject(user.id, user.email, token));
   } catch (error) {
     return next(error);
