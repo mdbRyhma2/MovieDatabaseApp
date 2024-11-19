@@ -67,7 +67,7 @@ export default function Navbar() {
             
             {/* Button for login and logout*/}
             <li className="nav-item">
-              {user.email ? (
+              {user.token ? (
                 <button className="navbar-button" onClick={handleLogout}>
                   Log Out
                 </button>
