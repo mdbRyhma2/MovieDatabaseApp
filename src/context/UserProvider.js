@@ -5,12 +5,13 @@ import axios from "axios";
 const url = process.env.REACT_APP_API_URL;
 
 export default function UserProvider({ children }) {
+  
   // Get the stored user data from sessionStorage
   const userFromSessionStorage = sessionStorage.getItem("user");
   const [user, setUser] = useState(
     userFromSessionStorage
       ? JSON.parse(userFromSessionStorage)
-      : { email: "", password: "" }
+      : { email: "", username: "", password: "" }
   );
 
   // Function for user signup
@@ -19,7 +20,7 @@ export default function UserProvider({ children }) {
     const headers = { headers: { "Content-Type": "application/json" } };
     try {
       await axios.post(url + "/user/register", json, headers);
-      setUser({ email: "", password: "" });
+      setUser({ email: "", username: "", password: "" });
     } catch (error) {
       throw error;
     }
@@ -27,8 +28,11 @@ export default function UserProvider({ children }) {
 
   // Function for user login
   const logIn = async () => {
-    const json = JSON.stringify(user);
+    // Login with email or username
+    const identifier = user.email || user.username;
+    const json = JSON.stringify({ identifier, password: user.password });
     const headers = { headers: { "Content-Type": "application/json" } };
+    
     try {
       const response = await axios.post(url + "/user/login", json, headers);
       const token = response.data.token;
@@ -39,6 +43,7 @@ export default function UserProvider({ children }) {
       throw error;
     }
   };
+  
 
   return (
     <UserContext.Provider value={{ user, setUser, signUp, logIn }}>

@@ -1,4 +1,4 @@
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate, useLocation } from "react-router-dom";
 import "./Authentication.css";
 import React from "react";
 import { useUser } from "../context/useUser";
@@ -13,6 +13,12 @@ export default function Authentication({ authenticationMode }) {
   // Accessing user context and functions
   const { user, setUser, signUp, logIn } = useUser();
   const navigate = useNavigate();
+  const location = useLocation(); // To access location state
+
+  // Check if the state contains success from signup
+  const successMessage = location.state?.success
+    ? "Signup successful! You can now log in."
+    : "";
 
   // Function for the submit
   const handleSubmit = async (e) => {
@@ -20,7 +26,7 @@ export default function Authentication({ authenticationMode }) {
     try {
       if (authenticationMode === AuthenticationMode.Register) {
         await signUp();
-        navigate("/logIn"); // Redirect to login page after successful registration
+        navigate("/logIn", { state: { success: true } });
       } else {
         await logIn(); // Handle user login
         navigate("/"); // Redirect to home page after successful login
@@ -32,18 +38,53 @@ export default function Authentication({ authenticationMode }) {
       alert(message);
     }
   };
+
   return (
     <div id="auth-container">
       <h3>{authenticationMode === AuthenticationMode.Login ? "Login" : "Sign up"}</h3>
       <form onSubmit={handleSubmit}>
-        <div>
-          <label>Email</label>
-          <input
-            type="email"
-            value={user.email}
-            onChange={(e) => setUser({ ...user, email: e.target.value })}
-          />
-        </div>
+        {/* User input for email or username on login mode */}
+        {authenticationMode === AuthenticationMode.Login && (
+          <>
+            <div>
+              {successMessage && <div className="success-message">{successMessage}</div>}
+              <label>Email or username</label>
+              <input
+                type="text"
+                value={user.email || user.username}
+                onChange={(e) => {
+                  const value = e.target.value;
+                  if (value.includes("@")) {
+                    setUser({ ...user, email: value });
+                  } else {
+                    setUser({ ...user, username: value });
+                  }
+                }}
+              />
+            </div>
+          </>
+        )}
+        {/* User inputs for email and username on signup mode */}
+        {authenticationMode === AuthenticationMode.Register && (
+          <>
+            <div>
+              <label>Email</label>
+              <input
+                type="text"
+                value={user.email}
+                onChange={(e) => setUser({ ...user, email: e.target.value })}
+              />
+            </div>
+            <div>
+              <label>Username</label>
+              <input
+                type="text"
+                value={user.username}
+                onChange={(e) => setUser({ ...user, username: e.target.value })}
+              />
+            </div>
+          </>
+        )}
         <div>
           <label>Password</label>
           <input
@@ -51,7 +92,11 @@ export default function Authentication({ authenticationMode }) {
             value={user.password}
             onChange={(e) => setUser({ ...user, password: e.target.value })}
           />
-          <label className="password-info">{authenticationMode === AuthenticationMode.Login ? "" : "Password must be at least 8 characters"}</label>
+          <label className="password-info">
+            {authenticationMode === AuthenticationMode.Login
+              ? ""
+              : "Password must be at least 8 characters"}
+          </label>
         </div>
         <div>
           <button>

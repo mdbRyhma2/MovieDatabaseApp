@@ -3,14 +3,13 @@ drop table if exists users;
 CREATE TABLE users (
     id SERIAL PRIMARY KEY,
     email VARCHAR(50) NOT NULL UNIQUE,
-    password VARCHAR(255) NOT NULL
-);
-
-    /* first_name VARCHAR(255) NOT NULL,
-    last_name VARCHAR(255) NOT NULL,
     username VARCHAR(255) NOT NULL UNIQUE,
+    first_name VARCHAR(255),
+    last_name VARCHAR(255),
+    password VARCHAR(255) NOT NULL
+);  
 
-CREATE TABLE favorite_movies (
+/* CREATE TABLE favorite_movies (
     user_id INT NOT NULL,
     movie_id INT NOT NULL,
     PRIMARY KEY (user_id, movie_id),

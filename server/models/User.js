@@ -1,16 +1,19 @@
 import { pool } from "../helpers/db.js";
 
 // Function to insert a new user into the database
-const insertUser = async (email, hashedPassword) => {
+const insertUser = async (email, username, first_name, last_name, hashedPassword) => {
   return await pool.query(
-    "insert into users (email,password) values ($1,$2) returning *",
-    [email, hashedPassword]
+    "INSERT INTO users (email, username, first_name, last_name, password) VALUES ($1,$2,$3,$4,$5) RETURNING *",
+    [email, username, first_name, last_name, hashedPassword]
   );
 };
 
-// Function to select a user from the database by email
-const selectUserByEmail = async (email) => {
-  return await pool.query("select * from users where email=$1", [email]);
+const selectUserByEmailOrUsername = async (identifier) => {
+  return await pool.query(
+    "SELECT * FROM users WHERE email = $1 OR username = $1",
+    [identifier]
+  );
 };
 
-export { insertUser, selectUserByEmail };
+
+export { insertUser, selectUserByEmailOrUsername };
