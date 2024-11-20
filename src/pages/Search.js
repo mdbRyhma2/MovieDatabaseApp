@@ -1,83 +1,94 @@
-import React, { useEffect, useState } from 'react';
-import axios from 'axios';
-import { useLocation } from 'react-router-dom';
-
+import React, { useState, useEffect } from 'react'
+import { useLocation } from 'react-router-dom'
+import { useMovies } from '../hooks/useMovies'
+import Genre from '../utlis.js/Genre'
 
 export default function Search() {
-    const [movies, setMovies] = useState([]);
-    const [filteredMovies, setFilteredMovies] = useState([]); 
-    const [keywords, setKeywords] = useState('');
-    const location = useLocation();
+    const [keywords, setKeywords] = useState('')
+    const [searchQuery, setSearchQuery] = useState('')
 
-    const [movieLength, setMovielength] = useState(180); 
-    const [minReleaseYear, setMinReleaseYear] = useState(1900);
-    const [maxReleaseYear, setMaxReleaseYear] = useState(2024);
+    const genres = [
+        { id: 28, name: 'Action' },
+        { id: 12, name: 'Adventure' },
+        { id: 16, name: 'Animation' },
+        { id: 35, name: 'Comedy' },
+        { id: 80, name: 'Crime' },
+        { id: 99, name: 'Documentary' },
+        { id: 18, name: 'Drama' },
+        { id: 10751, name: 'Family' },
+        { id: 14, name: 'Fantasy' },
+        { id: 36, name: 'History' },
+        { id: 27, name: 'Horror' },
+        { id: 10402, name: 'Music' },
+        { id: 9648, name: 'Mystery' },
+        { id: 10749, name: 'Romance' },
+        { id: 878, name: 'Science Fiction' },
+        { id: 10770, name: 'TV Movie' },
+        { id: 53, name: 'Thriller' },
+        { id: 10752, name: 'War' },
+        { id: 37, name: 'Western' }
+    ]
+
+    const [selectedGenres, setSelectedGenres] = useState([])
+
+    const [movieLength, setMovieLength] = useState(180)
+
+    const [minReleaseYear, setMinReleaseYear] = useState(1900)
+    const [maxReleaseYear, setMaxReleaseYear] = useState(2024)
+
+    const location = useLocation()
+
+    const { filteredMovies } = useMovies(searchQuery, minReleaseYear, maxReleaseYear, selectedGenres)
 
     useEffect(() => {
+
         const query = new URLSearchParams(location.search).get('query');
         if (query) {
             setKeywords(query)
-            submitSearch()
+            setSearchQuery(query)
         }
     }, [location]);
 
 
 
-    const submitSearch = async () => {
-        const params = {
-            query: keywords,
-        };
-
-        const url = 'https://api.themoviedb.org/3/search/movie';
-        if (keywords) {
-            try {
-                const response = await axios.get(url, {
-                    headers: {
-                        accept: 'application/json',
-                        Authorization: process.env.REACT_APP_API_KEY,
-                    },
-                    params: params,
-                });
-                setMovies(response.data.results);
-                filterMoviesByYear(response.data.results); 
-            } catch (error) {
-                console.log(error.message);
-            }
-        }
-    };
-
-
-    const filterMoviesByYear = (moviesList) => {
-        const filtered = moviesList.filter(
-            (movie) => {
-                const releaseYear = new Date(movie.release_date).getFullYear();
-                return releaseYear >= minReleaseYear && releaseYear <= maxReleaseYear;
-            }
-        );
-        setFilteredMovies(filtered); 
-    };
-
     const handleSliderChange = (e) => {
-        setMovielength(e.target.value);
+        setMovieLength(e.target.value)
     };
 
     const handleMinYearSliderChange = (e) => {
-        setMinReleaseYear(e.target.value);
-        filterMoviesByYear(movies); 
+        setMinReleaseYear(e.target.value)
     };
 
     const handleMaxYearSliderChange = (e) => {
-        setMaxReleaseYear(e.target.value);
-        filterMoviesByYear(movies); 
+        setMaxReleaseYear(e.target.value)
     };
 
     const handleKeyWordsChange = (e) => {
-        setKeywords(e.target.value);
+        setKeywords(e.target.value)
     };
 
     const handleSearchButtonClick = () => {
-        submitSearch();
+        setSearchQuery(keywords)
     };
+
+    const handleKeyDown = (e) => {
+        if (e.key === 'Enter') {
+            setSearchQuery(keywords)
+        }
+    };
+
+    const handleGenreChange = (e) => {
+        const genreId = parseInt(e.target.value)
+        setSelectedGenres((prevSelectedGenres) => {
+            if (e.target.checked) {
+
+                return [...prevSelectedGenres, genreId]
+            } else {
+
+                return prevSelectedGenres.filter(id => id !== genreId)
+            }
+        })
+    }
 
     return (
         <div>
@@ -91,25 +102,10 @@ export default function Search() {
                         placeholder="Movie name"
                         value={keywords}
                         onChange={handleKeyWordsChange}
+                        onKeyDown={handleKeyDown}
                     />
                 </div>
-                <div className="filter">
-                    <h3>Genre</h3>
-                    <div className="checkbox-group">
-                        <label>
-                            <input type="checkbox" /> Genre 1
-                        </label>
-                        <label>
-                            <input type="checkbox" /> Genre 2
-                        </label>
-                        <label>
-                            <input type="checkbox" /> Genre 3
-                        </label>
-                        <label>
-                            <input type="checkbox" /> Genre 4
-                        </label>
-                    </div>
-                </div>
+
                 <div className="filter">
                     <label>Movie length: {movieLength} min</label>
                     <input
@@ -121,6 +117,7 @@ export default function Search() {
                         onChange={handleSliderChange}
                     />
                 </div>
+
                 <div className="filter">
                     <label>Release year range:</label>
                     <div>
@@ -146,6 +143,16 @@ export default function Search() {
                         />
                     </div>
                 </div>
+
+                <div>
+                    <ul>
+                        {genres.map((item) => (
+                            <Genre key={item.id} item={item}  checked={selectedGenres.includes(item.id)}onChange={handleGenreChange} />
+                        ))}
+                    </ul>
+                </div>
+
+
                 <button className="search-button" onClick={handleSearchButtonClick}>
                     Search
                 </button>
