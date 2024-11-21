@@ -23,6 +23,7 @@ export default function Authentication({ authenticationMode }) {
   // Function for the submit
   const handleSubmit = async (e) => {
     e.preventDefault();
+
     try {
       if (authenticationMode === AuthenticationMode.Register) {
         await signUp();
@@ -64,7 +65,7 @@ export default function Authentication({ authenticationMode }) {
             </div>
           </>
         )}
-        {/* User inputs for email and username on signup mode */}
+        {/* Inputs for signup */}
         {authenticationMode === AuthenticationMode.Register && (
           <>
             <div>
@@ -81,6 +82,22 @@ export default function Authentication({ authenticationMode }) {
                 type="text"
                 value={user.username}
                 onChange={(e) => setUser({ ...user, username: e.target.value })}
+              />
+            </div>
+            <div>
+              <label>First name (optional)</label>
+              <input
+                type="text"
+                value={user.first_name}
+                onChange={(e) => setUser({ ...user, first_name: e.target.value })}
+              />
+            </div>
+            <div>
+              <label>Last name (optional)</label>
+              <input
+                type="text"
+                value={user.last_name}
+                onChange={(e) => setUser({ ...user, last_name: e.target.value })}
               />
             </div>
           </>

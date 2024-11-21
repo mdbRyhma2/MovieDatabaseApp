@@ -16,11 +16,16 @@ export default function UserProvider({ children }) {
 
   // Function for user signup
   const signUp = async () => {
+    const payload = { email: user.email, username: user.username, password: user.password }
+
+    if (user.first_name) payload.first_name = user.first_name
+    if (user.last_name) payload.last_name = user.last_name
+
     const json = JSON.stringify(user);
     const headers = { headers: { "Content-Type": "application/json" } };
     try {
       await axios.post(url + "/user/register", json, headers);
-      setUser({ email: "", username: "", password: "" });
+      setUser({ email: "", username: "", first_name: "", last_name: "", password: "" });
     } catch (error) {
       throw error;
     }
