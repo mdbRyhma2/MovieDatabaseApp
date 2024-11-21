@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react'
 import { useLocation } from 'react-router-dom'
 import { useMovies } from '../hooks/useMovies'
 import Genre from '../utlis.js/Genre'
+import './Search.css'
 
 export default function Search() {
     const [keywords, setKeywords] = useState('')
@@ -38,7 +39,7 @@ export default function Search() {
 
     const location = useLocation()
 
-    const { filteredMovies } = useMovies(searchQuery, minReleaseYear, maxReleaseYear, selectedGenres)
+    const { filteredMovies } = useMovies(searchQuery, minReleaseYear, maxReleaseYear, selectedGenres, movieLength)
 
     useEffect(() => {
 
@@ -144,12 +145,10 @@ export default function Search() {
                     </div>
                 </div>
 
-                <div>
-                    <ul>
+                <div className='genreList'>
                         {genres.map((item) => (
                             <Genre key={item.id} item={item}  checked={selectedGenres.includes(item.id)}onChange={handleGenreChange} />
                         ))}
-                    </ul>
                 </div>
 
 

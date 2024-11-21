@@ -1,28 +1,30 @@
 import { useState, useEffect } from 'react';
 import { fetchMovies } from '../api/api';
 
-export const useMovies = (keywords, minReleaseYear, maxReleaseYear, selectedGenres) => {
+export const useMovies = (keywords, minReleaseYear, maxReleaseYear, selectedGenres, movieLength) => {
     const [movies, setMovies] = useState([]);
     const [filteredMovies, setFilteredMovies] = useState([]);
+    const [runTimes, setRuntimes] = useState([])
 
     useEffect(() => {
         const submitSearch = async () => {
             if (keywords) {
+
                 const results = await fetchMovies(keywords);
-                setMovies(results);
-                filterMoviesByYearAndGenre(results); 
+                setMovies(results)
+                filterMoviesByYearAndGenre(results)
             }
         };
 
         submitSearch();
-    }, [keywords]); 
+    }, [keywords]);
 
     useEffect(() => {
 
         if (movies.length > 0) {
             filterMoviesByYearAndGenre(movies);
         }
-    }, [selectedGenres, minReleaseYear, maxReleaseYear, movies]); 
+    }, [selectedGenres, minReleaseYear, maxReleaseYear, movies]);
 
     const filterMoviesByYearAndGenre = (moviesList) => {
         let filteredMoviesList = moviesList;
@@ -33,14 +35,15 @@ export const useMovies = (keywords, minReleaseYear, maxReleaseYear, selectedGenr
         });
 
         if (selectedGenres.length > 0) {
-   
+
             filteredMoviesList = filteredMoviesList.filter((movie) => {
                 return movie.genre_ids.some(genreId => selectedGenres.includes(genreId));
             });
         }
 
-        setFilteredMovies(filteredMoviesList); 
+        setFilteredMovies(filteredMoviesList);
     };
+
 
     return { filteredMovies };
 };
