@@ -1,4 +1,5 @@
 drop table if exists users;
+drop table if exists groups;
 
 CREATE TABLE users (
     id SERIAL PRIMARY KEY,
@@ -9,7 +10,7 @@ CREATE TABLE users (
     password VARCHAR(255) NOT NULL
 );  
 
-/* CREATE TABLE favorite_movies (
+CREATE TABLE favorite_movies (
     user_id INT NOT NULL,
     movie_id INT NOT NULL,
     PRIMARY KEY (user_id, movie_id),
@@ -27,4 +28,4 @@ CREATE TABLE user_groups (
     PRIMARY KEY (user_id, group_id),
     FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
     FOREIGN KEY (group_id) REFERENCES groups(id) ON DELETE CASCADE
-); */
+);

@@ -1,7 +1,10 @@
-import React from 'react'
+import axios from 'axios';
+import React, { useState, useEffect } from "react";
 
 export default function Profile() {
   return (
-    <div>Profile</div>
-  )
+    <div className="container">
+      <h1>User Profiles</h1>
+    </div>
+  );
 }
