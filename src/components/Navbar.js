@@ -72,9 +72,14 @@ export default function Navbar() {
             {/* Button for login and logout*/}
             <li className="nav-item">
               {user.token ? (
+                <>
+                <button className="navbar-button" onClick={() => navigate("/profile")}>
+                  Profile
+                </button>
                 <button className="navbar-button" onClick={handleLogout}>
                   Log Out
                 </button>
+                </>
               ) : (
                 <button className="navbar-button" onClick={() => navigate("/login")}>
                   Login
