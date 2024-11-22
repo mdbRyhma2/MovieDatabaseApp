@@ -3,6 +3,7 @@ import { Link, useNavigate } from "react-router-dom";
 import "./Navbar.css";
 import { useUser } from "../context/useUser";
 
+
 export default function Navbar() {
   const { user, setUser } = useUser(); // Accessing user data and the setter function
   const [searchParam, setSearchParam] = useState("");
@@ -28,6 +29,7 @@ export default function Navbar() {
         <a className="navbar-brand" href="#">
           Heading
         </a>
+
 
         <div className="navbar-desktop" id="navbarSupportedContent">
           <ul className="navbar-links">
@@ -64,7 +66,9 @@ export default function Navbar() {
                 }}
               />
             </form>
-            
+                <li className="nav-item">
+                   <button className='navbar-button' onClick={() => navigate('/search')}>Advanced search</button>
+                </li>
             {/* Button for login and logout*/}
             <li className="nav-item">
               {user.token ? (
