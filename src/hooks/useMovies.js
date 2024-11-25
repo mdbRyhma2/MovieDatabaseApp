@@ -1,30 +1,28 @@
 import { useState, useEffect } from 'react';
-import { fetchMovies } from '../api/api';
+import { fetchMovies, fetchMoviesWithoutKeywords } from '../api/api';
 
-export const useMovies = (keywords, minReleaseYear, maxReleaseYear, selectedGenres, movieLength) => {
+export const useMovies = (keywords, minReleaseYear, maxReleaseYear, selectedGenres) => {
     const [movies, setMovies] = useState([]);
     const [filteredMovies, setFilteredMovies] = useState([]);
-    const [runTimes, setRuntimes] = useState([])
 
     useEffect(() => {
         const submitSearch = async () => {
             if (keywords) {
-
                 const results = await fetchMovies(keywords);
+                setMovies(results);
+                filterMoviesByYearAndGenre(results);
+            } else if (selectedGenres.length > 0 || minReleaseYear || maxReleaseYear) {
+                const results = await fetchMoviesWithoutKeywords(minReleaseYear, maxReleaseYear, selectedGenres)
                 setMovies(results)
                 filterMoviesByYearAndGenre(results)
+            } else {
+                setMovies([])
+                setFilteredMovies([])
             }
         };
 
         submitSearch();
-    }, [keywords]);
-
-    useEffect(() => {
-
-        if (movies.length > 0) {
-            filterMoviesByYearAndGenre(movies);
-        }
-    }, [selectedGenres, minReleaseYear, maxReleaseYear, movies]);
+    }, [keywords, selectedGenres, minReleaseYear, maxReleaseYear]);
 
     const filterMoviesByYearAndGenre = (moviesList) => {
         let filteredMoviesList = moviesList;
@@ -35,15 +33,13 @@ export const useMovies = (keywords, minReleaseYear, maxReleaseYear, selectedGenr
         });
 
         if (selectedGenres.length > 0) {
-
-            filteredMoviesList = filteredMoviesList.filter((movie) => {
-                return movie.genre_ids.some(genreId => selectedGenres.includes(genreId));
-            });
+            filteredMoviesList = filteredMoviesList.filter((movie) =>
+                movie.genre_ids.some((genreId) => selectedGenres.includes(genreId))
+            );
         }
 
         setFilteredMovies(filteredMoviesList);
     };
-
 
     return { filteredMovies };
 };
