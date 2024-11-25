@@ -1,12 +1,12 @@
-import React, { useState, useEffect } from 'react'
-import { useLocation } from 'react-router-dom'
-import { useMovies } from '../hooks/useMovies'
-import Genre from '../utlis.js/Genre'
-import './Search.css'
+import React, { useState, useEffect } from 'react';
+import { useLocation } from 'react-router-dom';
+import { useMovies } from '../hooks/useMovies';
+import Genre from '../utlis.js/Genre';
+import './Search.css';
 
 export default function Search() {
-    const [keywords, setKeywords] = useState('')
-    const [searchQuery, setSearchQuery] = useState('')
+    const [keywords, setKeywords] = useState('');
+    const [searchQuery, setSearchQuery] = useState('');
 
     const genres = [
         { id: 28, name: 'Action' },
@@ -27,69 +27,86 @@ export default function Search() {
         { id: 10770, name: 'TV Movie' },
         { id: 53, name: 'Thriller' },
         { id: 10752, name: 'War' },
-        { id: 37, name: 'Western' }
-    ]
+        { id: 37, name: 'Western' },
+    ];
 
-    const [selectedGenres, setSelectedGenres] = useState([])
+    const [tempSelectedGenres, setTempSelectedGenres] = useState([]);
+    const [selectedGenres, setSelectedGenres] = useState([]);
+    const [isAllGenresSelected, setIsAllGenresSelected] = useState(false);
 
-    const [movieLength, setMovieLength] = useState(180)
+    const [tempMinReleaseYear, setTempMinReleaseYear] = useState(1900);
+    const [tempMaxReleaseYear, setTempMaxReleaseYear] = useState(2024);
+    const [minReleaseYear, setMinReleaseYear] = useState(2024);
+    const [maxReleaseYear, setMaxReleaseYear] = useState(2024);
 
-    const [minReleaseYear, setMinReleaseYear] = useState(1900)
-    const [maxReleaseYear, setMaxReleaseYear] = useState(2024)
-
-    const location = useLocation()
-
-    const { filteredMovies } = useMovies(searchQuery, minReleaseYear, maxReleaseYear, selectedGenres, movieLength)
+    const location = useLocation();
+    const { filteredMovies } = useMovies(searchQuery, minReleaseYear, maxReleaseYear, selectedGenres);
 
     useEffect(() => {
-
         const query = new URLSearchParams(location.search).get('query');
         if (query) {
-            setKeywords(query)
-            setSearchQuery(query)
+          setKeywords(query);
+          setSearchQuery(query);
+          setSearchQuery('')
+        } else {
+          setKeywords('');
+          setTempSelectedGenres([]);
+          setSelectedGenres([]);
+          setTempMinReleaseYear(2024);
+          setTempMaxReleaseYear(2024);
+          setSearchQuery('');
         }
-    }, [location]);
-
-
-
-    const handleSliderChange = (e) => {
-        setMovieLength(e.target.value)
-    };
-
-    const handleMinYearSliderChange = (e) => {
-        setMinReleaseYear(e.target.value)
-    };
-
-    const handleMaxYearSliderChange = (e) => {
-        setMaxReleaseYear(e.target.value)
-    };
+      }, [location]);
+      
 
     const handleKeyWordsChange = (e) => {
-        setKeywords(e.target.value)
+        setKeywords(e.target.value);
     };
 
     const handleSearchButtonClick = () => {
-        setSearchQuery(keywords)
-    };
+
+        setSearchQuery(keywords.trim() || ''); 
+        setSelectedGenres([...tempSelectedGenres]); 
+        setMinReleaseYear(tempMinReleaseYear);
+        setMaxReleaseYear(tempMaxReleaseYear);
+      };
+      
+      
 
     const handleKeyDown = (e) => {
         if (e.key === 'Enter') {
-            setSearchQuery(keywords)
+            handleSearchButtonClick();
         }
     };
 
     const handleGenreChange = (e) => {
-        const genreId = parseInt(e.target.value)
-        setSelectedGenres((prevSelectedGenres) => {
+        const genreId = parseInt(e.target.value);
+        setTempSelectedGenres((prevTempGenres) => {
             if (e.target.checked) {
-
-                return [...prevSelectedGenres, genreId]
+                return [...prevTempGenres, genreId];
             } else {
-
-                return prevSelectedGenres.filter(id => id !== genreId)
+                return prevTempGenres.filter((id) => id !== genreId);
             }
-        })
-    }
+        });
+    };
+
+    const handleAllGenresChange = (e) => {
+        if (e.target.checked) {
+            setTempSelectedGenres(genres.map((genre) => genre.id));
+            setIsAllGenresSelected(true);
+        } else {
+            setTempSelectedGenres([]);
+            setIsAllGenresSelected(false);
+        }
+    };
+
+    const handleMinYearSliderChange = (e) => {
+        setTempMinReleaseYear(parseInt(e.target.value));
+    };
+
+    const handleMaxYearSliderChange = (e) => {
+        setTempMaxReleaseYear(parseInt(e.target.value));
+    };
 
     return (
         <div>
@@ -108,49 +125,50 @@ export default function Search() {
                 </div>
 
                 <div className="filter">
-                    <label>Movie length: {movieLength} min</label>
-                    <input
-                        type="range"
-                        min="0"
-                        max="240"
-                        step="5"
-                        value={movieLength}
-                        onChange={handleSliderChange}
-                    />
-                </div>
-
-                <div className="filter">
                     <label>Release year range:</label>
                     <div>
-                        <label>Min Year: {minReleaseYear}</label>
+                        <label>Min Year: {tempMinReleaseYear}</label>
                         <input
                             type="range"
                             min="1900"
                             max="2024"
                             step="1"
-                            value={minReleaseYear}
+                            value={tempMinReleaseYear}
                             onChange={handleMinYearSliderChange}
                         />
                     </div>
                     <div>
-                        <label>Max Year: {maxReleaseYear}</label>
+                        <label>Max Year: {tempMaxReleaseYear}</label>
                         <input
                             type="range"
                             min="1900"
                             max="2024"
                             step="1"
-                            value={maxReleaseYear}
+                            value={tempMaxReleaseYear}
                             onChange={handleMaxYearSliderChange}
                         />
                     </div>
                 </div>
 
-                <div className='genreList'>
-                        {genres.map((item) => (
-                            <Genre key={item.id} item={item}  checked={selectedGenres.includes(item.id)}onChange={handleGenreChange} />
-                        ))}
+                <div className="genreList">
+                    <label>
+                        <input
+                            type="checkbox"
+                            value="all"
+                            checked={isAllGenresSelected}
+                            onChange={handleAllGenresChange}
+                        />
+                        All
+                    </label>
+                    {genres.map((item) => (
+                        <Genre
+                            key={item.id}
+                            item={item}
+                            checked={tempSelectedGenres.includes(item.id)}
+                            onChange={handleGenreChange}
+                        />
+                    ))}
                 </div>
-
 
                 <button className="search-button" onClick={handleSearchButtonClick}>
                     Search
