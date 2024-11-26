@@ -51,6 +51,11 @@ export default function Navbar() {
                 Showtimes
               </Link>
             </li>
+            <li className="nav-item">
+              <Link className="nav-link" to="/groups">
+                Groups
+              </Link>
+            </li>
             <form onSubmit={handleSearchSubmit}>
               <input
                 type="text"
