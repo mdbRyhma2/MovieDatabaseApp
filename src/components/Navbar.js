@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import "./Navbar.css";
 import { useUser } from "../context/useUser";
+import searchIcon from "../images/search.png";
 
 
 export default function Navbar() {
@@ -37,11 +38,6 @@ export default function Navbar() {
         <div className="navbar-desktop" id="navbarSupportedContent">
           <ul className="navbar-links">
             <li className="nav-item">
-              <Link className="nav-link" to="/">
-                Home
-              </Link>
-            </li>
-            <li className="nav-item">
               <Link className="nav-link" to="/movies">
                 Movies
               </Link>
@@ -58,7 +54,7 @@ export default function Navbar() {
                 value={searchParam}
                 onChange={(e) => setSearchParam(e.target.value)}
               />
-              <button type="submit">Search</button>
+              <button className="navbar-button" type="submit">Search</button>
             </form>
             <li className="nav-item">
               <button className="navbar-button" onClick={handleAdvancedSearch}>
