@@ -8,6 +8,8 @@ import Groups from './pages/Groups';
 import Showtimes from './pages/Showtimes'
 import Movies from './pages/Movies';
 import Authentication, { AuthenticationMode } from "./pages/Authentication";
+import Profile from './pages/Profile';
+import ProtectedRoute from './components/ProtectedRoute';
 
 export default function App() {
     return (
@@ -22,6 +24,11 @@ export default function App() {
             <Route path="/search" element={<Search />} />
             <Route path="/login" element={<Authentication authenticationMode={AuthenticationMode.Login} />} />
             <Route path="/signup" element={<Authentication authenticationMode={AuthenticationMode.Register} />} />
+
+            <Route element={<ProtectedRoute />}>
+                <Route path="/profile" element={<Profile />} />
+            </Route>
+
         </Routes>
 
 

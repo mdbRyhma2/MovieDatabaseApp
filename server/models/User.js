@@ -9,11 +9,27 @@ const insertUser = async (email, username, first_name, last_name, hashedPassword
 };
 
 const selectUserByEmailOrUsername = async (identifier) => {
-  return await pool.query(
-    "SELECT * FROM users WHERE email = $1 OR username = $1",
-    [identifier]
-  );
+  return await pool.query("SELECT * FROM users WHERE email = $1 OR username = $1", [
+    identifier,
+  ]);
 };
 
+const selectUserInfo = async (id) => {
+  try {
+    const result = await pool.query(
+      "SELECT username, first_name, last_name FROM users WHERE id = $1",
+      [id]
+    );
 
-export { insertUser, selectUserByEmailOrUsername };
+    return result.rows;
+  } catch (error) {
+    console.error("Error fetching the user info", error);
+    throw error;
+  }
+};
+
+const deleteUser = async (id) => {
+  return await pool.query("DELETE FROM users WHERE id = $1 RETURNING *", [id]);
+};
+
+export { insertUser, selectUserByEmailOrUsername, selectUserInfo, deleteUser };
