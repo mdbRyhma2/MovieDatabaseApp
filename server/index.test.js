@@ -10,9 +10,9 @@ describe("POST register", () => {
     initializeTestDb();
   });
 
-  const email = `register_${Date.now()}@foo.com`;
-  const first_name = "Reg";
-  const last_name = "Ister";
+  const email = `register@foo.com`;
+  const first_name = "FirstName";
+  const last_name = "LastName";
   const valid_password = "register123";
 
   // Tests for registration
@@ -61,7 +61,7 @@ describe("POST register", () => {
 
   it("should register without first_name and last_name", async () => {
     const username = "user3";
-    const email = `register2_${Date.now()}@foo.com`;
+    const email = `register2@foo.com`;
     const response = await fetch(base_url + "/user/register", {
       method: "post",
       headers: {
@@ -85,12 +85,12 @@ describe("POST register", () => {
 // Tests for login
 describe("POST login", () => {
   const email = "login@foo.com";
-  const username = "login_user";
+  const username = "loginuser";
   const password = "login123";
 
   before(async () => {
     initializeTestDb();
-    await insertTestUser(email, username, "Test", "User", password); // Ensure this runs before tests
+    await insertTestUser(email, username, "FirstName", "LastName", password); // Ensure this runs before tests
   });
 
   it("should login with valid email and password", async () => {
@@ -151,3 +151,30 @@ describe("POST login", () => {
     expect(data.error).to.equal("Invalid credentials.");
   });
 });
+
+describe("DELETE /user/profile", () => {
+  let token
+
+  before(async () => {
+    const email = "delete@foo.com"
+    const username = "delete"
+    const password = "delete123"
+
+    await insertTestUser(email, username, "FirstName", "LastName", password);
+
+    token = getToken(email)
+  });
+  
+  it("should delete the user account", async () => {
+    const response = await fetch(base_url + "/user/profile", {
+      method: "delete",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+    })
+    const data = await response.json()
+    expect(response.status).to.equal(200)
+    expect(data).to.have.property("message", "User account deleted successfully")
+  })
+})

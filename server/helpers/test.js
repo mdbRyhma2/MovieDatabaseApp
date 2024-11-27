@@ -26,7 +26,8 @@ const insertTestUser = async (email, username, first_name, last_name, password) 
 
 // Function to generate a JWT token for a test user
 const getToken = (email) => {
-  return sign({ user: email }, process.env.JWT_SECRET_KEY);
+  return sign({ user: email }, process.env.JWT_SECRET_KEY, {expiresIn: "1hr"});
 };
+
 
 export { initializeTestDb, insertTestUser, getToken };

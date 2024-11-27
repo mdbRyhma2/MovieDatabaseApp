@@ -1,5 +1,10 @@
 import { hash, compare } from "bcrypt";
-import { insertUser, selectUserByEmailOrUsername } from "../models/User.js";
+import {
+  insertUser,
+  selectUserByEmailOrUsername,
+  selectUserInfo,
+  deleteUser,
+} from "../models/User.js";
 import { ApiError } from "../helpers/ApiError.js";
 import jwt from "jsonwebtoken";
 
@@ -89,7 +94,7 @@ const postLogin = async (req, res, next) => {
     const isPasswordValid = await compare(password, user.password);
     if (!isPasswordValid) return next(new ApiError(invalid_credentials_message, 401));
     // Generate a JWT token
-    const token = sign({ id: user.id }, process.env.JWT_SECRET_KEY);
+    const token = sign({ id: user.id }, process.env.JWT_SECRET_KEY, { expiresIn: "30m" });
     // Respond with the user object and token
     return res
       .status(200)
@@ -108,4 +113,49 @@ const postLogin = async (req, res, next) => {
   }
 };
 
-export { postRegistration, postLogin };
+// Controller to handle getting user info
+const getUserInfo = async (req, res, next) => {
+  try {
+    // Make sure user is authenticated before fetching their info
+    if (!req.user || !req.user.id) {
+      return next(new ApiError("Unauthorized access", 401));
+    }
+
+    // Query the database to get user info by ID
+    const result = await selectUserInfo(req.user.id);
+
+    if (!result || result.length === 0) {
+      return next(new ApiError("User not found", 404));
+    }
+
+    // Respond with the user info (don't return sensitive data like password)
+    const user = result[0];
+    return res.status(200).json({
+      username: user.username,
+      first_name: user.first_name,
+      last_name: user.last_name,
+    });
+  } catch (error) {
+    return next(error);
+  }
+};
+
+// Controller to handle account delete
+const deleteAccount = async (req,res,next) => {
+  try {
+    if (!req.user || !req.user.id) {
+      return next(new ApiError("Unauthorized access", 401))
+    }
+
+    const result = await deleteUser(req.user.id)
+
+    if (result.rowCount === 0) {
+      return next(new ApiError("User not found or already deleted", 404))
+    }
+    return res.status(200).json({message: "User account deleted successfully"})
+  } catch (error) {
+    return next(error)
+  }
+}
+ 
+export { postRegistration, postLogin, getUserInfo, deleteAccount };

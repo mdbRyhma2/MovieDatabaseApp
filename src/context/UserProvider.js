@@ -5,7 +5,6 @@ import axios from "axios";
 const url = process.env.REACT_APP_API_URL;
 
 export default function UserProvider({ children }) {
-  
   // Get the stored user data from sessionStorage
   const userFromSessionStorage = sessionStorage.getItem("user");
   const [user, setUser] = useState(
@@ -16,10 +15,14 @@ export default function UserProvider({ children }) {
 
   // Function for user signup
   const signUp = async () => {
-    const payload = { email: user.email, username: user.username, password: user.password }
+    const payload = {
+      email: user.email,
+      username: user.username,
+      password: user.password,
+    };
 
-    if (user.first_name) payload.first_name = user.first_name
-    if (user.last_name) payload.last_name = user.last_name
+    if (user.first_name) payload.first_name = user.first_name;
+    if (user.last_name) payload.last_name = user.last_name;
 
     const json = JSON.stringify(user);
     const headers = { headers: { "Content-Type": "application/json" } };
@@ -37,18 +40,21 @@ export default function UserProvider({ children }) {
     const identifier = user.email || user.username;
     const json = JSON.stringify({ identifier, password: user.password });
     const headers = { headers: { "Content-Type": "application/json" } };
-    
+
     try {
       const response = await axios.post(url + "/user/login", json, headers);
       const token = response.data.token;
-      setUser(response.data);
+      setUser({
+        ...response.data,
+        token: token,
+      });
+      
       sessionStorage.setItem("user", JSON.stringify(response.data));
     } catch (error) {
       setUser({ email: "", password: "" });
       throw error;
     }
   };
-  
 
   return (
     <UserContext.Provider value={{ user, setUser, signUp, logIn }}>
