@@ -4,7 +4,7 @@ import { Link } from "react-router-dom";
 
 export default function Groups() {
 
-  const [group, setgroup] = useState([
+  const [groups, setgroups] = useState([
     { id: 1, name: 'Group 1' },
     { id: 2, name: 'Group 2' },
     { id: 3, name: 'Group 3' },
@@ -18,9 +18,11 @@ export default function Groups() {
         <h2>Groups</h2>
         <div className="group-list">
           <ul>
-            {group.map((groupItem) => (
+            {groups.map((group) => (
               <li key={group.id}>
-                <Link to={`/group/${groupItem.id}`}>{groupItem.name}</Link>
+                <Link to={`/group/${group.id}`} state= {{ groupName: group.name}}>
+                  {group.name}
+                </Link>
               </li>
             ))}
           </ul>

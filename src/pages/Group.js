@@ -1,11 +1,15 @@
 import React, { useState, useEffect } from "react";
+import { useParams, useLocation } from "react-router-dom";
 import './Group.css';
 
 export default function Group() {
 
+  const { id } = useParams();
+  const location = useLocation();
+  const groupName = location.state?.groupName || `Group ${id}`;
+
   const defaultImage = "https://via.placeholder.com/50";
 
-  const [groupName] = useState('Group 1');
   const [members, setMembers] = useState([
     { id: 1, username: 'User', role: 'Owner' },
     { id: 2, username: 'Username1', role: 'Member' },
