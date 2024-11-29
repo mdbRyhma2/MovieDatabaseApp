@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import axios from "axios";
 import { useParams, useLocation } from "react-router-dom";
 import './Group.css';
 
@@ -10,13 +11,7 @@ export default function Group() {
 
   const defaultImage = "https://via.placeholder.com/50";
 
-  const [members, setMembers] = useState([
-    { id: 1, username: 'User', role: 'Owner' },
-    { id: 2, username: 'Username1', role: 'Member' },
-    { id: 3, username: 'Username2', role: 'Member' },
-    { id: 4, username: 'Username3', role: 'Member' },
-    { id: 5, username: 'Username4', role: 'Member' }
-  ]);
+  const [members, setMembers] = useState([]);
 
   const [movies] = useState([
     { id: 1, title: 'Movie 1' },
@@ -24,6 +19,21 @@ export default function Group() {
     { id: 3, title: 'Movie 3' },
     { id: 4, title: 'Movie 4' }
   ]);
+
+
+  useEffect(() => {
+    const fetchMembers = async () => {
+      try {
+        const response = await axios.get(`${process.env.REACT_APP_API_URL}/group/${groupName}`);
+        setMembers(response.data);
+
+      } catch (error) {
+        console.error(error);
+      }
+    };
+
+    fetchMembers();
+  }, []); 
 
 
   const deleteUser = (id) => {
