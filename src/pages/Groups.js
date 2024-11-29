@@ -11,6 +11,8 @@ export default function Groups() {
   const [groupData, setGroupData] = useState([])
   const [error, setError] = useState(null);
 
+
+  //handle create group button click event
   const handleCreateGroup = async (e) => {
     e.preventDefault();
 
@@ -27,7 +29,7 @@ export default function Groups() {
       setMessage("Failed to create group. Please try again.");
     }
   };
-
+// fetch groups
    useEffect(() => {
     const fetchGroups = async () => {
       try {
@@ -44,22 +46,16 @@ export default function Groups() {
   }, []); 
 
 
+//delete group
+  const deleteGroup = (id) => {
+    setGroupData(groupData.filter((groupData) => groupData.id !== id));
+  };
+
+
   return (
     <div id="container">
-      <section className="groups">
-        <h2>Groups</h2>
-        <div className="group-list">
-          <ul>
-            {groupData.map((group) => (
-              <li key={group.id}>
-                <Link to={`/group/${group.id}`}>{group.group_name}</Link>
-              </li>
-            ))}
-          </ul>
-        </div>
-      </section>
 
-      <div id="create-group">
+            <div className="create-group">
       <h2>Create a New Group</h2>
       <form onSubmit={handleCreateGroup}>
         <label htmlFor="groupName">Group Name:</label>
@@ -74,6 +70,22 @@ export default function Groups() {
       </form>
       {message && <p>{message}</p>}
     </div>
+
+      <section className="groups">
+        <h2>Groups</h2>
+        <div className="group-list">
+          <ul>
+            {groupData.map((group) => (
+              <li key={group.id}>
+                <Link to={`/group/${group.id}`}>{group.group_name}</Link>
+                <button onClick={() => deleteGroup(group.id)}>Delete Group</button>
+              </li>
+            ))}
+          </ul>
+        </div>
+      </section>
+
+
     </div>
   );
 }

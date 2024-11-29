@@ -14,8 +14,20 @@ const getGroupsObject = async (req, res) => {
 //get group members
 const getGroupMembersObject = async (req, res) => {
     try {
-      const result = await getGroups();
-      return res.json(result.rows);
+      const groupId = req.params.id;
+
+      const groupResult = await getGroups();
+
+      const membersResult = await getGroupMembersObject(groupId);
+
+      if (groupResult.rowCount === 0) {
+        return res.status(404).json({ error: "Group not found" });
+      }
+
+      return res.status(200).json({
+      group_name: groupResult.rows[0].group_name,
+      members:membersResult.rows,
+      });
     } catch (error) {
       console.error("Error fetching group members:", error);
       res.status(500).json({ error: "Internal server error" });

@@ -4,10 +4,14 @@ body {
     padding: 0;
     background-color: #f4f4f4;
   }
+
+  #root {
+     margin-top: 20px; 
+  }
   
   .container {
     width: 80%;
-    margin: auto;
+    max-width: 1200px;
     background: white;
     padding: 20px;
     border-radius: 10px;
@@ -31,54 +35,9 @@ body {
   .group-name h1 {
     margin: 0;
   }
-  
-  .actions button {
-    margin-left: 10px;
-    padding: 5px 10px;
-    background-color: #dddddd;
-    color: black;
-    border: 1px solid black;
-    border-radius: 5px;
-    cursor: pointer;
-  }
-  
-  .actions button:hover {
-    background-color: #c9c9c9;
-  }
-  
+
   .members, .movies {
     margin-top: 20px;
-  }
-  
-  .members-list ul {
-    list-style: none;
-    padding: 0;
-  }
-  
-  .members-list li {
-    padding: 5px 10px;
-    border: 1px solid #ddd;
-    margin: 5px 0;
-    display: flex;
-    justify-content: space-between;
-  }
-  
-  .members-list button {
-    padding: 3px 7px;
-    background-color: #dddddd;
-    color: black;
-    border: 1px solid black;
-    border-radius: 5px;
-    cursor: pointer;
-  }
-  
-  .members-list button:hover {
-    background-color: #c9c9c9;
-  }
-  
-  .movies-list {
-    display: flex;
-    gap: 10px;
   }
   
   .movie {
@@ -96,4 +55,72 @@ body {
   .movie-title {
     margin-top: 5px;
     font-size: 14px;
+  }
+
+/*   BUTTONS */
+
+  button {
+    margin: 5px 5px;
+    padding: 3px 7px;
+    background-color: #dddddd;
+    color: black;
+    border: 1px solid black;
+    border-radius: 5px;
+    cursor: pointer;
+  }
+  
+  button:hover {
+    background-color: #c9c9c9;
+/*  transform: translateY(-1px); */
+    transition: all 0.2s ease;
+  }
+
+/*   LISTS  */
+
+  .members-list ul {
+    list-style: none;
+    padding: 0;
+  }
+  
+  .members-list li {
+    padding: 5px 10px;
+    border: 1px solid #ddd;
+    margin: 5px 0;
+    display: flex;
+    justify-content: space-between;
+  }
+  
+  .members-list ul:empty::before {
+    content: "No members found.";
+    display: block;
+    color: #777;
+    text-align: center;
+    padding: 10px;
+  }
+
+  .group-list ul {
+    list-style: none;
+    padding: 0;
+  }
+  
+  .group-list li {
+    padding: 5px 10px;
+    border: 1px solid #ddd;
+    margin: 5px 0;
+    display: flex;
+    justify-content: space-between;
+  }
+
+  .movies-list {
+    display: grid;
+    grid-template-columns: repeat(auto-fit,minmax(100px, 101px));
+    gap: 10px;
+  }
+
+  .movies-list:empty::before {
+    content: "No movies available.";
+    display: block;
+    color: #777;
+    text-align: center;
+    padding: 10px;
   }

@@ -18,9 +18,14 @@ const getGroups = async () => {
   };
   
 //function to fetch group members from database
-const getGroupMembers = async () => {
+const getGroupMembers = async (group_id) => {
     return await pool.query(
-      "SELECT users.id, users.username, users.first_name, users.last_name FROM users JOIN user_groups ON users.id = user_groups.user_id JOIN groups ON user_groups.group_id = groups.id WHERE groups.id = $1;"
+      `SELECT users.id, users.username, users.first_name, users.last_name
+      FROM users 
+      JOIN user_groups ON users.id = user_groups.user_id
+      JOIN groups ON user_groups.group_id = groups.id
+      WHERE groups.id = $1;`,
+      [group_id]
     );
   };
 
