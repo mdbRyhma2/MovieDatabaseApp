@@ -5,6 +5,7 @@ import Navbar from './components/Navbar';
 import Header from './components/Header';
 import Search from './pages/Search';
 import Groups from './pages/Groups';
+import Group from './pages/Group';
 import Showtimes from './pages/Showtimes'
 import Group from './pages/Group';
 import Authentication, { AuthenticationMode } from "./pages/Authentication";
@@ -12,14 +13,17 @@ import MovieDetails from './pages/MovieDetails';
 
 export default function App() {
     return (
+
         <div style={{ paddingTop: '6rem' }}>
             <Navbar />
             <Header />
+
 
             <Routes>
                 <Route path='/' exact element={<Home />} />
                 <Route path="/showtimes" element={<Showtimes />} />
                 <Route path="/groups" element={<Groups />} />
+                <Route path="/group/:id" element={<Group />} />
                 <Route path="/search" element={<Search />} />
                 <Route path="/group" element={<Group />} />
                 <Route path="/movie/:id" element={<MovieDetails />} />
