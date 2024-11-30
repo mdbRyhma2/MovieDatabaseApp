@@ -1,5 +1,6 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect} from 'react';
 import { useLocation } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import { useMovies } from '../hooks/useMovies';
 import Genre from '../utlis.js/Genre';
 import './Search.css';
@@ -7,6 +8,7 @@ import './Search.css';
 export default function Search() {
     const [keywords, setKeywords] = useState('');
     const [searchQuery, setSearchQuery] = useState('');
+    
 
     const genres = [
         { id: 28, name: 'Action' },
@@ -44,20 +46,21 @@ export default function Search() {
 
     useEffect(() => {
         const query = new URLSearchParams(location.search).get('query');
+      
         if (query) {
-          setKeywords(query);
-          setSearchQuery(query);
-          setSearchQuery('')
+          setKeywords(query); // Display query in the search bar
+          setSearchQuery(query); // Trigger search with this query
         } else {
           setKeywords('');
+          setSearchQuery('');
           setTempSelectedGenres([]);
           setSelectedGenres([]);
-          setTempMinReleaseYear(2024);
+          setTempMinReleaseYear(1900); // Reset filters
           setTempMaxReleaseYear(2024);
-          setSearchQuery('');
         }
       }, [location]);
       
+
 
     const handleKeyWordsChange = (e) => {
         setKeywords(e.target.value);
@@ -65,13 +68,13 @@ export default function Search() {
 
     const handleSearchButtonClick = () => {
 
-        setSearchQuery(keywords.trim() || ''); 
-        setSelectedGenres([...tempSelectedGenres]); 
+        setSearchQuery(keywords.trim() || '');
+        setSelectedGenres([...tempSelectedGenres]);
         setMinReleaseYear(tempMinReleaseYear);
         setMaxReleaseYear(tempMaxReleaseYear);
-      };
-      
-      
+    };
+
+
 
     const handleKeyDown = (e) => {
         if (e.key === 'Enter') {
@@ -181,14 +184,16 @@ export default function Search() {
                     <ul>
                         {filteredMovies.map((movie) => (
                             <li key={movie.id}>
-                                <h4>{movie.title}</h4>
+                                <Link to={`/movie/${movie.id}`}>{movie.title}</Link>
                                 <p>{movie.overview}</p>
                                 <p>Release Date: {movie.release_date}</p>
                                 {movie.poster_path ? (
-                                    <img
-                                        src={`https://image.tmdb.org/t/p/w200${movie.poster_path}`}
-                                        alt={movie.title}
-                                    />
+                                    <Link to={`/movie/${movie.id}`}>                                        <img
+                                            src={`https://image.tmdb.org/t/p/w200${movie.poster_path}`}
+                                            alt={movie.title}
+                                        />
+                                    </Link>
+
                                 ) : (
                                     <p>No Image Available</p>
                                 )}
