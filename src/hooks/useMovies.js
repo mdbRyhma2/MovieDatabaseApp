@@ -1,18 +1,18 @@
 import { useState, useEffect } from 'react';
 import { fetchMovies, fetchMoviesWithoutKeywords } from '../api/api';
 
-export const useMovies = (keywords, minReleaseYear, maxReleaseYear, selectedGenres) => {
+export const useMovies = (keywords, minReleaseYear, maxReleaseYear, selectedGenres, language) => {
     const [movies, setMovies] = useState([]);
     const [filteredMovies, setFilteredMovies] = useState([]);
 
     useEffect(() => {
         const submitSearch = async () => {
             if (keywords) {
-                const results = await fetchMovies(keywords);
+                const results = await fetchMovies(keywords, language);
                 setMovies(results);
                 filterMoviesByYearAndGenre(results);
             } else if (selectedGenres.length > 0 || minReleaseYear || maxReleaseYear) {
-                const results = await fetchMoviesWithoutKeywords(minReleaseYear, maxReleaseYear, selectedGenres)
+                const results = await fetchMoviesWithoutKeywords(minReleaseYear, maxReleaseYear, selectedGenres, language)
                 setMovies(results)
                 filterMoviesByYearAndGenre(results)
             } else {
@@ -22,7 +22,7 @@ export const useMovies = (keywords, minReleaseYear, maxReleaseYear, selectedGenr
         };
 
         submitSearch();
-    }, [keywords, selectedGenres, minReleaseYear, maxReleaseYear]);
+    }, [keywords, selectedGenres, minReleaseYear, maxReleaseYear, language]);
 
     const filterMoviesByYearAndGenre = (moviesList) => {
         let filteredMoviesList = moviesList;

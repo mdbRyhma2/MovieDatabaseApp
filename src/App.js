@@ -12,7 +12,6 @@ import MovieDetails from './pages/MovieDetails';
 
 export default function App() {
     return (
-
         <div style={{ paddingTop: '6rem' }}>
             <Navbar />
             <Header />

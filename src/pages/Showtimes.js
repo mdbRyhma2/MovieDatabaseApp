@@ -40,7 +40,7 @@ export default function Showtimes() {
             "startTime": shows[i].getElementsByTagName('dttmShowStart')[0].textContent,
             "genres": shows[i].getElementsByTagName('Genres')[0].textContent,
             "language": shows[i].getElementsByTagName('SpokenLanguage')[0].textContent,
-            "image": shows[i].getElementsByTagName('EventLargeImagePortrait')[0].textContent
+            "image": shows[i].getElementsByTagName('EventSmallImagePortrait')[0].textContent
         });
     }
     setShowtimes(tempShowtimes)
