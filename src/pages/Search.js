@@ -214,7 +214,7 @@ export default function Search() {
                                     <p>No Image Available</p>
                                 )}
                                 <h4>{movie.title}</h4>
-                            </div>
+                            </li>
                         ))}
                     </div>
                 ) : (
