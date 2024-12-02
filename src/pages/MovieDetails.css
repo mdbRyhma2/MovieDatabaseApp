@@ -1,0 +1,18 @@
+.movie-details-wrapper {
+    width: 100%;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  
+  .movie-backdrop {
+    width: 100%;
+    height: 400px;
+    background-image: none; /* Reset any background image */
+    background-size: cover !important;
+    background-position: center !important;
+    background-repeat: no-repeat !important;
+    background-color: transparent;
+  }
+  

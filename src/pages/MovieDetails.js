@@ -1,28 +1,37 @@
-import React, { useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { fetchMovieDetails } from '../api/api.js'; // Import the fetch function
+import { fetchMovieDetails } from '../api/api.js';
+import { UserContext } from '../context/userContext.js'
+import axios from 'axios';
 
 function MovieDetails() {
-  const { id } = useParams(); // Get the 'id' from the URL
-  const [movie, setMovie] = useState(null); // Movie details state
-  const [loading, setLoading] = useState(true); // Loading state
-  const [error, setError] = useState(null); // Error state
+  const { user } = useContext(UserContext)
+  const { id } = useParams();
+  const [movie, setMovie] = useState(null);
+  const [movieBackDrop, setMovieBackDrop] = useState('');
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
   const navigate = useNavigate()
 
+  const backdropUrl = 'https://image.tmdb.org/t/p/w500'
+
   useEffect(() => {
-    // Fetch movie details using the ID from URL
+
     const getMovieDetails = async () => {
       try {
-        const details = await fetchMovieDetails(id); // Wait for the API call to resolve
-        setMovie(details); // Set the movie details state
+        const details = await fetchMovieDetails(id);
+        if (details.backdrop_path) {
+          setMovieBackDrop(details.backdrop_path)
+        }
+        setMovie(details);
       } catch (err) {
-        setError('Failed to fetch movie details.'); // Set error state if something goes wrong
+        setError('Failed to fetch movie details.');
       } finally {
-        setLoading(false); // End the loading state
+        setLoading(false);
       }
     };
 
-    getMovieDetails(); // Call the async function
+    getMovieDetails();
   }, [id]);
 
   if (loading) {
@@ -37,10 +46,58 @@ function MovieDetails() {
     return <p>Movie not found.</p>;
   }
 
+  const handleAddtoFavoritesClick = async () => {
+    try {
+      await axios.post(process.env.REACT_APP_API_URL + '/favorites/addToFavorites', {
+        userId: user.id,
+        movieId: movie.id
+      });
+      alert('Movie added to favorites!');
+    } catch (error) {
+      console.error('Failed to add movie:', error);
+      alert('Failed to add movie to favorites. /MD');
+    }
+  }
+
+  const handleRemoveFromFavoritesClick = async () => {
+    try {
+      await axios.delete(process.env.REACT_APP_API_URL + '/favorites/removeFromFavorites', {
+        data:
+        {
+          userId: user.id,
+          movieId: movie.id
+        }
+      });
+      alert('Movie removed from favorites!');
+    } catch (error) {
+      console.error('Failed to remove movie:', error);
+      alert('Failed to remove movie from favorites. /MD');
+    }
+  }
+
+
+
   return (
     <div>
-      <button onClick={() => navigate(-1)}>Go Back</button> 
+      <button onClick={() => navigate(-1)}>Go Back</button>
       <h1>{movie.title}</h1>
+
+      <button onClick={() => handleAddtoFavoritesClick()}>Add to favorites</button>
+
+      <button onClick={() => handleRemoveFromFavoritesClick()}>Remove from favorites</button>
+
+
+
+      {/*       {movieBackDrop ? (
+        <div
+          className="movie-backdrop"
+          style={{ backgroundImage: backdropUrl + movieBackDrop }}
+        >{console.log(backdropUrl + movieBackDrop )}</div>
+      ) : (
+        <p>No backdrop available.</p>
+      )}// Asettaa backdropkuvan, jos sellaista haluaa käyttää */}
+
+
       <p>{movie.overview}</p>
       <p>Release Date: {movie.release_date}</p>
       <strong>Genres:</strong> {movie.genres.map(genre => genre.name).join(', ')}
