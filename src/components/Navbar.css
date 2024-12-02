@@ -1,78 +1,78 @@
 .navbar {
-    background-color: lightgrey;
-    color: black;
-    padding: 1rem ;
-    font-family: Arial, sans-serif;
-    position: fixed;
-    width: 100%;
-    top: 0;
-    left: 0;
-    z-index: 1000;
-    box-shadow: 0 4px 6px rgba(255, 255, 255, 0.8);
+  background-color: lightgrey;
+  color: black;
+  padding: 1rem;
+  font-family: Arial, sans-serif;
+  position: fixed;
+  width: 100%;
+  top: 0;
+  left: 0;
+  z-index: 1000;
+  box-shadow: 0 4px 6px rgba(255, 255, 255, 0.8);
 }
 
 .navbar-container {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    max-width: 1200px;
-    margin: 0 auto;
-    padding: 0 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin: 0 auto;
+  padding: 0 20px;
 }
 
 .navbar-brand {
-    font-size: 1.5rem;
-    font-weight: bold;
-    color: #ff6f61;
-    text-decoration: none;
-    margin-left: auto;
+  font-size: 1.5rem;
+  font-weight: bold;
+  color: #ff6f61;
+  text-decoration: none;
+  margin-left: auto;
 }
 
 .navbar-links {
-    list-style: none;
-    display: flex;
-    gap: 20px;
-    align-items: center;
-    margin: 0;
-    padding: 0;
+  list-style: none;
+  display: flex;
+  gap: 20px;
+  align-items: center;
+  margin: 0;
+  padding: 0;
 }
 
 .nav-item .nav-link {
-    color: black;
-    text-decoration: none;
-    font-size: 1rem;
-    padding: 8px 16px;
-    transition: color 0.3s ease;
+  color: black;
+  text-decoration: none;
+  font-size: 1rem;
+  padding: 8px 16px;
+  transition: color 0.3s ease;
 }
 /* Hover effect*/
 .nav-item .nav-link:hover {
-    color: #ff6f61;
+  color: #ff6f61;
 }
 
 /* Active link */
 .nav-item .nav-link.active {
-    border-bottom: 2px solid #ff6f61;
+  border-bottom: 2px solid #ff6f61;
 }
 
 /* Search Bar */
 input[type="text"] {
-    padding: 8px;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-    font-size: 1rem;
+  padding: 8px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-size: 1rem;
 }
 
 /* Sign In Button */
 .navbar-button {
-    background-color: #ff6f61;
-    color: #fff;
-    border: none;
-    padding: 8px 16px;
-    border-radius: 4px;
-    cursor: pointer;
-    transition: background-color 0.3s ease;
+  background-color: #ff6f61;
+  color: #fff;
+  border: none;
+  margin-left: 3px;
+  padding: 8px 16px;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
 }
 
 .navbar-button:hover {
-    background-color: #e46257;
+  background-color: #e46257;
 }

@@ -18,15 +18,17 @@ const initializeTestDb = () => {
 // Function to insert a test user into the database
 const insertTestUser = async (email, username, first_name, last_name, password) => {
   const hashedPassword = await hash(password, 10); // Ensure password is hashed before the query
-  await pool.query(
-    "INSERT INTO users (email, username, first_name, last_name, password) VALUES ($1,$2,$3,$4,$5)",
+  const result = await pool.query(
+    "INSERT INTO users (email, username, first_name, last_name, password) VALUES ($1,$2,$3,$4,$5) RETURNING id, email, username, first_name, last_name",
     [email, username, first_name, last_name, hashedPassword]
   );
+  return result.rows[0];  // Make sure it returns the user object with an 'id'
 };
 
 // Function to generate a JWT token for a test user
-const getToken = (email) => {
-  return sign({ user: email }, process.env.JWT_SECRET_KEY);
+const getToken = (id) => {
+  return sign({ user: id }, process.env.JWT_SECRET_KEY, {expiresIn: "1hr"});
 };
+
 
 export { initializeTestDb, insertTestUser, getToken };
