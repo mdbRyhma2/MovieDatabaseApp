@@ -59,12 +59,29 @@ function MovieDetails() {
     }
   }
 
+  const handleRemoveFromFavoritesClick = async () => {
+    try {
+      await axios.delete(process.env.REACT_APP_API_URL + '/favorites/removeFromFavorites', {
+        userId: user.id,   
+        movieId: movie.id  
+      });
+      alert('Movie removed from favorites!');
+    } catch (error) {
+      console.error('Failed to remove movie:', error);
+      alert('Failed to remove movie from favorites. /MD');
+    }
+  }
+
+
+
   return (
     <div>
       <button onClick={() => navigate(-1)}>Go Back</button> 
       <h1>{movie.title}</h1>
 
       <button onClick={() => handleAddtoFavoritesClick()}>Add to favorites</button> 
+
+      <button onClick={() => handleRemoveFromFavoritesClick()}>Remove from favorites</button> 
 
       
 
