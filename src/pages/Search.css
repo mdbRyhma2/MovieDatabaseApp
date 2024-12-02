@@ -87,6 +87,7 @@ input[type="text"] {
     flex: 1;
 }
 .movies-grid {
+    list-style-type: none;
     display: grid;
     grid-template-columns: repeat(5, 1fr);
     gap: 20px;
@@ -105,11 +106,24 @@ input[type="text"] {
     border-radius: 8px;
     margin-bottom: 10px;
 }
-.movie-card h4 {
-    font-size: 16px;
-    margin: 0;
-    color: #333;
-}
 .aside {
     width: 150px;
+}
+.movie-card a {
+    color: #333;
+    text-decoration: none;
+    font-weight: bold;
+    font-size: 1.2rem;
+    transition: color 0.3s ease;
+}
+.movie-card a:hover{
+    color: #0056a3;
+    text-decoration: underline;
+}
+.movie-card a:active {
+    color: #003d73;
+}
+.movie-card a:focus {
+    outline: 2px dashed #0077cc;
+    outline-offset: 4px;
 }

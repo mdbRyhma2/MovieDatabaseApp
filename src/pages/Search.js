@@ -107,7 +107,6 @@ export default function Search() {
         setSelectedLanguage(selectedLanguage)
     }
 
-
     return (
         <div className='search-page'>
             <aside className='search-filter'>
@@ -200,9 +199,6 @@ export default function Search() {
                     <div className='movies-grid'>
                         {filteredMovies.map((movie) => (
                             <li key={movie.id} className='movie-card'>
-                                <Link to={`/movie/${movie.id}`}>{movie.title}</Link>
-                                <p>{movie.overview}</p>
-                                <p>Release Date: {movie.release_date}</p>
                                 {movie.poster_path ? (
                                     <Link to={`/movie/${movie.id}`}>                                        
                                         <img
@@ -213,7 +209,8 @@ export default function Search() {
                                 ) : (
                                     <p>No Image Available</p>
                                 )}
-                                <h4>{movie.title}</h4>
+                                <Link to={`/movie/${movie.id}`}>{movie.title}</Link>
+                                <p>Release Date: {movie.release_date}</p>
                             </li>
                         ))}
                     </div>
