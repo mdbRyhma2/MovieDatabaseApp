@@ -2,6 +2,7 @@ import express from "express";
 import cors from "cors";
 import dotenv from "dotenv";
 import userRouter from "./routers/userRouter.js";
+import favoritesRouter from "./routers/FavoritesRouter.js"
 import groupsRouter from "./routers/groupsRouter.js";
 
 dotenv.config();
@@ -14,6 +15,8 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use("/user", userRouter);
 app.use("/groups", groupsRouter);
+
+app.use("/favorites", favoritesRouter)
 
 app.use((err, req, res, next) => {
   const statusCode = err.statusCode || 500;
