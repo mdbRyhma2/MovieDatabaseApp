@@ -143,11 +143,11 @@ const getUserInfo = async (req, res, next) => {
 // Controller to handle account delete
 const deleteAccount = async (req,res,next) => {
   try {
-    if (!req.user || !req.user.id) {
+    if (!req.user || !req.user.user) {
       return next(new ApiError("Unauthorized access", 401))
     }
 
-    const result = await deleteUser(req.user.id)
+    const result = await deleteUser(req.user.user)
 
     if (result.rowCount === 0) {
       return next(new ApiError("User not found or already deleted", 404))

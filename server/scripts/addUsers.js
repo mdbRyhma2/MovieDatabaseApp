@@ -7,9 +7,10 @@ const pool = new Pool({
   user: 'postgres',
   host: 'localhost',
   database: 'movieapp',
-  password: '1qwe2qw3Q',
+  password: '',
   port: 5432,
-});
+}); 
+
 
 // Users to insert
 const users = [

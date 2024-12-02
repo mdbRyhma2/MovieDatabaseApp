@@ -174,7 +174,7 @@ describe("DELETE /user/profile", () => {
       },
     })
 
-    const data = await response.json()
+    const data = await response.json()   
     expect(response.status).to.equal(200)
     expect(data).to.have.property("message", "User account deleted successfully")
   })
