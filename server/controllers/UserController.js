@@ -94,7 +94,7 @@ const postLogin = async (req, res, next) => {
     const isPasswordValid = await compare(password, user.password);
     if (!isPasswordValid) return next(new ApiError(invalid_credentials_message, 401));
     // Generate a JWT token
-    const token = sign({ id: user.id }, process.env.JWT_SECRET_KEY, { expiresIn: "30m" });
+    const token = sign({ id: user.id }, process.env.JWT_SECRET_KEY, { expiresIn: "1hr" });
     // Respond with the user object and token
     return res
       .status(200)
@@ -157,5 +157,5 @@ const deleteAccount = async (req,res,next) => {
     return next(error)
   }
 }
- 
+
 export { postRegistration, postLogin, getUserInfo, deleteAccount };

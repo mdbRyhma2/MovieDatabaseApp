@@ -18,7 +18,7 @@ describe("POST register", () => {
   // Tests for registration
   it("should not post a user with less than 8 character password", async () => {
     const short_password = "short1";
-    const username = "user1";
+    const username = "username1";
     const response = await fetch(base_url + "/user/register", {
       method: "post",
       headers: {
@@ -39,7 +39,7 @@ describe("POST register", () => {
   });
 
   it("should register with valid email, username and password (first_name and last_name optional)", async () => {
-    const username = "user2";
+    const username = "username2";
     const response = await fetch(base_url + "/user/register", {
       method: "post",
       headers: {
@@ -60,7 +60,7 @@ describe("POST register", () => {
   });
 
   it("should register without first_name and last_name", async () => {
-    const username = "user3";
+    const username = "username3";
     const email = `register2@foo.com`;
     const response = await fetch(base_url + "/user/register", {
       method: "post",
@@ -160,9 +160,9 @@ describe("DELETE /user/profile", () => {
     const username = "delete"
     const password = "delete123"
 
-    await insertTestUser(email, username, "FirstName", "LastName", password);
+    const user = await insertTestUser(email, username, "FirstName", "LastName", password);
 
-    token = getToken(email)
+    token = getToken(user.id)
   });
   
   it("should delete the user account", async () => {
@@ -173,6 +173,7 @@ describe("DELETE /user/profile", () => {
         Authorization: `Bearer ${token}`,
       },
     })
+
     const data = await response.json()
     expect(response.status).to.equal(200)
     expect(data).to.have.property("message", "User account deleted successfully")

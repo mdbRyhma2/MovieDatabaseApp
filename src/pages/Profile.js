@@ -50,6 +50,37 @@ export default function Profile() {
           </>
         )}
       </div>
+      <h3>Favourite movies</h3>
+      <div className="fav-movies-container">
+        <div className="fav-movie-item">
+          <img
+            src="https://images.freeimages.com/images/large-previews/39a/spring-1377434.jpg?fmt=webp&h=350"
+            alt="picture"
+          />
+          <h3>Movie title</h3>
+        </div>
+        <div className="fav-movie-item">
+          <img
+            src="https://images.freeimages.com/images/large-previews/39a/spring-1377434.jpg?fmt=webp&h=350"
+            alt="picture"
+          />
+          <h3>Movie title</h3>
+        </div>
+        <div className="fav-movie-item">
+          <img
+            src="https://images.freeimages.com/images/large-previews/39a/spring-1377434.jpg?fmt=webp&h=350"
+            alt="picture"
+          />
+          <h3>Movie title</h3>
+        </div>
+        <div className="fav-movie-item">
+          <img
+            src="https://images.freeimages.com/images/large-previews/39a/spring-1377434.jpg?fmt=webp&h=350"
+            alt="picture"
+          />
+          <h3>Movie title</h3>
+        </div>
+      </div>
     </div>
   );
 }
