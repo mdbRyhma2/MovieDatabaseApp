@@ -90,3 +90,18 @@ export const fetchMovieDetails = async (id) => {
     }
 }
 
+export const fetchMovieReviews = async (movieId) => {
+    const endpoint = `/reviews/${movieId}`
+    console.log(endpoint)
+    try {
+        const response = await axios.get(process.env.REACT_APP_API_URL + endpoint, {
+            headers: {
+                accept: 'application/json',
+            },
+        });
+        return response.data;
+    }catch (error) {
+        console.error('Error fetchung reviews: ', error.message)
+        return []
+    }
+}

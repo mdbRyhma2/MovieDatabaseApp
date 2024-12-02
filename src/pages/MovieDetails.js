@@ -1,37 +1,42 @@
 import React, { useContext, useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { fetchMovieDetails } from '../api/api.js';
+import { fetchMovieDetails, fetchMovieReviews } from '../api/api.js';
 import { UserContext } from '../context/userContext.js'
 import axios from 'axios';
 
 function MovieDetails() {
-  const { user } = useContext(UserContext)
+  const { user } = useContext(UserContext);
   const { id } = useParams();
   const [movie, setMovie] = useState(null);
   const [movieBackDrop, setMovieBackDrop] = useState('');
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const navigate = useNavigate()
+  const navigate = useNavigate();
+  const [reviews, setReviews] = useState([]);
 
   const backdropUrl = 'https://image.tmdb.org/t/p/w500'
 
   useEffect(() => {
 
-    const getMovieDetails = async () => {
+    const getMovieDetailsAndReviews = async () => {
       try {
         const details = await fetchMovieDetails(id); 
         if (details.backdrop_path){
           setMovieBackDrop(details.backdrop_path)
         }
-        setMovie(details); 
+        setMovie(details);
+
+        //Fetch reviews from backend
+        const reviewsData = await fetchMovieReviews(id)
+        setReviews(reviewsData)
       } catch (err) {
-        setError('Failed to fetch movie details.'); 
+        setError('Failed to fetch movie details or reviews.'); 
       } finally {
         setLoading(false);
       }
     };
 
-    getMovieDetails();
+    getMovieDetailsAndReviews();
   }, [id]);
 
   if (loading) {
@@ -89,6 +94,23 @@ function MovieDetails() {
         />
       ) : (
         <p>No image available.</p>
+      )}
+      <h2>Reviews</h2>
+      {reviews.length > 0 ? (
+        <div className='reviews'>
+          {reviews.map((review, index) => (
+            <div key={index} className='review-item'>
+              <p className='review-header'>
+                <strong>{review.email}</strong> - <em>{new Date(review.created_at).toLocaleDateString()}</em>
+              </p>
+              <p>Grade: {review.grade}</p>
+              <p>{review.review}</p>
+              <hr/>
+            </div>
+          ))}
+        </div>
+      ) : (
+        <p>No reviews yet for this movie</p>
       )}
     </div>
   );
