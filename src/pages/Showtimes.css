@@ -1,18 +1,19 @@
 /*Root container styles*/
 .showtimes-container {
     display: flex;
-    justify-content: center;
     align-items: center;
     flex-direction: column;
-    min-height: 100vh;
+    /*min-height: 100vh;*/
+    width: 100%;
     padding: 20px;
     color: #000;
 }
 .inputs-container {
     display: flex;
-    align-items: center;
-    gap: 1rem;
-    margin-bottom: 1.5rem;
+    justify-content: flex-start;
+    gap: 10px;
+    margin-bottom: 20px;
+    margin-top: 10px;
 }
 .date-input, .area-select {
     flex: 1;
@@ -21,9 +22,7 @@
     border: 1px solid #555;
     border-radius: 4px;
     color: #000;
-}
-.date-input {
-    max-width: 150px;
+    width: 200px;
 }
 /*Title*/
 .showtimes-title {

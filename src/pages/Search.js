@@ -1,13 +1,17 @@
 import React, { useState, useEffect } from 'react';
-import { useLocation } from 'react-router-dom';
+import { useLocation, Link } from 'react-router-dom';
 import { useMovies } from '../hooks/useMovies';
 import Genre from '../utlis.js/Genre';
 import './Search.css';
+import { Range } from 'react-range';
+
+ //Muuttujat min ja max years
+ const MIN_YEAR = 1900;
+ const MAX_YEAR = 2024;
 
 export default function Search() {
     const [keywords, setKeywords] = useState('');
     const [searchQuery, setSearchQuery] = useState('');
-
     const genres = [
         { id: 28, name: 'Action' },
         { id: 12, name: 'Adventure' },
@@ -29,18 +33,14 @@ export default function Search() {
         { id: 10752, name: 'War' },
         { id: 37, name: 'Western' },
     ];
-
     const [tempSelectedGenres, setTempSelectedGenres] = useState([]);
     const [selectedGenres, setSelectedGenres] = useState([]);
     const [isAllGenresSelected, setIsAllGenresSelected] = useState(false);
-
-    const [tempMinReleaseYear, setTempMinReleaseYear] = useState(1900);
-    const [tempMaxReleaseYear, setTempMaxReleaseYear] = useState(2024);
-    const [minReleaseYear, setMinReleaseYear] = useState(2024);
-    const [maxReleaseYear, setMaxReleaseYear] = useState(2024);
+    const [yearRange, setYearRange] = useState([MIN_YEAR, MAX_YEAR]);
+    const [selectedLanguage, setSelectedLanguage] = useState('');
 
     const location = useLocation();
-    const { filteredMovies } = useMovies(searchQuery, minReleaseYear, maxReleaseYear, selectedGenres);
+    const { filteredMovies } = useMovies(searchQuery, yearRange[0], yearRange[1], selectedGenres, selectedLanguage);
 
     useEffect(() => {
         const query = new URLSearchParams(location.search).get('query');
@@ -52,33 +52,28 @@ export default function Search() {
           setKeywords('');
           setTempSelectedGenres([]);
           setSelectedGenres([]);
-          setTempMinReleaseYear(2024);
-          setTempMaxReleaseYear(2024);
+          setYearRange([1900, 2024]);
           setSearchQuery('');
         }
       }, [location]);
       
-
+    //Handler for keywords
     const handleKeyWordsChange = (e) => {
         setKeywords(e.target.value);
     };
-
+    //Handler for search button
     const handleSearchButtonClick = () => {
 
         setSearchQuery(keywords.trim() || ''); 
         setSelectedGenres([...tempSelectedGenres]); 
-        setMinReleaseYear(tempMinReleaseYear);
-        setMaxReleaseYear(tempMaxReleaseYear);
       };
-      
-      
-
+    //Handler for pressing Enter
     const handleKeyDown = (e) => {
         if (e.key === 'Enter') {
             handleSearchButtonClick();
         }
     };
-
+    //Handler for genres
     const handleGenreChange = (e) => {
         const genreId = parseInt(e.target.value);
         setTempSelectedGenres((prevTempGenres) => {
@@ -89,7 +84,7 @@ export default function Search() {
             }
         });
     };
-
+    //Handler for all genres
     const handleAllGenresChange = (e) => {
         if (e.target.checked) {
             setTempSelectedGenres(genres.map((genre) => genre.id));
@@ -99,61 +94,57 @@ export default function Search() {
             setIsAllGenresSelected(false);
         }
     };
+    //Handler for changing year
+    const handleRangeChange = (values) => {
+        setYearRange(values);
+       }
+    
+    //Handler for language change
+    const handleLanguageChange = (e) => {
+        const selectedLanguage = e.target.value;
+        console.log('Selected language: ' + selectedLanguage)
+        setSelectedLanguage(selectedLanguage)
+    }
 
-    const handleMinYearSliderChange = (e) => {
-        setTempMinReleaseYear(parseInt(e.target.value));
-    };
-
-    const handleMaxYearSliderChange = (e) => {
-        setTempMaxReleaseYear(parseInt(e.target.value));
-    };
 
     return (
-        <div>
-            <aside className="search-filter">
+        <div className='search-page'>
+            <aside className='search-filter'>
                 <h2>Search movies</h2>
-                <div className="filter">
-                    <label htmlFor="title">Title name</label>
+                <div className='filter'>
+                    <label htmlFor='title'>Title name</label>
                     <input
-                        type="text"
-                        id="keywords"
-                        placeholder="Movie name"
+                        type='text'
+                        id='keywords'
+                        placeholder='Movie name'
                         value={keywords}
                         onChange={handleKeyWordsChange}
                         onKeyDown={handleKeyDown}
                     />
                 </div>
-
-                <div className="filter">
-                    <label>Release year range:</label>
-                    <div>
-                        <label>Min Year: {tempMinReleaseYear}</label>
+                {/*
+                <div className='filter'>
+                    <label htmlFor='language'>Language</label>
+                    <select
+                        id='language'
+                        value={selectedLanguage}
+                        onChange={selectedLanguage}
+                    >
+                        <option value=''>All languages</option>
+                        <option value='en'>english</option>
+                        <option value='es'>spanish</option>
+                        <option value='fr'>french</option>
+                        <option value='de'>german</option>
+                        <option value='zh'>chinese</option>
+                        <option value='fi'>finnish</option>
+                    </select>
+                </div>*/}
+                <div >
+                    <label>Genres</label>
+                    <div className='genres-container'>
+                    <label className='genre-item'>
                         <input
-                            type="range"
-                            min="1900"
-                            max="2024"
-                            step="1"
-                            value={tempMinReleaseYear}
-                            onChange={handleMinYearSliderChange}
-                        />
-                    </div>
-                    <div>
-                        <label>Max Year: {tempMaxReleaseYear}</label>
-                        <input
-                            type="range"
-                            min="1900"
-                            max="2024"
-                            step="1"
-                            value={tempMaxReleaseYear}
-                            onChange={handleMaxYearSliderChange}
-                        />
-                    </div>
-                </div>
-
-                <div className="genreList">
-                    <label>
-                        <input
-                            type="checkbox"
+                            type='checkbox'
                             value="all"
                             checked={isAllGenresSelected}
                             onChange={handleAllGenresChange}
@@ -161,44 +152,72 @@ export default function Search() {
                         All
                     </label>
                     {genres.map((item) => (
-                        <Genre
-                            key={item.id}
-                            item={item}
-                            checked={tempSelectedGenres.includes(item.id)}
-                            onChange={handleGenreChange}
-                        />
+                        <label key={item.id} className='genre-item'>
+                            <input
+                                type='checkbox'
+                                value={item.id}
+                                checked={tempSelectedGenres.includes(item.id)}
+                                onChange={handleGenreChange}
+                            />
+                            {item.name}
+                        </label>
                     ))}
                 </div>
-
-                <button className="search-button" onClick={handleSearchButtonClick}>
+                </div>
+                <div className='filter'>
+                    <label>Release year</label>
+                    <div className='slider-container'>
+                        <div className='range-labels'>
+                            <span>{yearRange[0]}</span> - <span>{yearRange[1]}</span>
+                        </div>
+                        {yearRange && yearRange.length === 2 && (
+                            <Range
+                                step={1}
+                                min={MIN_YEAR}
+                                max={MAX_YEAR}
+                                values={yearRange}
+                                onChange={handleRangeChange}
+                                renderTrack={({ props, children}) => (
+                                    <div {...props} className='range-track'>
+                                        {children}
+                                    </div>
+                                )}
+                                renderThumb={({ props }) => (
+                                    <div {...props} className='range-thumb'/>
+                                )}
+                            />
+                        )}
+                    </div>
+                </div>
+                <button className='button' onClick={handleSearchButtonClick}>
                     Search
                 </button>
             </aside>
-
-            <div id="container">
+            <div className='search-results'>
                 <h3>Search Results</h3>
                 {filteredMovies.length > 0 ? (
-                    <ul>
+                    <div className='movies-grid'>
                         {filteredMovies.map((movie) => (
-                            <li key={movie.id}>
-                                <h4>{movie.title}</h4>
-                                <p>{movie.overview}</p>
-                                <p>Release Date: {movie.release_date}</p>
+                            <div key={movie.id} className='movie-card'>
                                 {movie.poster_path ? (
-                                    <img
-                                        src={`https://image.tmdb.org/t/p/w200${movie.poster_path}`}
-                                        alt={movie.title}
-                                    />
+                                    <Link to={`/movie/${movie.id}`}>
+                                        <img
+                                            src={`https://image.tmdb.org/t/p/w200${movie.poster_path}`}
+                                            alt={movie.title}
+                                        />
+                                    </Link>
                                 ) : (
                                     <p>No Image Available</p>
                                 )}
-                            </li>
+                                <h4>{movie.title}</h4>
+                            </div>
                         ))}
-                    </ul>
+                    </div>
                 ) : (
-                    <p>No results found for your search.</p>
+                    <p>No results found for your</p>
                 )}
             </div>
         </div>
-    );
+    )
+       
 }
