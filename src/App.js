@@ -7,7 +7,6 @@ import Search from './pages/Search';
 import Groups from './pages/Groups';
 import Group from './pages/Group';
 import Showtimes from './pages/Showtimes'
-import Group from './pages/Group';
 import Authentication, { AuthenticationMode } from "./pages/Authentication";
 import MovieDetails from './pages/MovieDetails';
 
