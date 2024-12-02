@@ -14,9 +14,6 @@
   max-width: 400px;
   gap: 20px;
   padding: 20px;
-  background-color: #f9f9f9;
-  border: 1px solid #ddd;
-  border-radius: 8px;
 }
 
 .profile-info img {
@@ -34,4 +31,35 @@
     color: #666;
     margin: 5px 0;
     font-size: 16px;
+}
+
+.profile h3 {
+  padding: 20px;
+  margin-top: 10px;
+}
+
+.fav-movies-container {
+  display: flex;
+  align-items: center;
+  max-width: 95%;
+  padding: 20px;
+  background-color: #f9f9f9;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  margin: 0 auto;
+  gap: 20px;
+}
+
+.fav-movie-item {
+  padding: 20px;
+
+}
+
+.fav-movie-item img {
+  height: 250px;
+
+}
+
+.fav-movie-item h3 {
+  font-size: 18px;
 }

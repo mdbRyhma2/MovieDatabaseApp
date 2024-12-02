@@ -13,3 +13,4 @@ export default function Genre({ item, checked, onChange }) {
         </div>
     );
 }
+
