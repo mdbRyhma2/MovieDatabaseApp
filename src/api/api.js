@@ -1,4 +1,6 @@
-import axios from 'axios';
+import axios from 'axios'
+import React, { useEffect, useState } from 'react'
+import { useParams } from 'react-router-dom'
 
 const apiKey = process.env.REACT_APP_API_KEY;
 const url = 'https://api.themoviedb.org/3'
@@ -71,3 +73,18 @@ export const fetchGenres = async () => {
 };
 
 
+export const fetchMovieDetails = async (id) => {
+    const endpoint = `/movie/` + id;
+    try {
+        const response = await axios.get(url + endpoint, {
+            headers: {
+                accept: 'application/json',
+                Authorization: apiKey,
+            },
+        });
+        return response.data; 
+    } catch (error) {
+        console.error(error.message);
+        return null
+    }
+}

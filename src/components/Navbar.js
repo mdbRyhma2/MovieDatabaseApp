@@ -1,5 +1,5 @@
-import React, { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import React, { useState, useEffect } from "react";
+import { Link, useNavigate, useLocation } from "react-router-dom";
 import "./Navbar.css";
 import { useUser } from "../context/useUser";
 import searchIcon from "../images/search.png";
@@ -9,17 +9,26 @@ export default function Navbar() {
   const { user, setUser } = useUser(); // Accessing user data and the setter function
   const [searchParam, setSearchParam] = useState('');
   const navigate = useNavigate();
+  const location = useLocation()
 
   const handleSearchSubmit = (e) => {
     e.preventDefault();
     if (searchParam.trim()) {
       // Navigate to Search.js with the query
-      navigate(`/search?query=${searchParam}`);
+      navigate(`/search?query=${encodeURIComponent(searchParam)}`);
     }
   };
 
+  useEffect(() => {
+    const params = new URLSearchParams(location.search);
+    const query = params.get('query');
+    if (query) {
+      setSearchParam(query); 
+      navigate(location.pathname, { replace: true }) // Tyhjennetään edellinen haku enpointista
+    }
+  }, [location]);
+
   const handleAdvancedSearch = () => {
-    // Navigate to Search.js with no prefilled parameters
     navigate('/search');
   };
 

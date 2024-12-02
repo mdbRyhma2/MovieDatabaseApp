@@ -12,6 +12,7 @@ import { Range } from 'react-range';
 export default function Search() {
     const [keywords, setKeywords] = useState('');
     const [searchQuery, setSearchQuery] = useState('');
+
     const genres = [
         { id: 28, name: 'Action' },
         { id: 12, name: 'Adventure' },
@@ -44,12 +45,13 @@ export default function Search() {
 
     useEffect(() => {
         const query = new URLSearchParams(location.search).get('query');
+      
         if (query) {
-          setKeywords(query);
-          setSearchQuery(query);
-          setSearchQuery('')
+          setKeywords(query); // Display query in the search bar
+          setSearchQuery(query); // Trigger search with this query
         } else {
           setKeywords('');
+          setSearchQuery('');
           setTempSelectedGenres([]);
           setSelectedGenres([]);
           setYearRange([1900, 2024]);
@@ -63,7 +65,6 @@ export default function Search() {
     };
     //Handler for search button
     const handleSearchButtonClick = () => {
-
         setSearchQuery(keywords.trim() || ''); 
         setSelectedGenres([...tempSelectedGenres]); 
       };
@@ -198,9 +199,12 @@ export default function Search() {
                 {filteredMovies.length > 0 ? (
                     <div className='movies-grid'>
                         {filteredMovies.map((movie) => (
-                            <div key={movie.id} className='movie-card'>
+                            <li key={movie.id} className='movie-card'>
+                                <Link to={`/movie/${movie.id}`}>{movie.title}</Link>
+                                <p>{movie.overview}</p>
+                                <p>Release Date: {movie.release_date}</p>
                                 {movie.poster_path ? (
-                                    <Link to={`/movie/${movie.id}`}>
+                                    <Link to={`/movie/${movie.id}`}>                                        
                                         <img
                                             src={`https://image.tmdb.org/t/p/w200${movie.poster_path}`}
                                             alt={movie.title}
