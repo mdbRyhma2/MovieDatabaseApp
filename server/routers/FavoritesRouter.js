@@ -6,6 +6,6 @@ const router = Router();
 
 //Routes for favorite movies
 router.post("/addToFavorites", postAddToFavorites)
-router.delete("/removeFromFavorites", postRemoveFromFavorite)
+router.delete("/removeFromFavorites",  postRemoveFromFavorite)
 
 export default router
