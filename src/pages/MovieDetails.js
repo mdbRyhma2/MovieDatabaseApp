@@ -19,13 +19,13 @@ function MovieDetails() {
 
     const getMovieDetails = async () => {
       try {
-        const details = await fetchMovieDetails(id); 
-        if (details.backdrop_path){
+        const details = await fetchMovieDetails(id);
+        if (details.backdrop_path) {
           setMovieBackDrop(details.backdrop_path)
         }
-        setMovie(details); 
+        setMovie(details);
       } catch (err) {
-        setError('Failed to fetch movie details.'); 
+        setError('Failed to fetch movie details.');
       } finally {
         setLoading(false);
       }
@@ -49,8 +49,8 @@ function MovieDetails() {
   const handleAddtoFavoritesClick = async () => {
     try {
       await axios.post(process.env.REACT_APP_API_URL + '/favorites/addToFavorites', {
-        userId: user.id,   
-        movieId: movie.id  
+        userId: user.id,
+        movieId: movie.id
       });
       alert('Movie added to favorites!');
     } catch (error) {
@@ -59,16 +59,36 @@ function MovieDetails() {
     }
   }
 
+  const handleRemoveFromFavoritesClick = async () => {
+    try {
+      await axios.delete(process.env.REACT_APP_API_URL + '/favorites/removeFromFavorites', {
+        data:
+        {
+          userId: user.id,
+          movieId: movie.id
+        }
+      });
+      alert('Movie removed from favorites!');
+    } catch (error) {
+      console.error('Failed to remove movie:', error);
+      alert('Failed to remove movie from favorites. /MD');
+    }
+  }
+
+
+
   return (
     <div>
-      <button onClick={() => navigate(-1)}>Go Back</button> 
+      <button onClick={() => navigate(-1)}>Go Back</button>
       <h1>{movie.title}</h1>
 
-      <button onClick={() => handleAddtoFavoritesClick()}>Add to favorites</button> 
+      <button onClick={() => handleAddtoFavoritesClick()}>Add to favorites</button>
 
-      
+      <button onClick={() => handleRemoveFromFavoritesClick()}>Remove from favorites</button>
 
-{/*       {movieBackDrop ? (
+
+
+      {/*       {movieBackDrop ? (
         <div
           className="movie-backdrop"
           style={{ backgroundImage: backdropUrl + movieBackDrop }}

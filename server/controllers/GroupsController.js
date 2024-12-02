@@ -44,7 +44,7 @@ const postGroup = async (req, res, next) => {
     }
 
     // Insert group into database
-    const GroupFromDb = await insertGroup(group_name);
+    const groupFromDb = await insertGroup(group_name);
 
     if (!groupFromDb || !groupFromDb.rows[0]) {
       throw new Error("Failed to insert group into the database");
