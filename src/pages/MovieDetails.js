@@ -6,6 +6,8 @@ import axios from 'axios';
 import { useUser } from "../context/useUser.js";
 import ReviewModal from '../components/ReviewModal.js';
 
+import './MovieDetails.css'
+
 function MovieDetails() {
   const { user } = useContext(UserContext);
   const { id } = useParams();
@@ -19,6 +21,8 @@ function MovieDetails() {
   const [rating, setRating] = useState(0);
   const [reviewText, setReviewText] = useState("");
   const [errorMessage, setErrorMessage] = useState(null)
+
+  const [openReviewModal, setOpenReviewModal] = useState(false);
 
   const backdropUrl = 'https://image.tmdb.org/t/p/w500'
 
@@ -45,6 +49,7 @@ function MovieDetails() {
     getMovieDetailsAndReviews();
   }, [id]);
 
+  
   //Function to handle adding review
   const handleAddReview = async () => {
     if (!user?.token) {
@@ -105,38 +110,62 @@ function MovieDetails() {
 
 
   return (
-    <div>
-      <button onClick={() => navigate(-1)}>Go Back</button> 
-      <h1>{movie.title}</h1>
+    <div className='movie-details-container'>
+      <button className='back-button' onClick={() => navigate(-1)}>
+        &lt;
+      </button>
+      <div className='movie-header'>
+        <h1 className='movie-title'>{movie.title}</h1>
+        <div className="movie-rating">☆☆☆☆☆</div>
+      </div>
 
-      <button onClick={() => handleAddtoFavoritesClick()}>Add to favorites</button> 
+      <div className="movie-main-content">
+        <div className="poster-and-player">
+          <div className="poster-container">
+            {movie.poster_path ? (
+              <img
+                className="movie-poster"
+                src={`https://image.tmdb.org/t/p/w500${movie.poster_path}`}
+                alt={movie.title}
+              />
+            ) : (
+              <p className='no-image-placeholder'>No image available.</p>
+            )}
+          </div>
+          <div className="video-player">
+            <p>Video player placeholder</p>
+          </div>
+        </div>
 
-      
+        <div className="movie-details-and-actions">
+          <div className="movie-details">
+            <p className='movie-genres'>
+              <strong>Movie genres:</strong> {movie.genres.map((genre) => genre.name).join(", ")}
+            </p>
+            <p className='movie-overview'>
+              <strong>Overview:</strong>
+              <br />
+              {movie.overview}
+            </p>
+          </div>
 
-{/*       {movieBackDrop ? (
-        <div
-          className="movie-backdrop"
-          style={{ backgroundImage: backdropUrl + movieBackDrop }}
-        >{console.log(backdropUrl + movieBackDrop )}</div>
-      ) : (
-        <p>No backdrop available.</p>
-      )}// Asettaa backdropkuvan, jos sellaista haluaa käyttää */}
-
-
-      <p>{movie.overview}</p>
-      <p>Release Date: {movie.release_date}</p>
-      <strong>Genres:</strong> {movie.genres.map(genre => genre.name).join(', ')}
-      <br></br>
-      {movie.poster_path ? (
-        <img
-          src={`https://image.tmdb.org/t/p/w500${movie.poster_path}`}
-          alt={movie.title}
-        />
-      ) : (
-        <p>No image available.</p>
-      )}
+        <div className="movie-actions">
+          <div className="group-select-container">
+            <label>Select Group:</label>
+            <select className="group-select">
+              <option>Select</option>
+            </select>
+            <button className="add-to-group-button">Add to Group</button>
+          </div>
+          <button className="favorite-button" onClick={handleAddtoFavoritesClick}>
+            Add to favourites
+          </button>
+        </div>
+        </div>
+      </div>
+    
       <div>
-      <h2>Reviews</h2>
+      <h4>Reviews</h4>
       {reviews.length > 0 ? (
         <div className='reviews'>
           {reviews.map((review, index) => (
@@ -157,8 +186,9 @@ function MovieDetails() {
         to="#" 
         onClick={(e) => { 
           e.preventDefault();
+          console.log('Link clicked')
           if (user?.token) {
-            setIsModalOpen(true);
+            setOpenReviewModal(true);
             setErrorMessage(null);
           }else {
             setErrorMessage('You need to be logged in to add your review.');
@@ -167,37 +197,8 @@ function MovieDetails() {
           > 
           Add Review
       </Link>
+      {openReviewModal && ( <ReviewModal closeReviewModal={setOpenReviewModal}/>)}
       {errorMessage && <p style={{color: 'red' }}>{errorMessage}</p>}
-
-      {/*Modal for adding review*/}
-      {isModalOpen && (
-        <div className='modal-overlay'>
-          <div className='modal-form'>
-            <h3>Add Review for {movie.title}</h3>
-            <label>
-              Rating (1-5);
-              <input
-                type='number'
-                min='1'
-                max='5'
-                value={rating}
-                onChange={(e) => setRating(e.target.value)}
-              />
-            </label>
-            <br />
-            <label>
-              Review:
-              <textarea
-                value={reviewText}
-                onChange={(e) => setReviewText(e.target.value)}
-              />
-            </label>
-            <br />
-            <button onClick={handleAddReview}>Submit Review</button>
-            <button onClick={() => setIsModalOpen(false)}>Close</button>
-          </div>
-        </div>
-      )}
       </div>
     </div>
   );
