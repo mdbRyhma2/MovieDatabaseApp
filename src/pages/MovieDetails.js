@@ -1,8 +1,10 @@
-import React, { useContext, useEffect, useState } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
+import React, { useContext, useEffect, useState,  } from 'react';
+import { useParams, useNavigate, Link } from 'react-router-dom';
 import { fetchMovieDetails, fetchMovieReviews } from '../api/api.js';
-import { UserContext } from '../context/userContext.js'
+import { UserContext } from '../context/userContext.js';
 import axios from 'axios';
+import { useUser } from "../context/useUser.js";
+import ReviewModal from '../components/ReviewModal.js';
 
 function MovieDetails() {
   const { user } = useContext(UserContext);
@@ -13,6 +15,10 @@ function MovieDetails() {
   const [error, setError] = useState(null);
   const navigate = useNavigate();
   const [reviews, setReviews] = useState([]);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [rating, setRating] = useState(0);
+  const [reviewText, setReviewText] = useState("");
+  const [errorMessage, setErrorMessage] = useState(null)
 
   const backdropUrl = 'https://image.tmdb.org/t/p/w500'
 
@@ -39,6 +45,38 @@ function MovieDetails() {
     getMovieDetailsAndReviews();
   }, [id]);
 
+  //Function to handle adding review
+  const handleAddReview = async () => {
+    if (!user?.token) {
+      setErrorMessage('You need to be logged in to add your review.')
+      return
+    }
+
+    try {
+      // Send review data to the backend
+      await axios.post(process.env.REACT_APP_API_URL + '/reviews/add', {
+        userId: user.id,
+        movieId: movie.id,
+        grade: rating,
+        review: reviewText,
+      })
+
+      //Refresh review data to the backend
+      const updatedReviews = await fetchMovieReviews(id)
+      setReviews(updatedReviews)
+
+      //Reset modal inputs ad close modal
+      setReviewText('');
+      setRating(0);
+      setIsModalOpen(false);
+      setErrorMessage(null);
+      alert('Review added succesfully!');
+    } catch (error) {
+      console.error('Failed to add review: ', error);
+      alert('Failed to add review.');
+    }
+  }
+
   if (loading) {
     return <p>Loading...</p>;
   }
@@ -63,6 +101,8 @@ function MovieDetails() {
       alert('Failed to add movie to favorites. /MD');
     }
   }
+
+
 
   return (
     <div>
@@ -95,6 +135,7 @@ function MovieDetails() {
       ) : (
         <p>No image available.</p>
       )}
+      <div>
       <h2>Reviews</h2>
       {reviews.length > 0 ? (
         <div className='reviews'>
@@ -112,6 +153,52 @@ function MovieDetails() {
       ) : (
         <p>No reviews yet for this movie</p>
       )}
+      <Link 
+        to="#" 
+        onClick={(e) => { 
+          e.preventDefault();
+          if (user?.token) {
+            setIsModalOpen(true);
+            setErrorMessage(null);
+          }else {
+            setErrorMessage('You need to be logged in to add your review.');
+          } 
+          }}
+          > 
+          Add Review
+      </Link>
+      {errorMessage && <p style={{color: 'red' }}>{errorMessage}</p>}
+
+      {/*Modal for adding review*/}
+      {isModalOpen && (
+        <div className='modal-overlay'>
+          <div className='modal-form'>
+            <h3>Add Review for {movie.title}</h3>
+            <label>
+              Rating (1-5);
+              <input
+                type='number'
+                min='1'
+                max='5'
+                value={rating}
+                onChange={(e) => setRating(e.target.value)}
+              />
+            </label>
+            <br />
+            <label>
+              Review:
+              <textarea
+                value={reviewText}
+                onChange={(e) => setReviewText(e.target.value)}
+              />
+            </label>
+            <br />
+            <button onClick={handleAddReview}>Submit Review</button>
+            <button onClick={() => setIsModalOpen(false)}>Close</button>
+          </div>
+        </div>
+      )}
+      </div>
     </div>
   );
 }

@@ -1,3 +1,4 @@
+/*
 .movie-details-wrapper {
     width: 100%;
     position: relative;
@@ -9,10 +10,59 @@
   .movie-backdrop {
     width: 100%;
     height: 400px;
-    background-image: none; /* Reset any background image */
+    background-image: none; /* Reset any background image 
     background-size: cover !important;
     background-position: center !important;
     background-repeat: no-repeat !important;
     background-color: transparent;
-  }
+  }*/
   
+  .modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+  }
+  .modal-form {
+    background: white;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+    width: 90%;
+    max-width: 500px;
+    text-align: center;
+    z-index: 1001;
+  }
+  .modal-form label {
+    display: block;
+    margin-bottom: 10px;
+    font-size: 14px;
+  }
+  .modal-form input,
+  .modal-form textarea {
+    width: 100%;
+    padding: 8px;
+    margin-bottom: 15px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 14px;
+  }
+  .modal-form button {
+    margin: 5px;
+    padding: 10px 15px;
+    border: none;
+    border-radius: 5px;
+    background-color: #007bff;
+    color: white;
+    font-size: 14px;
+    cursor: pointer;
+  }
+  .modal-form button:hover {
+    background-color: #0056b3;
+  }
