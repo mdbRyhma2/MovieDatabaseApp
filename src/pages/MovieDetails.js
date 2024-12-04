@@ -3,10 +3,8 @@ import { useParams, useNavigate, Link } from 'react-router-dom';
 import { fetchMovieDetails, fetchMovieReviews } from '../api/api.js';
 import { UserContext } from '../context/userContext.js';
 import axios from 'axios';
-import { useUser } from "../context/useUser.js";
 import ReviewModal from '../components/ReviewModal.js';
-
-import './MovieDetails.css'
+import './MovieDetails.css';
 
 function MovieDetails() {
   const { user } = useContext(UserContext);
@@ -17,11 +15,7 @@ function MovieDetails() {
   const [error, setError] = useState(null);
   const navigate = useNavigate();
   const [reviews, setReviews] = useState([]);
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [rating, setRating] = useState(0);
-  const [reviewText, setReviewText] = useState("");
   const [errorMessage, setErrorMessage] = useState(null)
-
   const [openReviewModal, setOpenReviewModal] = useState(false);
 
   const backdropUrl = 'https://image.tmdb.org/t/p/w500'
@@ -45,42 +39,9 @@ function MovieDetails() {
         setLoading(false);
       }
     };
-
+    console.log(id)
     getMovieDetailsAndReviews();
   }, [id]);
-
-  
-  //Function to handle adding review
-  const handleAddReview = async () => {
-    if (!user?.token) {
-      setErrorMessage('You need to be logged in to add your review.')
-      return
-    }
-
-    try {
-      // Send review data to the backend
-      await axios.post(process.env.REACT_APP_API_URL + '/reviews/add', {
-        userId: user.id,
-        movieId: movie.id,
-        grade: rating,
-        review: reviewText,
-      })
-
-      //Refresh review data to the backend
-      const updatedReviews = await fetchMovieReviews(id)
-      setReviews(updatedReviews)
-
-      //Reset modal inputs ad close modal
-      setReviewText('');
-      setRating(0);
-      setIsModalOpen(false);
-      setErrorMessage(null);
-      alert('Review added succesfully!');
-    } catch (error) {
-      console.error('Failed to add review: ', error);
-      alert('Failed to add review.');
-    }
-  }
 
   if (loading) {
     return <p>Loading...</p>;
@@ -107,7 +68,9 @@ function MovieDetails() {
     }
   }
 
-
+  const addNewReview = (newReview) => {
+    setReviews((prevReviews) => [newReview, ...prevReviews]); // Update reviews dynamically
+  };
 
   return (
     <div className='movie-details-container'>
@@ -197,7 +160,11 @@ function MovieDetails() {
           > 
           Add Review
       </Link>
-      {openReviewModal && ( <ReviewModal closeReviewModal={setOpenReviewModal}/>)}
+      {openReviewModal && ( 
+        <ReviewModal closeReviewModal={setOpenReviewModal}
+        movieId={movie.id}
+        addNewReview={addNewReview}
+      />)}
       {errorMessage && <p style={{color: 'red' }}>{errorMessage}</p>}
       </div>
     </div>
