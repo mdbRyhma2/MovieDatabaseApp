@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useLocation, Link } from 'react-router-dom';
 import { useMovies } from '../hooks/useMovies';
-import Genre from '../utlis.js/Genre';
 import './Search.css';
 import { Range } from 'react-range';
 
