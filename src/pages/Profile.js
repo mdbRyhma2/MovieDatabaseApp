@@ -109,7 +109,7 @@ export default function Profile() {
               <p>No Image Available</p>
             )}
             <Link to={`/movie/${movie.movie_id}`}>{movie.movie_title}</Link>
-            <p>Release Date: {movie.release_date}</p>
+
 
             <button onClick={() => handleRemoveFromFavoritesClick(movie.movie_id)}>Remove from favorites</button>
           </li>
