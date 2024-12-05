@@ -8,7 +8,7 @@ const router = Router();
 router.post("/register", postRegistration);
 router.post("/login", postLogin);
 router.get("/profile", auth, getUserInfo)
-router.delete("/profile", auth, deleteAccount)
+router.delete("/delete/:id", auth, deleteAccount)
 
 
 export default router;

@@ -89,7 +89,6 @@ describe("POST login", () => {
   const password = "login123";
 
   before(async () => {
-    initializeTestDb();
     await insertTestUser(email, username, "FirstName", "LastName", password); // Ensure this runs before tests
   });
 
@@ -152,30 +151,26 @@ describe("POST login", () => {
   });
 });
 
+// Test for delete
 describe("DELETE /user/profile", () => {
-  let token
+  const email = "delete@foo.com";
+  const username = "delete";
+  const password = "delete123";
+  const user = insertTestUser(email, username, "FirstName", "LastName", password);
+  const token = getToken(user.id);
 
-  before(async () => {
-    const email = "delete@foo.com"
-    const username = "delete"
-    const password = "delete123"
-
-    const user = await insertTestUser(email, username, "FirstName", "LastName", password);
-
-    token = getToken(user.id)
-  });
-  
   it("should delete the user account", async () => {
-    const response = await fetch(base_url + "/user/profile", {
+    const response = await fetch(base_url + "/user/delete/1", {
       method: "delete",
       headers: {
         "Content-Type": "application/json",
         Authorization: `Bearer ${token}`,
       },
-    })
+    });
 
-    const data = await response.json()   
-    expect(response.status).to.equal(200)
-    expect(data).to.have.property("message", "User account deleted successfully")
-  })
-})
+    const data = await response.json();
+    expect(response.status).to.equal(200);
+    expect(data).to.be.an("object")
+    expect(data).to.include.all.keys("id");
+  });
+});

@@ -50,16 +50,16 @@
   gap: 20px;
 }
 
-.fav-movie-item {
+.fav-movies-item {
   padding: 20px;
 
 }
 
-.fav-movie-item img {
+.fav-movies-item img {
   height: 250px;
 
 }
 
-.fav-movie-item h3 {
+.fav-movies-item h3 {
   font-size: 18px;
 }

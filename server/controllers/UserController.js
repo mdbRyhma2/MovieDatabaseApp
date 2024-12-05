@@ -141,21 +141,19 @@ const getUserInfo = async (req, res, next) => {
 };
 
 // Controller to handle account delete
-const deleteAccount = async (req,res,next) => {
+const deleteAccount = async (req, res, next) => {
   try {
-    if (!req.user || !req.user.user) {
-      return next(new ApiError("Unauthorized access", 401))
+    if (!req.params.id) {
+      return next(new ApiError("Unauthorized access", 401));
     }
 
-    const result = await deleteUser(req.user.user)
+    const id = parseInt(req.params.id);
+    const result = await deleteUser(id);
 
-    if (result.rowCount === 0) {
-      return next(new ApiError("User not found or already deleted", 404))
-    }
-    return res.status(200).json({message: "User account deleted successfully"})
+    return res.status(200).json({ id: id });
   } catch (error) {
-    return next(error)
+    return next(error);
   }
-}
+};
 
 export { postRegistration, postLogin, getUserInfo, deleteAccount };

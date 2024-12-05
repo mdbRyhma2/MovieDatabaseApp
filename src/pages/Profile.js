@@ -3,6 +3,8 @@ import axios from "axios";
 import { useUser } from "../context/useUser";
 import "./Profile.css";
 
+const url = "http://localhost:3001";
+
 export default function Profile() {
   const { user } = useUser();
   const [profileData, setProfileData] = useState(null);
@@ -34,6 +36,19 @@ export default function Profile() {
     }
   }, [user.token]);
 
+  const handleDeleteAccount = (id) => {
+    const headers = { headers: { Authorization: user.token } };
+
+    axios
+      .delete(url + "/delete/" + id, headers)
+      .then((response) => {
+
+      })
+      .catch((error) => {
+        alert(error.response.data.error ? error.response.data.error : error);
+      });
+  };
+
   if (error) return <div>{error}</div>;
 
   return (
@@ -52,21 +67,21 @@ export default function Profile() {
       </div>
       <h3>Favourite movies</h3>
       <div className="fav-movies-container">
-        <div className="fav-movie-item">
+        <div className="fav-movies-item">
           <img
             src="https://images.freeimages.com/images/large-previews/39a/spring-1377434.jpg?fmt=webp&h=350"
             alt="picture"
           />
           <h3>Movie title</h3>
         </div>
-        <div className="fav-movie-item">
+        <div className="fav-movies-item">
           <img
             src="https://images.freeimages.com/images/large-previews/39a/spring-1377434.jpg?fmt=webp&h=350"
             alt="picture"
           />
           <h3>Movie title</h3>
         </div>
-        <div className="fav-movie-item">
+        <div className="fav-movies-item">
           <img
             src="https://images.freeimages.com/images/large-previews/39a/spring-1377434.jpg?fmt=webp&h=350"
             alt="picture"
@@ -81,6 +96,9 @@ export default function Profile() {
           <h3>Movie title</h3>
         </div>
       </div>
+      <button className="delete-account-button" onClick={handleDeleteAccount}>
+        Delete account
+      </button>
     </div>
   );
 }
