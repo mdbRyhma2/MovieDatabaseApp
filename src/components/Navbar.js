@@ -6,7 +6,7 @@ import searchIcon from "../images/search.png";
 
 
 export default function Navbar() {
-  const { user, setUser } = useUser(); // Accessing user data and the setter function
+  const { user, logOut } = useUser(); // Accessing user data and the setter function
   const [searchParam, setSearchParam] = useState('');
   const navigate = useNavigate();
   const location = useLocation()
@@ -32,10 +32,15 @@ export default function Navbar() {
     navigate('/search');
   };
 
-  const handleLogout = () => {
+  /* const handleLogout = () => {
     sessionStorage.removeItem('user');
     setUser({ email: '', password: '' });
     navigate('/');
+  }; */
+
+  const handleLogout = () => {
+    logOut(); // Call the logOut function from the context
+    navigate("/"); // Redirect to the homepage after logout
   };
 
   return (

@@ -21,6 +21,12 @@ const postRegistration = async (req, res, next) => {
       return next(new ApiError("Invalid username for user", 400));
     if (!password || password.length < 8)
       return next(new ApiError("Invalid password for user", 400));
+
+    // Check if password has at least one uppercase letter and one number
+    const passwordRegex = /^(?=.*[A-Z])(?=.*\d)/;
+    if (!passwordRegex.test(password))
+      return next(new ApiError("Password must have at least one uppercase letter and one number", 400));
+
     // First and last name are optional
     const first_name = req.body.first_name || null;
     const last_name = req.body.last_name || null;
@@ -113,6 +119,15 @@ const postLogin = async (req, res, next) => {
   }
 };
 
+// Controller to handle user logout
+const postLogout = async (req, res, next) => {
+  try {
+    return res.status(200).json({ message: "Logged out successfully" });
+  } catch (error) {
+    return next(error);
+  }
+};
+
 // Controller to handle getting user info
 const getUserInfo = async (req, res, next) => {
   try {
@@ -141,21 +156,20 @@ const getUserInfo = async (req, res, next) => {
 };
 
 // Controller to handle account delete
-const deleteAccount = async (req,res,next) => {
+const deleteAccount = async (req, res, next) => {
+  console.log("user controller delete account")
   try {
-    if (!req.user || !req.user.user) {
-      return next(new ApiError("Unauthorized access", 401))
+    if (!req.body.id) {
+      return next(new ApiError("Unauthorized access", 401));
     }
 
-    const result = await deleteUser(req.user.user)
+    const id = parseInt(req.body.id);
+    await deleteUser(id);
 
-    if (result.rowCount === 0) {
-      return next(new ApiError("User not found or already deleted", 404))
-    }
-    return res.status(200).json({message: "User account deleted successfully"})
+    return res.status(200).json({ id: id });
   } catch (error) {
-    return next(error)
+    return next(error);
   }
-}
+};
 
-export { postRegistration, postLogin, getUserInfo, deleteAccount };
+export { postRegistration, postLogin, postLogout, getUserInfo, deleteAccount };

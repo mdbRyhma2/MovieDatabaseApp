@@ -56,8 +56,23 @@ export default function UserProvider({ children }) {
     }
   };
 
+  // Function for user logout
+  const logOut = async () => {
+    try {
+      await axios.post(url + "/user/logout", {}, {
+        headers: { "Authorization": `Bearer ${user.token}` },
+      });
+
+      // Clear user state and session storage
+      setUser({ email: "", username: "", password: "", token: "" });
+      sessionStorage.removeItem("user");
+    } catch (error) {
+      console.error("Logout failed:", error);
+    }
+  };
+
   return (
-    <UserContext.Provider value={{ user, setUser, signUp, logIn }}>
+    <UserContext.Provider value={{ user, setUser, signUp, logIn, logOut  }}>
       {children}
     </UserContext.Provider>
   );
