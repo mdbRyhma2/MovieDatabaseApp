@@ -1,4 +1,4 @@
-DROP TABLE IF EXISTS favorite_movies, user_groups, users, groups CASCADE;
+DROP TABLE IF EXISTS movie_reviews, favorite_movies, user_groups, users, groups CASCADE;
 
 CREATE TABLE users (
     id SERIAL PRIMARY KEY,
@@ -32,4 +32,15 @@ CREATE TABLE user_groups (
     PRIMARY KEY (user_id, group_id),
     FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
     FOREIGN KEY (group_id) REFERENCES groups(id) ON DELETE CASCADE
+);
+
+CREATE TABLE movie_reviews (
+    user_id INT NOT NULL,
+    movie_id INT NOT NULL,
+    grade SMALLINT NOT NULL CHECK (grade >=1 AND grade <=5),
+    review TEXT NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    PRIMARY KEY (user_id, movie_id),
+    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
+    FOREIGN KEY (movie_id) REFERENCES movies(id) ON DELETE CASCADE
 );

@@ -1,40 +1,51 @@
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState,  } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { fetchMovieDetails } from '../api/api.js';
-import { UserContext } from '../context/userContext.js'
+import { fetchMovieDetails, fetchMovieReviews, fetchMovieTrailers } from '../api/api.js';
+import { UserContext } from '../context/userContext.js';
 import axios from 'axios';
+import ReviewModal from '../components/ReviewModal.js';
+import './MovieDetails.css';
 
 function MovieDetails() {
-  const { user } = useContext(UserContext)
+  const { user } = useContext(UserContext);
   const { id } = useParams();
   const [movie, setMovie] = useState(null);
-  const [movieBackDrop, setMovieBackDrop] = useState('');
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const navigate = useNavigate()
-
-  const backdropUrl = 'https://image.tmdb.org/t/p/w500'
+  const navigate = useNavigate();
+  const [reviews, setReviews] = useState([]);
+  const [errorMessage, setErrorMessage] = useState(null)
+  const [openReviewModal, setOpenReviewModal] = useState(false);
+  const [trailerKey, setTrailerKey] = useState(null);
 
   useEffect(() => {
 
-    const getMovieDetails = async () => {
+    const getMovieDetailsAndReviews = async () => {
       try {
+        //Fetch movie details from api
         const details = await fetchMovieDetails(id); 
-        if (details.backdrop_path){
-          setMovieBackDrop(details.backdrop_path)
-        }
-        setMovie(details); 
+        setMovie(details);
 
+        //Fetch reviews from backend
+        const reviewsData = await fetchMovieReviews(id);
+        setReviews(reviewsData);
+
+        //Fetch the movie trailers from api
+        const trailers = await fetchMovieTrailers(id);
+
+        const trailer = trailers.find(video => video.type === 'Trailer');
+        if (trailer) {
+          setTrailerKey(trailer.key);
+        }
+        
       } catch (err) {
-        setError('Failed to fetch movie details.'); 
+        setError('Failed to fetch movie details or reviews.'); 
       } finally {
         setLoading(false);
         console.log("movie",movie);
       }
     };
-
-    getMovieDetails();
-    
+    getMovieDetailsAndReviews();
   }, [id]);
 
   if (loading) {
@@ -88,38 +99,111 @@ function MovieDetails() {
   }
 
   return (
-    <div>
-      <button onClick={() => navigate(-1)}>Go Back</button> 
-      <h1>{movie.title}</h1>
+    <div className="movie-details-container">
+      <div className="movie-header">
+        <h1 className="movie-title">{movie.title}</h1>
+        <div className="movie-rating">☆☆☆☆☆</div>
+      </div>
 
-      <button onClick={() => handleAddtoFavoritesClick()}>Add to favorites</button> 
+      <div className="movie-main-content">
+        <div className="poster-and-player">
+          <div className="poster-container">
+            {movie.poster_path ? (
+              <img
+                className="movie-poster"
+                src={`https://image.tmdb.org/t/p/w500${movie.poster_path}`}
+                alt={movie.title}
+              />
+            ) : (
+              <p className="no-image-placeholder">No image available.</p>
+            )}
+          </div>
+          <div className="video-player">
+            {trailerKey ? (
+              <iframe
+                width="100%" 
+                height="375" 
+                src={`https://www.youtube.com/embed/${trailerKey}`}
+                title='Movie Trailer'
+                allow='accelometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture'
+                allowFullScreen
+              ></iframe>
+            ): (
+              <p>No trailer available</p>
+            )}
+          </div>
+        </div>
 
-      <button onClick={() => handleRemoveFromFavoritesClick()}>Remove from favorites</button> 
+        <div className="movie-details-and-actions">
+          <div className="movie-details">
+            <p className="movie-genres">
+              <strong>Movie genres:</strong> {movie.genres.map((genre) => genre.name).join(", ")}
+            </p>
+            <p className="movie-overview">
+              <strong>Overview:</strong>
+              <br />
+              {movie.overview}
+            </p>
+          </div>
 
-      
+          <div className="movie-actions">
+            <div className="group-select-container">
+              <select className="group-select">
+                <option>Select Group</option>
+              </select>
+              <button className="add-to-group-button">Add</button>
+            </div>
+            <button className="favorite-button" onClick={handleAddtoFavoritesClick}>
+              Add to favourites
+            </button>
+            <button className="remove-favorite" onClick={() => handleRemoveFromFavoritesClick()}>
+              Remove from favorites
+            </button> 
+          </div>
+        </div>
+      </div>
 
-{/*       {movieBackDrop ? (
-        <div
-          className="movie-backdrop"
-          style={{ backgroundImage: backdropUrl + movieBackDrop }}
-        >{console.log(backdropUrl + movieBackDrop )}</div>
-      ) : (
-        <p>No backdrop available.</p>
-      )}// Asettaa backdropkuvan, jos sellaista haluaa käyttää */}
+      <div className="reviews-section">
+      <div className="reviews-section-header">
+        <h4>Reviews</h4>
+        <div>
+          <button
+            className="write-review-button"
+            onClick={() => {
+              if (user?.token) {
+                setOpenReviewModal(true);
+                setErrorMessage(null);
+              } else {
+                setErrorMessage('You need to be logged in to add your review.');
+              }
+            }}
+          >
+            Write a review
+          </button>
+          <span className="view-all-link">View all</span>
+        </div>
+      </div>
 
-
-      <p>{movie.overview}</p>
-      <p>Release Date: {movie.release_date}</p>
-      <strong>Genres:</strong> {movie.genres.map(genre => genre.name).join(', ')}
-      <br></br>
-      {movie.poster_path ? (
-        <img
-          src={`https://image.tmdb.org/t/p/w500${movie.poster_path}`}
-          alt={movie.title}
+      <div className="reviews-container">
+        {reviews.map((review, index) => (
+          <div key={index} className="review-item">
+            <p className="review-header">
+              <strong>{review.email}</strong> - <em>{new Date(review.created_at).toLocaleDateString()}</em>
+            </p>
+            <p>Grade: {review.grade}</p>
+            <p>{review.review}</p>
+          </div>
+        ))}
+      </div>
+      {errorMessage && <p className="error-message">{errorMessage}</p>}
+      {openReviewModal && (
+        <ReviewModal
+          closeReviewModal={setOpenReviewModal}
+          movieId={movie.id}
+          addNewReview={(newReview => setReviews([...reviews, newReview]))}
         />
-      ) : (
-        <p>No image available.</p>
       )}
+    </div>
     </div>
   );
 }
