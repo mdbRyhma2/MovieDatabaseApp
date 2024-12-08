@@ -37,11 +37,12 @@ function MovieDetails() {
         if (trailer) {
           setTrailerKey(trailer.key);
         }
-
+        
       } catch (err) {
         setError('Failed to fetch movie details or reviews.'); 
       } finally {
         setLoading(false);
+        console.log("movie",movie);
       }
     };
     getMovieDetailsAndReviews();
@@ -60,15 +61,40 @@ function MovieDetails() {
   }
 
   const handleAddtoFavoritesClick = async () => {
+    
     try {
+
+      const genreIds = movie.genres.map(genre => genre.id)
       await axios.post(process.env.REACT_APP_API_URL + '/favorites/addToFavorites', {
         userId: user.id,   
-        movieId: movie.id  
+        movieId: movie.id,
+        movieTitle: movie.title,
+        poster_path: movie.poster_path,
+        genres: genreIds,
+        releaseDate: movie.release_date,
+        overview: movie.overview
       });
       alert('Movie added to favorites!');
     } catch (error) {
       console.error('Failed to add movie:', error);
       alert('Failed to add movie to favorites. /MD');
+    }
+  }
+
+  
+  const handleRemoveFromFavoritesClick = async () => {
+    try {
+      await axios.delete(process.env.REACT_APP_API_URL + '/favorites/removeFromFavorites', {
+        data:
+        {
+          userId: user.id,
+          movieId: movie.id
+        }
+      });
+      alert('Movie removed from favorites!');
+    } catch (error) {
+      console.error('Failed to remove movie:', error);
+      alert('Failed to remove movie from favorites. /MD');
     }
   }
 
@@ -130,6 +156,9 @@ function MovieDetails() {
             <button className="favorite-button" onClick={handleAddtoFavoritesClick}>
               Add to favourites
             </button>
+            <button className="remove-favorite" onClick={() => handleRemoveFromFavoritesClick()}>
+              Remove from favorites
+            </button> 
           </div>
         </div>
       </div>

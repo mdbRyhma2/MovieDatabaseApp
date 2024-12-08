@@ -112,7 +112,7 @@ export default function Authentication({ authenticationMode }) {
           <label className="password-info">
             {authenticationMode === AuthenticationMode.Login
               ? ""
-              : "Password must be at least 8 characters"}
+              : "Password must be at least 8 characters and contain at least one uppercase letter and a number"}
           </label>
         </div>
         <div>
