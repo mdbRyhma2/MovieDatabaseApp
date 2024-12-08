@@ -5,20 +5,26 @@ const { verify } = jwt;
 const authorizationRequired = "Authorization required";
 const invalidCredentials = "Invalid credentials";
 
-// Middleware for authenticating JWT tokens
+// Middleware to authenticate JWT tokens
 const auth = (req, res, next) => {
-  if (!req.headers.authorization) {
+  const token = req.headers.authorization;
+
+  if (!token) {
     res.statusMessage = authorizationRequired;
-    res.status(401).json({ message: authorizationRequired });
-  } else {
-    try {
-      const token = req.headers.authorization;
-      jwt.verify(token, process.env.JWT_SECRET_KEY);
-      next();
-    } catch (err) {
-      res.statusMessage = invalidCredentials;
-      res.status(403).json({ message: invalidCredentials });
-    }
+    return res.status(401).json({ message: authorizationRequired });
+  }
+
+  try {
+    // Remove "Bearer " prefix if present
+    const decoded = verify(token.replace("Bearer ", ""), process.env.JWT_SECRET_KEY);
+
+    // Attach user information to request object
+    req.user = decoded;
+    
+    next();
+  } catch (err) {
+    res.statusMessage = invalidCredentials;
+    return res.status(403).json({ message: invalidCredentials });
   }
 };
 

@@ -10,15 +10,15 @@ describe("POST register", () => {
     initializeTestDb();
   });
 
-  const email = `register_${Date.now()}@foo.com`;
-  const first_name = "Reg";
-  const last_name = "Ister";
-  const valid_password = "register123";
+  const email = `register@foo.com`;
+  const first_name = "FirstName";
+  const last_name = "LastName";
+  const valid_password = "Register123";
 
   // Tests for registration
   it("should not post a user with less than 8 character password", async () => {
     const short_password = "short1";
-    const username = "user1";
+    const username = "username1";
     const response = await fetch(base_url + "/user/register", {
       method: "post",
       headers: {
@@ -38,8 +38,52 @@ describe("POST register", () => {
     expect(data).to.include.all.keys("error");
   });
 
+  it("should not post a user with password that doesn't have an uppercase letter", async () => {
+    const invalid_password = "register123";
+    const username = "username2";
+    const response = await fetch(base_url + "/user/register", {
+      method: "post",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        email: email,
+        username: username,
+        first_name: first_name,
+        last_name: last_name,
+        password: invalid_password,
+      }),
+    });
+    const data = await response.json();
+    expect(response.status).to.equal(400, data.error);
+    expect(data).to.be.an("object");
+    expect(data.error).to.equal("Password must have at least one uppercase letter and one number")
+  });
+
+  it("should not post a user with password that doesn't have a number", async () => {
+    const invalid_password = "Register";
+    const username = "username2";
+    const response = await fetch(base_url + "/user/register", {
+      method: "post",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        email: email,
+        username: username,
+        first_name: first_name,
+        last_name: last_name,
+        password: invalid_password,
+      }),
+    });
+    const data = await response.json();
+    expect(response.status).to.equal(400, data.error);
+    expect(data).to.be.an("object");
+    expect(data.error).to.equal("Password must have at least one uppercase letter and one number")
+  });
+
   it("should register with valid email, username and password (first_name and last_name optional)", async () => {
-    const username = "user2";
+    const username = "username2";
     const response = await fetch(base_url + "/user/register", {
       method: "post",
       headers: {
@@ -60,8 +104,8 @@ describe("POST register", () => {
   });
 
   it("should register without first_name and last_name", async () => {
-    const username = "user3";
-    const email = `register2_${Date.now()}@foo.com`;
+    const username = "username3";
+    const email = `register2@foo.com`;
     const response = await fetch(base_url + "/user/register", {
       method: "post",
       headers: {
@@ -85,12 +129,11 @@ describe("POST register", () => {
 // Tests for login
 describe("POST login", () => {
   const email = "login@foo.com";
-  const username = "login_user";
+  const username = "loginuser";
   const password = "login123";
 
   before(async () => {
-    initializeTestDb();
-    await insertTestUser(email, username, "Test", "User", password); // Ensure this runs before tests
+    await insertTestUser(email, username, "FirstName", "LastName", password);
   });
 
   it("should login with valid email and password", async () => {
@@ -149,5 +192,75 @@ describe("POST login", () => {
     expect(data).to.be.an("object");
     expect(data).to.include.all.keys("error");
     expect(data.error).to.equal("Invalid credentials.");
+  });
+});
+
+// Tests for logout
+describe("POST logout", () => {
+  const email = "logout@foo.com";
+  const username = "logoutuser";
+  const password = "Logout123";
+
+  let token;
+
+  before(async () => {
+    const user = await insertTestUser(email, username, "FirstName", "LastName", password);
+    token = getToken(user.id);
+  });
+
+  it("should logout successfully with a valid token", async () => {
+    const response = await fetch(base_url + "/user/logout", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    const data = await response.json();
+
+    expect(response.status).to.equal(200);
+    expect(data).to.be.an("object");
+    expect(data).to.include.keys("message");
+    expect(data.message).to.equal("Logged out successfully");
+  });
+
+  it("should return an error when trying to access a protected route after logout", async () => {
+    const response = await fetch(base_url + "/user/profile", {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+    });
+
+    const data = await response.json();
+
+    expect(response.status).to.equal(401);
+    expect(data).to.be.an("object");
+    expect(data.error).to.equal("Unauthorized access");
+  });
+});
+
+// Test for delete
+describe("DELETE /user/profile", () => {
+  const email = "delete@foo.com";
+  const username = "delete";
+  const password = "delete123";
+  const user = insertTestUser(email, username, "FirstName", "LastName", password);
+  const token = getToken(user.id);
+
+  it("should delete the user account", async () => {
+    const response = await fetch(base_url + "/user/delete/1", {
+      method: "delete",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+    });
+
+    const data = await response.json();
+    expect(response.status).to.equal(200);
+    expect(data).to.be.an("object")
+    expect(data).to.include.all.keys("id");
   });
 });
