@@ -7,9 +7,9 @@ import { Link } from "react-router-dom";
 const url = "http://localhost:3001";
 
 export default function Profile() {
-  const { user } = useUser();
+  const { user, logOut } = useUser();
   const [profileData, setProfileData] = useState(null);
-  const [favorites, setFavorites] = useState([])
+  const [favorites, setFavorites] = useState([]);
   const [error, setError] = useState(null);
 
   useEffect(() => {
@@ -26,7 +26,7 @@ export default function Profile() {
             }
           );
           setProfileData(response.data); // Set the user data
-          fetchFavorites()
+          fetchFavorites();
         } catch (err) {
           setError("Failed to fetch profile data.");
           console.error(err);
@@ -39,61 +39,67 @@ export default function Profile() {
     }
   }, [user.token]);
 
-  const handleDeleteAccount = (id) => {
-    const headers = { headers: { Authorization: user.token } };
-
-    axios
-      .delete(url + "/delete/" + id, headers)
-      .then((response) => {
-
-      })
-      .catch((error) => {
-        alert(error.response.data.error ? error.response.data.error : error);
+  const handleDeleteAccount = async (id) => {
+    console.log(process.env.REACT_APP_API_URL + "/user/delete/")
+    try {
+      await axios.delete(process.env.REACT_APP_API_URL + "/user/delete/", {
+        headers: {
+          Authorization: `Bearer ${user.token}`,
+        },
+        data: {
+          id: id,
+        },
       });
+      logOut();
+      alert("Account deleted!");
+    } catch (error) {
+      console.error("Failed to delete account:", error);
+      alert("Failed to delete account. /MD");
+    }
   };
 
   if (error) return <div>{error}</div>;
 
   const fetchFavorites = async () => {
-
     try {
       const response = await axios.get(
         `${process.env.REACT_APP_API_URL}/favorites/getFavorites`,
         {
           headers: {
-            Authorization: `Bearer ${user.token}`
+            Authorization: `Bearer ${user.token}`,
           },
           params: {
-            userId: user.id
-          }
+            userId: user.id,
+          },
         }
       );
-      setFavorites(response.data)
-      console.log(favorites)
-
+      setFavorites(response.data);
+      console.log(favorites);
     } catch (error) {
-      console.error(error)
-      console.log("error")
+      console.error(error);
+      console.log("error");
     }
-  }
+  };
 
   const handleRemoveFromFavoritesClick = async (movie_id) => {
-    console.log(favorites)
+    console.log(favorites);
     try {
-      await axios.delete(process.env.REACT_APP_API_URL + '/favorites/removeFromFavorites', {
-        data:
+      await axios.delete(
+        process.env.REACT_APP_API_URL + "/favorites/removeFromFavorites",
         {
-          userId: user.id,
-          movieId: movie_id
+          data: {
+            userId: user.id,
+            movieId: movie_id,
+          },
         }
-      });
-      fetchFavorites()
-      alert('Movie removed from favorites!');
+      );
+      fetchFavorites();
+      alert("Movie removed from favorites!");
     } catch (error) {
-      console.error('Failed to remove movie:', error);
-      alert('Failed to remove movie from favorites. /MD');
+      console.error("Failed to remove movie:", error);
+      alert("Failed to remove movie from favorites. /MD");
     }
-  }
+  };
 
   return (
     <div className="profile">
@@ -110,9 +116,9 @@ export default function Profile() {
         )}
       </div>
       <h3>Favourite movies</h3>
-      <div className='movies-grid'>
+      <div className="movies-grid">
         {favorites.map((movie) => (
-          <li key={movie.movie_id} className='movie-card'>
+          <li key={movie.movie_id} className="movie-card">
             {movie.poster_path ? (
               <Link to={`/movie/${movie.movie_id}`}>
                 <img
@@ -125,12 +131,16 @@ export default function Profile() {
             )}
             <Link to={`/movie/${movie.movie_id}`}>{movie.movie_title}</Link>
 
-
-            <button onClick={() => handleRemoveFromFavoritesClick(movie.movie_id)}>Remove from favorites</button>
+            <button onClick={() => handleRemoveFromFavoritesClick(movie.movie_id)}>
+              Remove from favorites
+            </button>
           </li>
         ))}
       </div>
-      <button className="delete-account-button" onClick={handleDeleteAccount}>
+      <button
+        className="delete-account-button"
+        onClick={() => handleDeleteAccount(user.id)}
+      >
         Delete account
       </button>
     </div>
