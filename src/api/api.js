@@ -105,3 +105,20 @@ export const fetchMovieReviews = async (movieId) => {
         return []
     }
 }
+
+export const fetchMovieTrailers = async (movieId) => {
+    const endpoint = `/movie/${movieId}/videos`
+    console.log(endpoint)
+    try {
+        const response = await axios.get(url + endpoint, {
+            headers: {
+                accept: 'applicatioon/json',
+                Authorization: apiKey,
+            },
+        })
+        return response.data.results
+    } catch (error) {
+        console.error('Error fetching trailers:', error.message);
+        return []
+    } 
+}

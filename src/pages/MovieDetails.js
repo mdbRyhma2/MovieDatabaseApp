@@ -1,6 +1,6 @@
 import React, { useContext, useEffect, useState,  } from 'react';
-import { useParams, useNavigate, Link } from 'react-router-dom';
-import { fetchMovieDetails, fetchMovieReviews } from '../api/api.js';
+import { useParams, useNavigate } from 'react-router-dom';
+import { fetchMovieDetails, fetchMovieReviews, fetchMovieTrailers } from '../api/api.js';
 import { UserContext } from '../context/userContext.js';
 import axios from 'axios';
 import ReviewModal from '../components/ReviewModal.js';
@@ -10,36 +10,40 @@ function MovieDetails() {
   const { user } = useContext(UserContext);
   const { id } = useParams();
   const [movie, setMovie] = useState(null);
-  const [movieBackDrop, setMovieBackDrop] = useState('');
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const navigate = useNavigate();
   const [reviews, setReviews] = useState([]);
   const [errorMessage, setErrorMessage] = useState(null)
   const [openReviewModal, setOpenReviewModal] = useState(false);
-
-  const backdropUrl = 'https://image.tmdb.org/t/p/w500'
+  const [trailerKey, setTrailerKey] = useState(null);
 
   useEffect(() => {
 
     const getMovieDetailsAndReviews = async () => {
       try {
+        //Fetch movie details from api
         const details = await fetchMovieDetails(id); 
-        if (details.backdrop_path){
-          setMovieBackDrop(details.backdrop_path)
-        }
         setMovie(details);
 
         //Fetch reviews from backend
-        const reviewsData = await fetchMovieReviews(id)
-        setReviews(reviewsData)
+        const reviewsData = await fetchMovieReviews(id);
+        setReviews(reviewsData);
+
+        //Fetch the movie trailers from api
+        const trailers = await fetchMovieTrailers(id);
+
+        const trailer = trailers.find(video => video.type === 'Trailer');
+        if (trailer) {
+          setTrailerKey(trailer.key);
+        }
+
       } catch (err) {
         setError('Failed to fetch movie details or reviews.'); 
       } finally {
         setLoading(false);
       }
     };
-    console.log(id)
     getMovieDetailsAndReviews();
   }, [id]);
 
@@ -68,17 +72,10 @@ function MovieDetails() {
     }
   }
 
-  const addNewReview = (newReview) => {
-    setReviews((prevReviews) => [newReview, ...prevReviews]); // Update reviews dynamically
-  };
-
   return (
-    <div className='movie-details-container'>
-      <button className='back-button' onClick={() => navigate(-1)}>
-        &lt;
-      </button>
-      <div className='movie-header'>
-        <h1 className='movie-title'>{movie.title}</h1>
+    <div className="movie-details-container">
+      <div className="movie-header">
+        <h1 className="movie-title">{movie.title}</h1>
         <div className="movie-rating">☆☆☆☆☆</div>
       </div>
 
@@ -92,81 +89,92 @@ function MovieDetails() {
                 alt={movie.title}
               />
             ) : (
-              <p className='no-image-placeholder'>No image available.</p>
+              <p className="no-image-placeholder">No image available.</p>
             )}
           </div>
           <div className="video-player">
-            <p>Video player placeholder</p>
+            {trailerKey ? (
+              <iframe
+                width="100%" 
+                height="375" 
+                src={`https://www.youtube.com/embed/${trailerKey}`}
+                title='Movie Trailer'
+                allow='accelometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture'
+                allowFullScreen
+              ></iframe>
+            ): (
+              <p>No trailer available</p>
+            )}
           </div>
         </div>
 
         <div className="movie-details-and-actions">
           <div className="movie-details">
-            <p className='movie-genres'>
+            <p className="movie-genres">
               <strong>Movie genres:</strong> {movie.genres.map((genre) => genre.name).join(", ")}
             </p>
-            <p className='movie-overview'>
+            <p className="movie-overview">
               <strong>Overview:</strong>
               <br />
               {movie.overview}
             </p>
           </div>
 
-        <div className="movie-actions">
-          <div className="group-select-container">
-            <label>Select Group:</label>
-            <select className="group-select">
-              <option>Select</option>
-            </select>
-            <button className="add-to-group-button">Add to Group</button>
-          </div>
-          <button className="favorite-button" onClick={handleAddtoFavoritesClick}>
-            Add to favourites
-          </button>
-        </div>
-        </div>
-      </div>
-    
-      <div>
-      <h4>Reviews</h4>
-      {reviews.length > 0 ? (
-        <div className='reviews'>
-          {reviews.map((review, index) => (
-            <div key={index} className='review-item'>
-              <p className='review-header'>
-                <strong>{review.email}</strong> - <em>{new Date(review.created_at).toLocaleDateString()}</em>
-              </p>
-              <p>Grade: {review.grade}</p>
-              <p>{review.review}</p>
-              <hr/>
+          <div className="movie-actions">
+            <div className="group-select-container">
+              <select className="group-select">
+                <option>Select Group</option>
+              </select>
+              <button className="add-to-group-button">Add</button>
             </div>
-          ))}
+            <button className="favorite-button" onClick={handleAddtoFavoritesClick}>
+              Add to favourites
+            </button>
+          </div>
         </div>
-      ) : (
-        <p>No reviews yet for this movie</p>
-      )}
-      <Link 
-        to="#" 
-        onClick={(e) => { 
-          e.preventDefault();
-          console.log('Link clicked')
-          if (user?.token) {
-            setOpenReviewModal(true);
-            setErrorMessage(null);
-          }else {
-            setErrorMessage('You need to be logged in to add your review.');
-          } 
-          }}
-          > 
-          Add Review
-      </Link>
-      {openReviewModal && ( 
-        <ReviewModal closeReviewModal={setOpenReviewModal}
-        movieId={movie.id}
-        addNewReview={addNewReview}
-      />)}
-      {errorMessage && <p style={{color: 'red' }}>{errorMessage}</p>}
       </div>
+
+      <div className="reviews-section">
+      <div className="reviews-section-header">
+        <h4>Reviews</h4>
+        <div>
+          <button
+            className="write-review-button"
+            onClick={() => {
+              if (user?.token) {
+                setOpenReviewModal(true);
+                setErrorMessage(null);
+              } else {
+                setErrorMessage('You need to be logged in to add your review.');
+              }
+            }}
+          >
+            Write a review
+          </button>
+          <span className="view-all-link">View all</span>
+        </div>
+      </div>
+
+      <div className="reviews-container">
+        {reviews.map((review, index) => (
+          <div key={index} className="review-item">
+            <p className="review-header">
+              <strong>{review.email}</strong> - <em>{new Date(review.created_at).toLocaleDateString()}</em>
+            </p>
+            <p>Grade: {review.grade}</p>
+            <p>{review.review}</p>
+          </div>
+        ))}
+      </div>
+      {errorMessage && <p className="error-message">{errorMessage}</p>}
+      {openReviewModal && (
+        <ReviewModal
+          closeReviewModal={setOpenReviewModal}
+          movieId={movie.id}
+          addNewReview={(newReview => setReviews([...reviews, newReview]))}
+        />
+      )}
+    </div>
     </div>
   );
 }

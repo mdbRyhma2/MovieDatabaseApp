@@ -10,14 +10,6 @@
   align-items: center;
   margin-bottom: 20px;
 }
-.back-button {
-  position: absolute;
-  left: 2rem;
-  font-size: 24px;
-  background: none;
-  border: none;
-  cursor: pointer;
-}
 .movie-title {
   flex-grow: 1;
   font-size: 2rem;
@@ -70,84 +62,115 @@
   justify-content: center;
   align-items: center;
 }
-/* Details and Actions Container */
+
 .movie-details-and-actions {
   display: flex;
   justify-content: space-between;
   gap: 20px; /* Space between details and actions */
   margin-top: 20px;
 }
-
-/* Movie Details */
 .movie-details {
   flex: 2; /* Takes up more space */
   font-size: 16px;
 }
-
 .movie-details p {
   margin: 10px 0;
 }
-
-/* Movie Actions */
 .movie-actions {
-  flex: 1; /* Takes up less space */
+  flex: 1;
   display: flex;
   flex-direction: column;
-  gap: 15px; /* Space between elements */
+  gap: 15px; /* Space between elements */;
 }
-
 .group-select-container {
   display: flex;
-  flex-direction: column;
-  gap: 5px;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
 }
 .group-select {
-  padding: 8px;
+  flex: 2; /* Make it take up the same width as buttons */
+  padding: 10px;
   border: 1px solid #ccc;
   border-radius: 5px;
+  font-size: 14px;
+  box-sizing: border-box;
 }
-.add-to-group-button,
-.favorite-button {
-  padding: 10px 15px;
+.add-to-group-button {
+  padding: 10px;
+  font-size: 14px;
   background-color: #ff6f61;
-  color: #fff;
+  color: white;
   border: none;
   border-radius: 5px;
   cursor: pointer;
+  box-sizing: border-box;
 }
-.favorite-button {
+.favorite-button{
+  padding: 10px 20px;
+  font-size: 14px;
+  text-align: center;
   background-color: #ff6f61;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 10px;
 }
 .add-to-group-button:hover,
 .favorite-button:hover {
   background-color: #e46257;
 }
-.reviews-section {
+.review-section {
   margin-top: 40px;
+}
+.reviews-section-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10px;
+}
+.reviews-section-header h4 {
+  margin: 0;
+  font-size: 1.2rem;
+}
+.write-review-button {
+  padding: 10px 15px;
+  font-size: 14px;
+  background-color: #ff6f61;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+.write-review-button:hover {
+  background-color: #e46257;
+}
+.view-all-link {
+  margin-left: 10px;
+  font-size: 14px;
+  text-decoration: underline;
+  cursor: pointer;
+  color: blue;
 }
 .reviews-container {
   display: flex;
   flex-wrap: wrap;
-  gap: 20px;
+  gap: 15px;
+  margin-top: 20px;
 }
 .review-item {
-  border: 1px solid #ddd;
-  border-radius: 8px;
-  padding: 15px;
-  width: calc(50% - 20px);
-  box-sizing: border-box;
-}
-.review-header {
-  font-size: 0.9rem;
-  color: #333;
-  margin-bottom: 5px;
+  flex: 1 1 calc(50% - 15px);
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  background-color: #f9f9f9;
 }
 .error-message {
   color: red;
-  margin-top: 10px;
-}
-.review-item hr {
-  border: none;
-  border-top: 1px solid #eee;
   margin-top: 10px;
 }
