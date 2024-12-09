@@ -73,11 +73,15 @@ export default function Profile() {
           },
         }
       );
+      console.log("fetchFavorites data", response.data)
       setFavorites(response.data);
       console.log(favorites);
     } catch (error) {
-      console.error(error);
-      console.log("error");
+      if (error.status === 404){
+        setFavorites([])
+        console.log("No favorites found")
+      }
+      console.log("error ", error.status);
     }
   };
 
@@ -96,7 +100,8 @@ export default function Profile() {
       fetchFavorites();
       alert("Movie removed from favorites!");
     } catch (error) {
-      console.error("Failed to remove movie:", error);
+
+      console.error("Failed to remove movie:", error.status);
       alert("Failed to remove movie from favorites. /MD");
     }
   };
