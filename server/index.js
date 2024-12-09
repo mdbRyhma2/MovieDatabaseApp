@@ -17,7 +17,8 @@ app.use(express.urlencoded({ extended: false }));
 
 app.use("/user", userRouter);
 app.use("/groups", groupsRouter);
-app.use("/favorites", favoritesRouter);
+app.use("/group", groupsRouter);
+app.use("/favorites", favoritesRouter)
 app.use("/reviews", reviewRouter);
 
 app.use((err, req, res, next) => {

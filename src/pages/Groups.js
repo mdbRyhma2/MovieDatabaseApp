@@ -29,6 +29,7 @@ export default function Groups() {
       setMessage("Failed to create group. Please try again.");
     }
   };
+
 // fetch groups
    useEffect(() => {
     const fetchGroups = async () => {
@@ -43,14 +44,21 @@ export default function Groups() {
     };
 
     fetchGroups();
-  }, []); 
-
+  }, [groupData]); 
 
 //delete group
-  const deleteGroup = (id) => {
-    setGroupData(groupData.filter((groupData) => groupData.id !== id));
+  const deleteGroup = async (id) => {
+    try {
+      console.log("Before axios.delete");
+      const response = await axios.delete(`${process.env.REACT_APP_API_URL}/groups/groups`, {
+        data: { groupId: id }
+      }); 
+      const updatedGroups = groupData.filter((group) => group.id !== id)
+      setGroupData(updatedGroups);
+    } catch (error) {
+      console.error("Error in deleteGroup:", error.response ? error.response.data : error.message);
+    }
   };
-
 
   return (
     <div id="container">
@@ -75,10 +83,11 @@ export default function Groups() {
         <h2>Groups</h2>
         <div className="group-list">
           <ul>
-            {groupData.map((group) => (
+            {
+              groupData.map(group => (
               <li key={group.id}>
-                <Link to={`/group/${group.id}`}>{group.group_name}</Link>
-                <button onClick={() => deleteGroup(group.id)}>Delete Group</button>
+                <Link to={{pathname: `/group/${group.id}`, state :{ groupData: group }, }}>{group.group_name}</Link>
+                <button onClick= {() => deleteGroup(group.id)} >Delete Group</button>
               </li>
             ))}
           </ul>

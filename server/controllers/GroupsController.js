@@ -1,4 +1,6 @@
-import { getGroups, insertGroup, } from "../models/Groups.js";
+import { getGroups, insertGroup, deleteGroup, getGroupById } from "../models/Groups.js";
+
+
 
 //get groups
 const getGroupsObject = async (req, res) => {
@@ -7,6 +9,26 @@ const getGroupsObject = async (req, res) => {
       return res.json(result.rows);
     } catch (error) {
       console.error("Error fetching groups:", error);
+      res.status(500).json({ error: "Internal server error" });
+    }
+  };
+
+//get group by id
+const getGroupByIdObject = async (req, res) => {
+  console.log("Request received for group id:", req.params.id);
+    try {
+      console.log("get groups by id object")
+
+      const { id } = req.params;
+      const group = await getGroupById(id);
+
+      if (!group) {
+        return res.status(404).json({ message: "Group not found" });
+      }
+
+      return res.json(group);
+    } catch (error) {
+      console.error("Error fetching group:", error);
       res.status(500).json({ error: "Internal server error" });
     }
   };
@@ -67,4 +89,20 @@ const createGroupObject = (id, group_name) => {
   };
 };
 
-  export { postGroup, getGroupsObject, getGroupMembersObject };
+// Controller to handle account delete
+const deleteGroupObject = async (req,res,next) => {
+  try {
+    const id = req.body
+    const result = await deleteGroup(id)
+
+    if (result.rowCount === 0) {
+      return next(new ApiError("Group not found or already deleted", 404))
+    }
+    return res.status(200).json({ message: "Group deleted successfully" });
+  } catch (error) {
+    return next(error)
+  }
+}
+
+
+  export { postGroup, getGroupsObject, getGroupByIdObject, getGroupMembersObject, deleteGroupObject };

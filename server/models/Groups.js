@@ -10,10 +10,18 @@ const insertGroup = async (group_name) => {
 };
 
 
-//function to fetch group from database
+//function to fetch groups from database
 const getGroups = async () => {
     return await pool.query(
       "SELECT * FROM groups"
+    );
+  };
+
+//function to fetch group from database by id
+const getGroupById = async (id) => {
+    return await pool.query(
+      "SELECT * FROM groups WHERE id = $1",
+      [id]
     );
   };
   
@@ -29,4 +37,13 @@ const getGroupMembers = async (group_id) => {
     );
   };
 
-export {getGroups, insertGroup, getGroupMembers};
+  //function to delete group
+  const deleteGroup = async (id) => {
+    return await pool.query(
+      
+      "DELETE FROM groups WHERE id = $1 RETURNING *"
+      
+      , [id.groupId]);
+  };
+
+export {getGroups, getGroupById, insertGroup, getGroupMembers, deleteGroup};
