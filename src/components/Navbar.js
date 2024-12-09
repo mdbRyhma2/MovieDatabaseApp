@@ -46,8 +46,8 @@ export default function Navbar() {
   return (
     <nav className="navbar">
       <div className="navbar-container">
-        <a className="navbar-brand" href="#">
-          Heading
+        <a className="navbar-brand" href="/">
+          Movie App
         </a>
         <div className="navbar-desktop" id="navbarSupportedContent">
           <ul className="navbar-links">
