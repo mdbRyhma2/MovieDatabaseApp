@@ -11,6 +11,7 @@ export default function Profile() {
   const [profileData, setProfileData] = useState(null);
   const [favorites, setFavorites] = useState([]);
   const [error, setError] = useState(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   useEffect(() => {
     // Check if the user is logged in and has a valid token
@@ -40,7 +41,7 @@ export default function Profile() {
   }, [user.token]);
 
   const handleDeleteAccount = async (id) => {
-    console.log(process.env.REACT_APP_API_URL + "/user/delete/")
+    console.log(process.env.REACT_APP_API_URL + "/user/delete/");
     try {
       await axios.delete(process.env.REACT_APP_API_URL + "/user/delete/", {
         headers: {
@@ -54,7 +55,7 @@ export default function Profile() {
       alert("Account deleted!");
     } catch (error) {
       console.error("Failed to delete account:", error);
-      alert("Failed to delete account. /MD");
+      alert("Failed to delete account.");
     }
   };
 
@@ -139,10 +140,33 @@ export default function Profile() {
       </div>
       <button
         className="delete-account-button"
-        onClick={() => handleDeleteAccount(user.id)}
+        /* onClick={() => handleDeleteAccount(user.id)} */
+        onClick={() => setIsModalOpen(true)} // Open modal
       >
         Delete account
       </button>
+
+      {isModalOpen && (
+        <div className="delete-modal">
+          <div className="delete-modal-content">
+            <h3>Confirm Account Deletion</h3>
+            <p>
+              Are you sure you want to delete your account? This action cannot be undone.
+            </p>
+            <div className="delete-modal-actions">
+              <button
+                onClick={() => {
+                  handleDeleteAccount(user.id);
+                  setIsModalOpen(false); // Close modal
+                }}
+              >
+                Confirm
+              </button>
+              <button onClick={() => setIsModalOpen(false)}>Cancel</button>
+            </div>
+          </div>  
+        </div>
+      )}
     </div>
   );
 }
