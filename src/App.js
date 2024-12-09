@@ -7,6 +7,7 @@ import Header from "./components/Header";
 import Search from "./pages/Search";
 import Groups from "./pages/Groups";
 import Group from "./pages/Group";
+import Shared from "./pages/Shared";
 import Showtimes from "./pages/Showtimes";
 import Authentication, { AuthenticationMode } from "./pages/Authentication";
 import MovieDetails from "./pages/MovieDetails";
@@ -28,6 +29,7 @@ export default function App() {
         <Route path="/search" element={<Search />} />
         <Route path="/group" element={<Group />} />
         <Route path="/movie/:id" element={<MovieDetails />} />
+        <Route path="/shared/:publicId" element={<Shared />} />
         <Route
           path="/login"
           element={<Authentication authenticationMode={AuthenticationMode.Login} />}
@@ -38,7 +40,8 @@ export default function App() {
         />
         <Route element={<ProtectedRoute />}>
           <Route path="/profile" element={<Profile />} />
-        </Route>
+        </Route> 
+
         <Route element={<ProtectedRoute />}>
           <Route path="/delete/" element={<Profile />} />
         </Route>

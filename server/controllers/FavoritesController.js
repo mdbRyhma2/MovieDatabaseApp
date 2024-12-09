@@ -52,8 +52,29 @@ const postGetFavorites = async (req, res, next) => {
     } catch (error) {
 
         console.log(error.message)
-        res.status(500).json({ error: "Failed to remove movie from favorites." })
+        res.status(500).json({ error: "Failed to get favorite movies" })
+    }
+}
+const postGetPublicFavorites = async (req, res, next) => {
+    console.log("postGetPublicFavorites")
+    try {
+        const  userId  = req.params.id
+        console.log("publicID: " , userId)
+        const result = await getAllFavorites(userId)
+
+
+        if (result.rowCount > 0) {
+            return res.status(200).json(result.rows);
+        } else {
+            res.status(404).json({ error: "Could not find favorites" });
+        }
+    } catch (error) {
+
+        console.log(error.message)
+        res.status(500).json({ error: "Failed to get favorite movies" })
     }
 }
 
-export { postAddToFavorites, postRemoveFromFavorite, postGetFavorites }
+
+
+export { postAddToFavorites, postRemoveFromFavorite, postGetFavorites, postGetPublicFavorites }

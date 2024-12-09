@@ -9,6 +9,7 @@ router.post("/register", postRegistration);
 router.post("/login", postLogin);
 router.post("/logout", postLogout);
 router.get("/profile", auth, getUserInfo)
+router.get("/profile/:id", auth, getUserInfo)
 router.delete("/delete/", auth, deleteAccount)
 
 

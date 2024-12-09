@@ -40,7 +40,6 @@ CREATE TABLE movie_reviews (
     grade SMALLINT NOT NULL CHECK (grade >=1 AND grade <=5),
     review TEXT NOT NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    PRIMARY KEY (user_id, movie_id),
-    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
-    FOREIGN KEY (movie_id) REFERENCES movies(id) ON DELETE CASCADE
+    PRIMARY KEY (user_id, movie_id)
+
 );
