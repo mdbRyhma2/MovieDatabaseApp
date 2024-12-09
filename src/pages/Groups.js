@@ -47,9 +47,8 @@ export default function Groups() {
   }, [groupData]); 
 
 //delete group
-  const deleteGroup = async (id) => {
+/*   const deleteGroup = async (id) => {
     try {
-      console.log("Before axios.delete");
       const response = await axios.delete(`${process.env.REACT_APP_API_URL}/groups/groups`, {
         data: { groupId: id }
       }); 
@@ -58,7 +57,7 @@ export default function Groups() {
     } catch (error) {
       console.error("Error in deleteGroup:", error.response ? error.response.data : error.message);
     }
-  };
+  }; */
 
   return (
     <div id="container">
@@ -87,7 +86,7 @@ export default function Groups() {
               groupData.map(group => (
               <li key={group.id}>
                 <Link to={{pathname: `/group/${group.id}`, state :{ groupData: group }, }}>{group.group_name}</Link>
-                <button onClick= {() => deleteGroup(group.id)} >Delete Group</button>
+{/*                 <button onClick= {() => deleteGroup(group.id)} >Delete Group</button> */}
               </li>
             ))}
           </ul>

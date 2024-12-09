@@ -1,12 +1,13 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import './Groups.css';
 
-export default function Group() {
+export default function Group({deleteGroup}) {
 
   const { id } = useParams();
   const [groupName, setGroupName] = useState(null);
+  const navigate = useNavigate();
 
   const [members, setMembers] = useState([
     { id: 1, username: 'user1' },
@@ -36,16 +37,6 @@ export default function Group() {
 
       } catch (error) {
         console.error("Error fetching group data:", error);
-        if (error.response) {
-
-          console.error("Error response:", error.response);
-        } else if (error.request) {
-
-          console.error("Error request:", error.request);
-        } else {
-
-          console.error("Error message:", error.message);
-        }
       }
     };
 
@@ -62,8 +53,21 @@ export default function Group() {
     alert('Join/Leave group action triggered.');
   };
 
-  const deleteGroup = () => {
-    alert('Delete group action triggered.');
+
+//delete group
+  const deleteGroupPage = async () => {
+    try {
+      console.log("before axios")
+      const response = await axios.delete(`${process.env.REACT_APP_API_URL}/group/group/${id}`);
+      console.log("after axios")
+      console.log(id)
+      alert("Group deleted successfully");
+//navigate back to groups page
+      navigate("/groups");
+    } catch (error) {
+      console.error("Error deleting group:", error);
+      alert("Failed to delete group.");
+    }
   };
 
   return (
@@ -75,7 +79,7 @@ export default function Group() {
         </div>
         <div className="actions">
           <button onClick={joinOrLeaveGroup}>Join group / Leave group</button>
-          <button onClick={deleteGroup}>Delete group</button>
+          <button onClick={deleteGroupPage}>Delete group</button>
         </div>
       </header>
 

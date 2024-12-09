@@ -91,9 +91,11 @@ const createGroupObject = (id, group_name) => {
 
 // Controller to handle account delete
 const deleteGroupObject = async (req,res,next) => {
+  console.log("deletegroupobject ", req.params.id)
   try {
-    const id = req.body
+    const id = req.params.id
     const result = await deleteGroup(id)
+
 
     if (result.rowCount === 0) {
       return next(new ApiError("Group not found or already deleted", 404))

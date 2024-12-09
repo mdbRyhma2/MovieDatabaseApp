@@ -43,7 +43,9 @@ const getGroupMembers = async (group_id) => {
       
       "DELETE FROM groups WHERE id = $1 RETURNING *"
       
-      , [id.groupId]);
+      , [id]);
   };
+
+
 
 export {getGroups, getGroupById, insertGroup, getGroupMembers, deleteGroup};
