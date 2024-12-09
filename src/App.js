@@ -39,6 +39,9 @@ export default function App() {
         <Route element={<ProtectedRoute />}>
           <Route path="/profile" element={<Profile />} />
         </Route>
+        <Route element={<ProtectedRoute />}>
+          <Route path="/delete/" element={<Profile />} />
+        </Route>
       </Routes>
     </div>
   );

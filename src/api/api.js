@@ -90,3 +90,35 @@ export const fetchMovieDetails = async (id) => {
     }
 }
 
+export const fetchMovieReviews = async (movieId) => {
+    const endpoint = `/reviews/${movieId}`
+    console.log(endpoint)
+    try {
+        const response = await axios.get(process.env.REACT_APP_API_URL + endpoint, {
+            headers: {
+                accept: 'application/json',
+            },
+        });
+        return response.data;
+    }catch (error) {
+        console.error('Error fetchung reviews: ', error.message)
+        return []
+    }
+}
+
+export const fetchMovieTrailers = async (movieId) => {
+    const endpoint = `/movie/${movieId}/videos`
+    console.log(endpoint)
+    try {
+        const response = await axios.get(url + endpoint, {
+            headers: {
+                accept: 'applicatioon/json',
+                Authorization: apiKey,
+            },
+        })
+        return response.data.results
+    } catch (error) {
+        console.error('Error fetching trailers:', error.message);
+        return []
+    } 
+}
