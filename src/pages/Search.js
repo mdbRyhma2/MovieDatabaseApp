@@ -11,7 +11,6 @@ import { Range } from 'react-range';
 export default function Search() {
     const [keywords, setKeywords] = useState('');
     const [searchQuery, setSearchQuery] = useState('');
-
     const genres = [
         { id: 28, name: 'Action' },
         { id: 12, name: 'Adventure' },
@@ -37,10 +36,11 @@ export default function Search() {
     const [selectedGenres, setSelectedGenres] = useState([]);
     const [isAllGenresSelected, setIsAllGenresSelected] = useState(false);
     const [yearRange, setYearRange] = useState([MIN_YEAR, MAX_YEAR]);
+    const [finalYearRange, setFinalYearRange] = useState([MIN_YEAR, MAX_YEAR]);
     const [selectedLanguage, setSelectedLanguage] = useState('');
 
     const location = useLocation();
-    const { filteredMovies } = useMovies(searchQuery, yearRange[0], yearRange[1], selectedGenres, selectedLanguage);
+    const { filteredMovies } = useMovies(searchQuery, finalYearRange[0], finalYearRange[1], selectedGenres, selectedLanguage);
 
     useEffect(() => {
         const query = new URLSearchParams(location.search).get('query');
@@ -65,7 +65,8 @@ export default function Search() {
     //Handler for search button
     const handleSearchButtonClick = () => {
         setSearchQuery(keywords.trim() || ''); 
-        setSelectedGenres([...tempSelectedGenres]); 
+        setSelectedGenres([...tempSelectedGenres]);
+        setFinalYearRange(yearRange);
       };
     //Handler for pressing Enter
     const handleKeyDown = (e) => {
@@ -177,12 +178,30 @@ export default function Search() {
                                 values={yearRange}
                                 onChange={handleRangeChange}
                                 renderTrack={({ props, children}) => (
-                                    <div {...props} className='range-track'>
+                                    <div {...props} 
+                                    className='range-track'
+                                    style={{
+                                        position: 'relative',
+                                        height: '8px',
+                                        borderRadius: '4px',
+                                    }}
+                                    >
                                         {children}
                                     </div>
                                 )}
                                 renderThumb={({ props }) => (
-                                    <div {...props} className='range-thumb'/>
+                                    <div {...props} 
+                                    className='range-thumb'
+                                    style={{
+                                        position: 'absolute',
+                                        top: '0px',
+                                        width: '20px',
+                                        height: '20px',
+                                        backgroundColor: '#007bff',
+                                        borderRadius: '50%',
+                                        cursor: 'pointer',
+                                    }}
+                                    />
                                 )}
                             />
                         )}

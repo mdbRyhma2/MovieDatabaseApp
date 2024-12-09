@@ -1,0 +1,42 @@
+@import "~slick-carousel/slick/slick.css";
+@import "~slick-carousel/slick/slick-theme.css";
+
+#home-container {
+    max-width: 1200px;
+    margin: auto;
+    padding: 20px;
+}
+.event-card {
+    background: #fff;
+    border-radius: 10px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    padding: 10px;
+    text-align: center;
+    transition: transform 0.3 ease, box-shadow 0.3 ease;
+}
+.event-card:hover {
+    transform: scale(1.05);
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
+}
+.event-card h6 {
+    margin: 10px 0;
+    font-size: 16px;
+    color: #333;
+}
+.event-card p {
+    font-size: 14px;
+    color: #666;
+    margin-bottom: 10px;
+}
+.event-image {
+    width: 100%;
+    height: auto;
+    max-height: 300px;
+    border-radius: 10px;
+    object-fit: cover;
+    margin-bottom: 10px;
+}
+.slick-prev, .slick-next {
+    z-index: 2;
+    color: black; /* Style arrows */
+  }
