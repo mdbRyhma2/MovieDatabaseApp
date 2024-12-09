@@ -1,13 +1,12 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-import { useParams, useLocation } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import './Groups.css';
 
 export default function Group() {
 
   const { id } = useParams();
-  const location = useLocation();
-  const groupName = location.state?.groupName || `Group ${id}`; 
+  const [groupName, setGroupName] = useState(null);
 
   const [members, setMembers] = useState([
     { id: 1, username: 'user1' },
@@ -15,7 +14,6 @@ export default function Group() {
     { id: 3, username: 'user3' }
   ]);
 
-  const [error, setError] = useState(null);
 
   const defaultImage = "https://via.placeholder.com/50";
 
@@ -27,19 +25,33 @@ export default function Group() {
     { id: 4, title: 'Movie 4' }
   ]);
 
-    useEffect(() => {
-    const fetchGroupData = async () => {
+
+  useEffect(() => {
+    const fetchGroupById = async () => {
       try {
-        const response = await axios.get(`${process.env.REACT_APP_API_URL}/group/${id}/members`);
-        setMembers(response.data.members);
+        const response = await axios.get(`${process.env.REACT_APP_API_URL}/group/group/${id}`);
+
+        const groupName = response.data.rows[0].group_name;
+        setGroupName(groupName);
+
       } catch (error) {
-        setError("Failed to fetch members data");
-        console.error(error);
+        console.error("Error fetching group data:", error);
+        if (error.response) {
+
+          console.error("Error response:", error.response);
+        } else if (error.request) {
+
+          console.error("Error request:", error.request);
+        } else {
+
+          console.error("Error message:", error.message);
+        }
       }
     };
 
-    fetchGroupData();
-  }, [id, location.state]);
+    fetchGroupById();
+  }, [id]);
+
 
 
   const deleteUser = (id) => {
@@ -59,7 +71,7 @@ export default function Group() {
       <header className="header">
       <img src={defaultImage} alt="Group Default" className="group-image" />
         <div className="group-name">
-          <h1>{groupName || "Loading..."}</h1>
+          <h1>{groupName}</h1>
         </div>
         <div className="actions">
           <button onClick={joinOrLeaveGroup}>Join group / Leave group</button>

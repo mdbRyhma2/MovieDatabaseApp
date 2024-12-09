@@ -15,6 +15,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use("/user", userRouter);
 app.use("/groups", groupsRouter);
+app.use("/group", groupsRouter);
 
 app.use("/favorites", favoritesRouter)
 
