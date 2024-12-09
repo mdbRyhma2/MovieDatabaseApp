@@ -7,7 +7,6 @@ router.post("/groups",postGroup);
 router.get("/groups",getGroupsObject);
 router.get("/group/:id", getGroupByIdObject );
 router.get("/group/:id/members",getGroupMembersObject);
-router.delete("/groups", deleteGroupObject);
 router.delete("/group/:id", deleteGroupObject);
 
 export default router;

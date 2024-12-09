@@ -56,6 +56,13 @@ export default function Group({deleteGroup}) {
 
 //delete group
   const deleteGroupPage = async () => {
+    const confirmDelete = window.confirm(
+      "Are you sure you want to delete this group and all its data?"
+    );
+  
+    if (!confirmDelete) {
+      return;
+    }
     try {
       console.log("before axios")
       const response = await axios.delete(`${process.env.REACT_APP_API_URL}/group/group/${id}`);
@@ -78,7 +85,7 @@ export default function Group({deleteGroup}) {
           <h1>{groupName}</h1>
         </div>
         <div className="actions">
-          <button onClick={joinOrLeaveGroup}>Join group / Leave group</button>
+          <button onClick={joinOrLeaveGroup}>Join/leave group</button>
           <button onClick={deleteGroupPage}>Delete group</button>
         </div>
       </header>
