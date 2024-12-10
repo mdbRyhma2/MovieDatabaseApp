@@ -9,4 +9,7 @@ router.post("/add", postAddReview)
 //Route to get reviews for a specific movie
 router.get("/:movieId", getMovieReviews)
 
+//Route to get all reviews
+
+
 export default router

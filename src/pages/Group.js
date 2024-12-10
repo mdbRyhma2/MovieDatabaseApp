@@ -8,22 +8,13 @@ export default function Group() {
   const { id } = useParams();
   const [groupName, setGroupName] = useState(null);
 
-  const [members, setMembers] = useState([
-    { id: 1, username: 'user1' },
-    { id: 2, username: 'user2' },
-    { id: 3, username: 'user3' }
-  ]);
+  const [members, setMembers] = useState([]);
 
 
   const defaultImage = "https://via.placeholder.com/50";
 
 
-  const [movies] = useState([
-    { id: 1, title: 'Movie 1' },
-    { id: 2, title: 'Movie 2' },
-    { id: 3, title: 'Movie 3' },
-    { id: 4, title: 'Movie 4' }
-  ]);
+  const [movies] = useState([]);
 
 
   useEffect(() => {
@@ -50,9 +41,21 @@ export default function Group() {
     };
 
     fetchGroupById();
-  }, [id]);
+     getGroupUsers()
+  }, [id])
+
+  const getGroupUsers = async () => {
+    console.log("getGroupUsers")
+    try {
+      const response = await axios.get(`${process.env.REACT_APP_API_URL}/group/group/users/${id}`);
+      const users = response.data.filter((user) => user.group_id == id)
+      console.log("getGroupUsers", users.filter((user) => user.group_id == id))
+      setMembers(users)
 
 
+    } catch (error) {
+      console.error("Error fetching group data:", error);
+    }}
 
   const deleteUser = (id) => {
     setMembers(members.filter((member) => member.id !== id));

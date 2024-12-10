@@ -46,7 +46,7 @@ function MovieDetails() {
       }
     };
     getMovieDetailsAndReviews();
-  }, [id]);
+  }, [id, reviews]);
 
   if (loading) {
     return <p>Loading...</p>;
@@ -150,6 +150,7 @@ function MovieDetails() {
             <div className="group-select-container">
               <select className="group-select">
                 <option>Select Group</option>
+                <option>Group 1</option>
               </select>
               <button className="add-to-group-button">Add</button>
             </div>

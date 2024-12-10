@@ -24,7 +24,9 @@ export default function App() {
         <Route path="/" exact element={<Home />} />
         <Route path="/showtimes" element={<Showtimes />} />
         <Route path="/groups" element={<Groups />} />
-        <Route path="/group/:id" element={<Group />} />
+        <Route element={<ProtectedRoute />}>
+          <Route path="/group/:id" element={<Group />} />
+        </Route>
         <Route path="/search" element={<Search />} />
         <Route path="/group" element={<Group />} />
         <Route path="/movie/:id" element={<MovieDetails />} />

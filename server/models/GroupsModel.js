@@ -1,6 +1,5 @@
 import { pool } from "../helpers/db.js";
 
-
 // Function to insert a new group into the database
 const insertGroup = async (group_name) => {
   return await pool.query(
@@ -8,16 +7,20 @@ const insertGroup = async (group_name) => {
     [group_name]
   );
 };
-
-
-//function to fetch groups from database
+//Function to fetch groups from database
 const getGroups = async () => {
+  return await pool.query(
+    "SELECT * FROM groups"
+  );
+};
+//Function to fetch groups from database
+const fetchUserGroups = async () => {
     return await pool.query(
-      "SELECT * FROM groups"
+      "SELECT * FROM user_groups"
     );
   };
 
-//function to fetch group from database by id
+//Function to fetch group from database by id
 const getGroupById = async (id) => {
     return await pool.query(
       "SELECT * FROM groups WHERE id = $1",
@@ -25,7 +28,7 @@ const getGroupById = async (id) => {
     );
   };
   
-//function to fetch group members from database
+//Function to fetch group members from database
 const getGroupMembers = async (group_id) => {
     return await pool.query(
       `SELECT users.id, users.username, users.first_name, users.last_name
@@ -46,4 +49,4 @@ const getGroupMembers = async (group_id) => {
       , [id.groupId]);
   };
 
-export {getGroups, getGroupById, insertGroup, getGroupMembers, deleteGroup};
+export {getGroups, getGroupById, insertGroup, getGroupMembers, deleteGroup, fetchUserGroups};

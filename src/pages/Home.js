@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import './Home.css';
@@ -12,7 +11,7 @@ export default function Home() {
   useEffect(() => {
     const fetchEvents = async () => {
       try {
-        const listType = 'NowInTheatres';
+        const listType = 'ComingSoon';
         const area = 'ALL';
         const includeVideos = 'true';
         const includeLinks = 'false';
@@ -28,6 +27,7 @@ export default function Home() {
           const xmlDoc = parser.parseFromString(response.data, "text/xml");
 
           const events = xmlDoc.getElementsByTagName('Event');
+          console.log("Raw events: ", events);
 
           const eventDetails = [];
           for (let i = 0; i < events.length; i++) {
@@ -46,7 +46,19 @@ export default function Home() {
               releaseDate,
             });*/
           }
-          setEvents(eventDetails);
+          console.log("Parsed event details: ", eventDetails)
+
+         // Filter and sort the events
+      const upcomingEvents = eventDetails
+        .filter(event => {
+          const isUpcoming = new Date(event.releaseDate) > new Date();
+          console.log(`Event: ${event.title}, Release Date: ${event.releaseDate}, Is Upcoming: ${isUpcoming}`);
+          return isUpcoming;
+        })
+        .sort((a, b) => new Date(a.releaseDate) - new Date(b.releaseDate)); // Sort events by ascending release date
+
+      console.log("Filtered and sorted events:", upcomingEvents); 
+              setEvents(upcomingEvents);
         }
       } catch (error) {
         setError('Error fetching event data');
@@ -61,7 +73,7 @@ export default function Home() {
     return (
       <div
         className={className}
-        style={{ ...style, display: "block", right: "10px" }}
+        style={{ ...style, display: "block", right: "5px" }}
         onClick={onClick}
       />
     );
@@ -72,7 +84,7 @@ export default function Home() {
     return (
       <div
         className={className}
-        style={{ ...style, display: "block", left: "10px", zIndex: "1" }}
+        style={{ ...style, display: "block", left: "5px", zIndex: "1" }}
         onClick={onClick}
       />
     );
@@ -86,14 +98,21 @@ export default function Home() {
     nextArrow: <NextArrow />,
     prevArrow: <PrevArrow />,
     responsive: [
+      // Responsivity for tablet, and two types of phones
       {
-        breakpoint: 1024,
+        breakpoint: 768,
+        settings: {
+          slidesToShow: 4,
+        },
+      },
+      {
+        breakpoint: 425,
         settings: {
           slidesToShow: 2,
         },
       },
       {
-        breakpoint: 600,
+        breakpoint: 300,
         settings: {
           slidesToShow: 1,
         },
@@ -103,7 +122,7 @@ export default function Home() {
 
     return (
         <div id="home-container">
-          <h3>Upcoming Releases</h3>
+          <h3>Soon in theatres</h3>
           <Slider {...sliderSettings}>
             {events.length > 0 ? (
               events.map((event, index) => (

@@ -1,6 +1,14 @@
-import { getGroups, insertGroup, deleteGroup, getGroupById } from "../models/Groups.js";
+import { getGroups, insertGroup, deleteGroup, getGroupById, fetchUserGroups } from "../models/GroupsModel.js";
 
-
+const getUserGroups = async (req, res) => {
+  try {
+    const result = await fetchUserGroups();
+    return res.json(result.rows);
+  } catch (error) {
+    console.error("Error fetching groups:", error);
+    res.status(500).json({ error: "Internal server error" });
+  }
+}
 
 //get groups
 const getGroupsObject = async (req, res) => {
@@ -105,4 +113,4 @@ const deleteGroupObject = async (req,res,next) => {
 }
 
 
-  export { postGroup, getGroupsObject, getGroupByIdObject, getGroupMembersObject, deleteGroupObject };
+  export { postGroup, getGroupsObject, getGroupByIdObject, getGroupMembersObject, deleteGroupObject, getUserGroups };
