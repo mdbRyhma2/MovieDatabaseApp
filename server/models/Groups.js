@@ -2,10 +2,10 @@ import { pool } from "../helpers/db.js";
 
 
 // Function to insert a new group into the database
-const insertGroup = async (group_name) => {
+const insertGroup = async (group_name, owner_id) => {
   return await pool.query(
-    "INSERT INTO groups (group_name) VALUES ($1) RETURNING *",
-    [group_name]
+    "INSERT INTO groups (group_name, owner_id) VALUES ($1, $2) RETURNING *",
+    [group_name, owner_id]
   );
 };
 

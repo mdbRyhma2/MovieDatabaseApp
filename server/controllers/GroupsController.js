@@ -58,15 +58,18 @@ const getGroupMembersObject = async (req, res) => {
 
   // Controller to handle group creating
 const postGroup = async (req, res, next) => {
+console.log(req.body)
   try {
-    const { group_name } = req.body;
+    const group_name = req.body.group_name
+    const id_owner = req.body.owner_id
+  console.log("post group ", group_name, id_owner)
 
     if (!group_name || group_name.trim() === "") {
         return next(new ApiError("Invalid group name", 400));
     }
 
     // Insert group into database
-    const groupFromDb = await insertGroup(group_name);
+    const groupFromDb = await insertGroup(group_name, id_owner);
 
     if (!groupFromDb || !groupFromDb.rows[0]) {
       throw new Error("Failed to insert group into the database");
@@ -74,7 +77,7 @@ const postGroup = async (req, res, next) => {
 
     const group = groupFromDb.rows[0];
 
-    return res.status(201).json(createGroupObject(group.id, group.group_name));
+    return res.status(201).json(createGroupObject(group.id, group.group_name, group.id_owner));
   } catch (error) {
     console.error("Error in postGroup controller:", error);
     return next(error);
@@ -82,10 +85,11 @@ const postGroup = async (req, res, next) => {
 };
 
 // Function to create group object
-const createGroupObject = (id, group_name) => {
+const createGroupObject = (id, group_name, owner_id) => {
   return {
     id: id,
     group_name: group_name,
+    owner_id: owner_id,
   };
 };
 

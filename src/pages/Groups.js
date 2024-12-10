@@ -1,11 +1,13 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import { Link } from "react-router-dom";
 import axios from "axios";
 import "./Groups.css"
+import { UserContext } from "../context/userContext";
 
 
 export default function Groups() {
 
+  const { user } = useContext(UserContext);
   const [groupName, setGroupName] = useState("");
   const [message, setMessage] = useState("");
   const [groupData, setGroupData] = useState([])
@@ -19,8 +21,10 @@ export default function Groups() {
     try{
       const response = await axios.post(`${process.env.REACT_APP_API_URL}/groups/groups`,{
         group_name: groupName,
+        owner_id: user.id
       });
-    
+
+    console.log("id", user.id)
       setMessage(`Group "${response.data.group_name}" created`);
       setGroupData([...groupData, response.data]);
       setGroupName("");
@@ -45,19 +49,6 @@ export default function Groups() {
 
     fetchGroups();
   }, [groupData]); 
-
-//delete group
-/*   const deleteGroup = async (id) => {
-    try {
-      const response = await axios.delete(`${process.env.REACT_APP_API_URL}/groups/groups`, {
-        data: { groupId: id }
-      }); 
-      const updatedGroups = groupData.filter((group) => group.id !== id)
-      setGroupData(updatedGroups);
-    } catch (error) {
-      console.error("Error in deleteGroup:", error.response ? error.response.data : error.message);
-    }
-  }; */
 
   return (
     <div id="container">
