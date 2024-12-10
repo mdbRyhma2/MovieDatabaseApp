@@ -86,6 +86,7 @@ export default function Group({}) {
         const response = await axios.get(
           `${process.env.REACT_APP_API_URL}/group/groupmember/${id}`
         );
+        console.log("Group members response:", response.data);
         const groupMembers = response.data;
         setMembers(groupMembers);
         //check if u are member if u are not u can join group
@@ -93,6 +94,7 @@ export default function Group({}) {
           (member) => member.username === user.username
         );
         setIsMember(isMember);
+        console.log("members", members);
       } catch (error) {
         console.error(error);
       }
@@ -182,8 +184,7 @@ export default function Group({}) {
           <ul>
             {members.map((member) => (
               <li key={member.user_id}>
-                {member.username}
-                {member.role}
+                {member.username} {isOwner ? "owner" : "member"}
                 {isOwner && (
                   <button onClick={() => deleteGroupMember(member.user_id)}>
                     Delete user from group

@@ -25,6 +25,7 @@ export default function Groups() {
       );
       setMessage(`Group "${response.data.group_name}" created`);
       setGroupData([...groupData, response.data]);
+      console.log("response data", response.data)
       //when group is created, set input to null
       setGroupName("");
     } catch (error) {

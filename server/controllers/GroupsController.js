@@ -90,8 +90,11 @@ const deleteGroupObject = async (req, res, next) => {
 //get groupMembers
 const getGroupMembersObject = async (req, res) => {
   try {
+    console.log("nöö", req.params.id)
     const result = await getGroupMembers(req.params.id);
+    console.log("result rows", result.rows);
     return res.json(result.rows);
+
   } catch (error) {
     console.error("Error fetching groupsMembers:", error);
     res.status(500).json({ error: "Internal server error" });

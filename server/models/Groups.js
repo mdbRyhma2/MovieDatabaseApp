@@ -41,7 +41,7 @@ const insertGroupMember = async (user_id, group_id) => {
 //function to fetch group members from database
 const getGroupMembers = async (group_id) => {
   return await pool.query(
-    `SELECT users.username
+    `SELECT users.id, users.username, user_groups.role
       FROM users 
       JOIN user_groups ON users.id = user_groups.user_id
       WHERE user_groups.group_id = $1;`,
