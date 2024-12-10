@@ -46,10 +46,6 @@ const postGroup = async (req, res, next) => {
     }
     // Insert group into database
     const groupFromDb = await insertGroup(group_name, id_owner);
-    await pool.query(
-      "INSERT INTO user_groups (user_id, group_id, role) VALUES ($1, $2, $3)",
-      [user_id, groupId, "owner"]
-    );
     if (!groupFromDb || !groupFromDb.rows[0]) {
       throw new Error("Failed to insert group into the database");
     }
