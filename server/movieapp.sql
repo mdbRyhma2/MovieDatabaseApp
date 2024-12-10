@@ -23,7 +23,9 @@ CREATE TABLE favorite_movies (
 
 CREATE TABLE groups (
     id SERIAL PRIMARY KEY,
-    group_name VARCHAR(255) NOT NULL
+    group_name VARCHAR(255) NOT NULL,
+    owner_id INT NOT NULL REFERENCES users(id),
+    created_at TIMESTAMP DEFAULT NOW()
 );
 
 CREATE TABLE user_groups (
@@ -31,7 +33,8 @@ CREATE TABLE user_groups (
     group_id INT NOT NULL,
     PRIMARY KEY (user_id, group_id),
     FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
-    FOREIGN KEY (group_id) REFERENCES groups(id) ON DELETE CASCADE
+    FOREIGN KEY (group_id) REFERENCES groups(id) ON DELETE CASCADE,
+    role VARCHAR(50) DEFAULT 'member'
 );
 
 CREATE TABLE movie_reviews (
