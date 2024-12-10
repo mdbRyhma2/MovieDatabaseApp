@@ -23,10 +23,9 @@ export default function Groups() {
         group_name: groupName,
         owner_id: user.id
       });
-
-    console.log("id", user.id)
       setMessage(`Group "${response.data.group_name}" created`);
       setGroupData([...groupData, response.data]);
+      //when group is created, set input to null
       setGroupName("");
     } catch (error) {
       console.error("Error creating group:", error);
@@ -40,7 +39,6 @@ export default function Groups() {
       try {
         const response = await axios.get(`${process.env.REACT_APP_API_URL}/groups/groups`);
         setGroupData(response.data);
-
       } catch (error) {
         setError("Failed to fetch group data ")
         console.error(error);
@@ -77,7 +75,6 @@ export default function Groups() {
               groupData.map(group => (
               <li key={group.id}>
                 <Link to={{pathname: `/group/${group.id}`, state :{ groupData: group }, }}>{group.group_name}</Link>
-{/*                 <button onClick= {() => deleteGroup(group.id)} >Delete Group</button> */}
               </li>
             ))}
           </ul>
