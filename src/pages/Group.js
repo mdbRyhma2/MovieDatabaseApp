@@ -10,6 +10,8 @@ export default function Group({deleteGroup}) {
   const { user } = useContext(UserContext)
   const { id } = useParams();
   const [groupName, setGroupName] = useState(null);
+  const [ownerId, setOwnerId] = useState(null);
+  const [isOwner, setIsOwner ] = useState(false);
   const navigate = useNavigate();
 
   const [members, setMembers] = useState([
@@ -34,10 +36,17 @@ export default function Group({deleteGroup}) {
     const fetchGroupById = async () => {
       try {
         const response = await axios.get(`${process.env.REACT_APP_API_URL}/group/group/${id}`);
-
         const groupName = response.data.rows[0].group_name;
+        const ownerId = response.data.rows[0].owner_id;
         setGroupName(groupName);
+        setOwnerId(ownerId)
 
+        if (ownerId === user.id){
+          setIsOwner(true)
+          console.log("you are owner")
+        }
+
+        console.log("groupName ja OwnerId:", groupName, ownerId, user.id)
       } catch (error) {
         console.error("Error fetching group data:", error);
       }
@@ -52,9 +61,30 @@ export default function Group({deleteGroup}) {
     setMembers(members.filter((member) => member.id !== id));
   };
 
-  const joinOrLeaveGroup = () => {
-    alert('Join/Leave group action triggered.');
+
+
+
+  //join group
+  const joinGroup = async () => {
+     console.log("before axios")
+
+    try{
+
+      const response = await axios.post(`${process.env.REACT_APP_API_URL}/group/group/${id}`,{
+        user_id: user.id,
+        group_id: id
+      });
+
+      console.log("user id ja id ", user.id, id)
+
+
+    console.log("after axios")
+         alert('Join group action triggered.');
+    } catch (error) {
+      console.error("Error creating group:", error);
+    } 
   };
+
 
 
 //delete group
@@ -88,8 +118,10 @@ export default function Group({deleteGroup}) {
           <h1>{groupName}</h1>
         </div>
         <div className="actions">
-          <button onClick={joinOrLeaveGroup}>Join/leave group</button>
+          <button onClick={joinGroup}>Join group</button>
+          {isOwner ? (
           <button onClick={deleteGroupPage}>Delete group</button>
+          ):( "")}
         </div>
       </header>
 
@@ -100,7 +132,9 @@ export default function Group({deleteGroup}) {
           {members.map((member) => (
             <li key={member.id}>
               {member.username} {member.first_name} {member.last_name}
+              {isOwner && (
               <button onClick={() => deleteUser(member.id)}>Delete user</button>
+            )}
             </li>
           ))}
         </ul>

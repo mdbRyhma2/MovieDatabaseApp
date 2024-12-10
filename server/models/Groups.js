@@ -9,6 +9,14 @@ const insertGroup = async (group_name, owner_id) => {
   );
 };
 
+// Function to insert a new groupmember into the database
+const insertGroupMember = async (user_id, group_id) => {
+  return await pool.query(
+    "INSERT INTO user_groups (user_id, group_id) VALUES ($1, $2) RETURNING *",
+    [user_id, group_id]
+  );
+};
+
 
 //function to fetch groups from database
 const getGroups = async () => {
@@ -48,4 +56,4 @@ const getGroupMembers = async (group_id) => {
 
 
 
-export {getGroups, getGroupById, insertGroup, getGroupMembers, deleteGroup};
+export {getGroups, getGroupById, insertGroup, getGroupMembers, deleteGroup, insertGroupMember};

@@ -1,4 +1,4 @@
-import { getGroups, insertGroup, deleteGroup, getGroupById } from "../models/Groups.js";
+import { getGroups, insertGroup, deleteGroup, getGroupById, insertGroupMember } from "../models/Groups.js";
 
 
 
@@ -16,11 +16,14 @@ const getGroupsObject = async (req, res) => {
 //get group by id
 const getGroupByIdObject = async (req, res) => {
   console.log("Request received for group id:", req.params.id);
+  console.log("Request received for group id:", req.params);
     try {
-      console.log("get groups by id object")
+      console.log("get group by id object")
 
-      const { id } = req.params;
+       const { id } = req.params;
       const group = await getGroupById(id);
+      
+      console.log("Request received for group id:", req.params);
 
       if (!group) {
         return res.status(404).json({ message: "Group not found" });
@@ -32,6 +35,34 @@ const getGroupByIdObject = async (req, res) => {
       res.status(500).json({ error: "Internal server error" });
     }
   };
+
+    // Controller to handle group joining
+const joinGroup = async (req, res, next) => {
+  console.log("join group req body ", req.body)
+
+    try {
+      const user_id = req.body.user_id
+      const group_id = req.body.group_id
+    console.log("post joingroup ", user_id, group_id)
+
+      // Insert groupmember into database
+      insertGroupMember(user_id, group_id)
+  
+      return res.status(201).json(joinGroupObject(user_id, group_id));
+    } catch (error) {
+      console.error("Error in postGroup controller:", error);
+      return next(error);
+    }
+  };
+
+  // Function to create group object
+const joinGroupObject = (user_id, group_id) => {
+  return {
+    user_id: user_id,
+    group_id: group_id,
+  };
+};
+
 
 //get group members
 const getGroupMembersObject = async (req, res) => {
@@ -70,6 +101,7 @@ console.log(req.body)
 
     // Insert group into database
     const groupFromDb = await insertGroup(group_name, id_owner);
+
 
     if (!groupFromDb || !groupFromDb.rows[0]) {
       throw new Error("Failed to insert group into the database");
@@ -111,4 +143,4 @@ const deleteGroupObject = async (req,res,next) => {
 }
 
 
-  export { postGroup, getGroupsObject, getGroupByIdObject, getGroupMembersObject, deleteGroupObject };
+  export { postGroup, getGroupsObject, getGroupByIdObject, getGroupMembersObject, deleteGroupObject,joinGroup };
