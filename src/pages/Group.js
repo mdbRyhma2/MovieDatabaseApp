@@ -39,7 +39,6 @@ export default function Group({}) {
         const ownerId = response.data.rows[0].owner_id;
         setGroupName(groupName);
         setOwnerId(ownerId);
-
         //check if you are owner. Only owner can delete group and groupmembers
         if (ownerId === user.id) {
           setIsOwner(true);
@@ -86,7 +85,6 @@ export default function Group({}) {
         const response = await axios.get(
           `${process.env.REACT_APP_API_URL}/group/groupmember/${id}`
         );
-        console.log("Group members response:", response.data);
         const groupMembers = response.data;
         setMembers(groupMembers);
         //check if u are member if u are not u can join group
@@ -94,7 +92,6 @@ export default function Group({}) {
           (member) => member.username === user.username
         );
         setIsMember(isMember);
-        console.log("members", members);
       } catch (error) {
         console.error(error);
       }
