@@ -45,6 +45,7 @@ export default function Group({}) {
       }
     };
 
+
     const fetchGroupMovies = async () => {
       try {
         const response = await axios.get(
@@ -61,7 +62,15 @@ export default function Group({}) {
     }
 
     fetchGroupById();
-    fetchGroupMovies();
+
+    // Is the user token present get group movies else empty the list
+    if (user.token){
+      fetchGroupMovies();
+    } else {
+      setMovies([])
+    }
+    
+
   }, [id, user.id]);
 
   //delete group
