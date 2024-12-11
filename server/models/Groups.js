@@ -31,10 +31,10 @@ const deleteGroup = async (id) => {
 //GROUP MEMBERS
 
 // Function to insert a new groupmember into the database
-const insertGroupMember = async (user_id, group_id) => {
+const insertGroupMember = async (user_id, group_id, role="user") => {
   return await pool.query(
-    "INSERT INTO user_groups (user_id, group_id) VALUES ($1, $2) RETURNING *",
-    [user_id, group_id]
+    "INSERT INTO user_groups (user_id, group_id, role) VALUES ($1, $2, $3) RETURNING *",
+    [user_id, group_id, role]
   );
 };
 
@@ -57,6 +57,37 @@ const deleteGroupMember = async (user_id) => {
   );
 };
 
+
+// Add to groups
+const insertToGroupMovies = async (groupId, movieId, movieTitle, poster_path, genres, releaseDate, overview) => {
+
+  const result =  await pool.query(
+      
+      "INSERT INTO group_movies (id, movie_id, movie_title, poster_path, genres, release_date, overview) VALUES ($1 , $2, $3, $4, $5, $6, $7) RETURNING *",
+      [groupId, movieId, movieTitle, poster_path, genres, releaseDate, overview]
+  )
+
+  return result.rowCount
+}
+
+// Get all group movies
+const getAllGroupMovies = async (groupId) => {
+
+  return await pool.query("SELECT * from group_movies WHERE id = $1" ,
+      [groupId]
+  )
+}
+
+// Get all groups of current user
+const getAllUserGroups = async (userId) => {
+
+  return await pool.query("SELECT user_groups.group_id, groups.group_name FROM user_groups JOIN groups groups ON user_groups.group_id = groups.id WHERE user_groups.user_id = $1;" ,
+      [userId]
+  )
+}
+
+
+
 export {
   getGroups,
   getGroupById,
@@ -65,4 +96,7 @@ export {
   deleteGroup,
   insertGroupMember,
   deleteGroupMember,
+  insertToGroupMovies,
+  getAllGroupMovies,
+  getAllUserGroups
 };

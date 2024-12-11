@@ -7,6 +7,9 @@ import {
   getGroupByIdObject,
   joinGroup,
   deleteGroupMemberObject,
+  postGetGroupMovies,
+  postAddToGroupMovies,
+  postGetUserGroups
 } from "../controllers/GroupsController.js";
 
 const router = Router();
@@ -18,5 +21,12 @@ router.get("/group/:id", getGroupByIdObject);
 router.get("/groupmember/:id", getGroupMembersObject);
 router.delete("/group/:id", deleteGroupObject);
 router.delete("/groupmember/:id", deleteGroupMemberObject);
+
+
+//Routes for group movies
+
+router.get("/getUserGroups/:id", postGetUserGroups)
+router.get("/getGroupMovies/:id", postGetGroupMovies)
+router.post("/addToGroupMovies", postAddToGroupMovies)
 
 export default router;

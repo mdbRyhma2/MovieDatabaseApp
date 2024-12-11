@@ -1,13 +1,14 @@
 import React, { useState, useEffect, useContext } from "react";
 import axios from "axios";
-import { useParams, useNavigate } from "react-router-dom";
-import "./Groups.css";
+import { useParams, useNavigate, Link } from "react-router-dom";
+import "./Group.css";
 import { UserContext } from "../context/userContext";
 
 export default function Group({}) {
   const { user } = useContext(UserContext);
   const { id } = useParams();
   const [groupName, setGroupName] = useState(null);
+  const [movies, setMovies] = useState([]);
   const [ownerId, setOwnerId] = useState(null);
   const [isOwner, setIsOwner] = useState(false);
   const [isMember, setIsMember] = useState(false);
@@ -16,12 +17,7 @@ export default function Group({}) {
     return savedMembers ? JSON.parse(savedMembers) : [];
   });
   const navigate = useNavigate();
-  const [movies] = useState([
-    { id: 1, title: "Movie 1" },
-    { id: 2, title: "Movie 2" },
-    { id: 3, title: "Movie 3" },
-    { id: 4, title: "Movie 4" },
-  ]);
+
 
   const defaultImage = "https://via.placeholder.com/50";
 
@@ -49,7 +45,23 @@ export default function Group({}) {
       }
     };
 
+    const fetchGroupMovies = async () => {
+      try {
+        const response = await axios.get(
+          `${process.env.REACT_APP_API_URL}/group/getGroupMovies/` + id
+        );
+
+        console.log("response", response.data)
+        setMovies(response.data)
+
+
+      } catch (error) {
+        console.error("Error fetching group movies:", error);
+      }
+    }
+
     fetchGroupById();
+    fetchGroupMovies();
   }, [id, user.id]);
 
   //delete group
@@ -196,16 +208,27 @@ export default function Group({}) {
       </section>
 
       <section className="movies">
-        <h2>Movies</h2>
-        <div className="movies-list">
-          {movies.map((movie) => (
-            <div key={movie.id} className="movie">
-              <div className="movie-poster"></div>
-              <div className="movie-title">{movie.title}</div>
-            </div>
-          ))}
-        </div>
-      </section>
+  <h2>Movies</h2>
+  <div className="movies-grid">
+    {movies.map((movie) => (
+          <li key={movie.movie_id} className="movie-card">
+            {movie.poster_path ? (
+              <Link to={`/movie/${movie.movie_id}`}>
+                <img
+                  src={`https://image.tmdb.org/t/p/w200${movie.poster_path}`}
+                  alt={movie.title}
+                />
+              </Link>
+            ) : (
+              <p>No Image Available</p>
+            )}
+            <Link to={`/movie/${movie.movie_id}`}>{movie.movie_title}</Link>
+
+          </li>
+    ))}
+  </div>
+</section>
+
     </div>
   );
 }

@@ -1,0 +1,41 @@
+.movies-grid {
+    list-style-type: none;
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 20px;
+    padding: 20px;
+}
+.movie-card {
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    padding: 10px;
+    text-align: center;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+.movie-card img {
+    width: 100%;
+    height: auto;
+    border-radius: 8px;
+    margin-bottom: 10px;
+}
+.aside {
+    width: 150px;
+}
+.movie-card a {
+    color: #333;
+    text-decoration: none;
+    font-weight: bold;
+    font-size: 1.2rem;
+    transition: color 0.3s ease;
+}
+.movie-card a:hover{
+    color: #0056a3;
+    text-decoration: underline;
+}
+.movie-card a:active {
+    color: #003d73;
+}
+.movie-card a:focus {
+    outline: 2px dashed #0077cc;
+    outline-offset: 4px;
+}
