@@ -32,6 +32,7 @@ export default function Group({}) {
         );
         // fetch group_name and owner_id from database
         const groupName = response.data.rows[0].group_name;
+
         const ownerId = response.data.rows[0].owner_id;
         setGroupName(groupName);
         setOwnerId(ownerId);
@@ -52,7 +53,6 @@ export default function Group({}) {
           `${process.env.REACT_APP_API_URL}/group/getGroupMovies/` + id
         );
 
-        console.log("response", response.data)
         setMovies(response.data)
 
 
@@ -61,15 +61,34 @@ export default function Group({}) {
       }
     }
 
+    const fetchGroupMembers = async () => {
+      try {
+        const response = await axios.get(
+          `${process.env.REACT_APP_API_URL}/group/groupmember/${id}`
+        );
+        const groupMembers = response.data;
+        setMembers(groupMembers);
+        //check if u are member if u are not u can join group
+        const isMember = groupMembers.some(
+          (member) => member.username === user.username
+        );
+        setIsMember(isMember);
+      } catch (error) {
+        console.error(error);
+      }
+    };
+
     fetchGroupById();
 
     // Is the user token present get group movies else empty the list
     if (user.token){
+      fetchGroupMembers();
       fetchGroupMovies();
     } else {
       setMovies([])
+      setMembers([])
     }
-    
+
 
   }, [id, user.id]);
 
@@ -100,27 +119,6 @@ export default function Group({}) {
     localStorage.setItem("members", JSON.stringify(members));
   }, [members]);
 
-  // fetch groupMembers
-  useEffect(() => {
-    const fetchGroupMembers = async () => {
-      try {
-        const response = await axios.get(
-          `${process.env.REACT_APP_API_URL}/group/groupmember/${id}`
-        );
-        const groupMembers = response.data;
-        setMembers(groupMembers);
-        //check if u are member if u are not u can join group
-        const isMember = groupMembers.some(
-          (member) => member.username === user.username
-        );
-        setIsMember(isMember);
-      } catch (error) {
-        console.error(error);
-      }
-    };
-
-    fetchGroupMembers();
-  }, [id, user.username]);
 
   //join group
   const joinGroup = async () => {
@@ -169,6 +167,7 @@ export default function Group({}) {
       alert("Failed to delete groupmember.");
     }
   };
+
 
   return (
     <div className="container">
