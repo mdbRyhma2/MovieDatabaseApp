@@ -1,3 +1,4 @@
+import { response } from "express";
 import {
   getGroups,
   insertGroup,
@@ -6,6 +7,9 @@ import {
   insertGroupMember,
   deleteGroupMember,
   getGroupMembers,
+  getAllUserGroups,
+  insertToGroupMovies,
+  getAllGroupMovies
 } from "../models/Groups.js";
 
 //GROUP
@@ -46,10 +50,10 @@ const postGroup = async (req, res, next) => {
     }
     // Insert group into database
     const groupFromDb = await insertGroup(group_name, id_owner);
-    await pool.query(
-      "INSERT INTO user_groups (user_id, group_id, role) VALUES ($1, $2, $3)",
-      [user_id, groupId, "owner"]
-    );
+
+    // Insert user into created group
+    insertGroupMember(id_owner, groupFromDb.rows[0].id, "owner")
+
     if (!groupFromDb || !groupFromDb.rows[0]) {
       throw new Error("Failed to insert group into the database");
     }
@@ -133,6 +137,59 @@ const deleteGroupMemberObject = async (req, res, next) => {
   }
 };
 
+// Get movies added to the group list
+const postGetGroupMovies = async (req, res, next) => {
+
+  try {
+      const  groupId  = req.params.id
+      const result = await getAllGroupMovies(groupId)
+
+
+      if (result.rowCount > 0) {
+          return res.status(200).json(result.rows);
+      } else {
+          res.status(404).json({ error: "Could not find group movies" });
+      }
+  } catch (error) {
+
+      console.log(error.message)
+      res.status(500).json({ error: "Failed to remove movie from group movies." })
+  }
+
+}
+
+// Add a movie to the group list
+const postAddToGroupMovies = async (req, res, next) => {
+
+  try {
+      const { id, movieId, movieTitle, poster_path, genres, overview, releaseDate } = req.body
+      const affectecRows = await insertToGroupMovies(id, movieId, movieTitle, poster_path, genres, releaseDate, overview)
+
+      if (affectecRows > 0){
+      res.status(200).json({ message: "Movie added to favorites successfully!" })
+      } else{
+          res.status(400).json({error: "Movie could not be added to favorites."})
+      }
+  } catch (error) {
+      console.log(error.message)
+      res.status(500).json({ error: "Failed to add movie to favorites." })
+  }
+
+}
+
+// Get all groups user is a member of
+const postGetUserGroups = async (req, res, next) => {
+  try {
+    const userId = req.params.id
+    const response = await getAllUserGroups(userId)
+    res.status(200).json(response.rows)
+} catch (error) {
+    console.log(error.message)
+    res.status(500).json({ error: "Failed to add movie to favorites." })
+}
+}
+
+
 export {
   postGroup,
   getGroupsObject,
@@ -141,4 +198,7 @@ export {
   deleteGroupObject,
   joinGroup,
   deleteGroupMemberObject,
+  postGetGroupMovies,
+  postAddToGroupMovies,
+  postGetUserGroups
 };

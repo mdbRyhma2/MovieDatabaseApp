@@ -53,8 +53,6 @@ export const fetchMoviesWithoutKeywords = async (minReleaseYear, maxReleaseYear,
     }
 };
 
-
-
 export const fetchGenres = async () => {
     const endpoint = '/genre/movie/list';
     
@@ -71,7 +69,6 @@ export const fetchGenres = async () => {
         return [];
     }
 };
-
 
 export const fetchMovieDetails = async (id) => {
     const endpoint = `/movie/` + id;

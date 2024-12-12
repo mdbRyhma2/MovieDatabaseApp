@@ -48,7 +48,7 @@ export default function Groups() {
     };
 
     fetchGroups();
-  }, [groupData]);
+  }, []);
 
   return (
     <div id="container">
