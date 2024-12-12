@@ -168,6 +168,24 @@ export default function Group({}) {
     }
   };
 
+  const handleRemoveFromGroupMoviesClick = async (movie_id) => {
+
+    try {
+      await axios.delete(process.env.REACT_APP_API_URL + '/groups/removeFromUserMovies',{
+        data: {
+        groupId : id,
+        movieId : movie_id
+        }}
+      )
+
+        setMovies((prevMovies) =>
+          prevMovies.filter((movie) => movie.movie_id !== movie_id)
+        ) 
+    } catch (error) {
+      console.error("Failed to remove movie from group list: ", error.status)
+    }
+
+  }
 
   return (
     <div className="container">
@@ -231,7 +249,7 @@ export default function Group({}) {
               <p>No Image Available</p>
             )}
             <Link to={`/movie/${movie.movie_id}`}>{movie.movie_title}</Link>
-
+            <button onClick={() => handleRemoveFromGroupMoviesClick(movie.movie_id)}>Remove</button>
           </li>
     ))}
   </div>

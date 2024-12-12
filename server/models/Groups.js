@@ -69,6 +69,16 @@ const insertToGroupMovies = async (groupId, movieId, movieTitle, poster_path, ge
 
   return result.rowCount
 }
+const deleteFromGroupMovies = async (groupId, movieId) => {
+
+  const result =  await pool.query(
+
+      "DELETE FROM group_movies WHERE id = $1 AND movie_id = $2 RETURNING *",     
+      [groupId, movieId]
+  )
+
+  return result.rowCount
+}
 
 // Get all group movies
 const getAllGroupMovies = async (groupId) => {
@@ -98,5 +108,6 @@ export {
   deleteGroupMember,
   insertToGroupMovies,
   getAllGroupMovies,
-  getAllUserGroups
+  getAllUserGroups,
+  deleteFromGroupMovies
 };

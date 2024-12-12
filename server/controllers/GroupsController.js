@@ -9,7 +9,8 @@ import {
   getGroupMembers,
   getAllUserGroups,
   insertToGroupMovies,
-  getAllGroupMovies
+  getAllGroupMovies,
+  deleteFromGroupMovies
 } from "../models/Groups.js";
 
 //GROUP
@@ -177,6 +178,18 @@ const postAddToGroupMovies = async (req, res, next) => {
 
 }
 
+// Remove a movie from the group list
+const postDeleteGroupMovie = async (req, res, next) => {
+
+  try {
+    const { groupId, movieId} = req.body
+    const response = await deleteFromGroupMovies(groupId, movieId)
+    return res.status(200).json({message: "Movie removed from group list successfully"})
+  } catch (error) {
+    res.status(500).json({error: "Failed to remove movie from list"})
+  }
+}
+
 // Get all groups user is a member of
 const postGetUserGroups = async (req, res, next) => {
   try {
@@ -200,5 +213,6 @@ export {
   deleteGroupMemberObject,
   postGetGroupMovies,
   postAddToGroupMovies,
-  postGetUserGroups
+  postGetUserGroups,
+  postDeleteGroupMovie
 };

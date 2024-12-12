@@ -56,11 +56,12 @@ function MovieDetails() {
       }
     }
 
+    // Get users groups if logged in
     getMovieDetailsAndReviews();
     if (user.token) {
       getUserGroups()
-      console.log("groups: ", groups)
     }
+
   }, [id]);
 
   if (loading) {
