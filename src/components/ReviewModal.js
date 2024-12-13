@@ -1,70 +1,63 @@
 import React, { useContext, useState, useEffect } from 'react'
-import { useParams } from 'react-router-dom';
 import { UserContext } from '../context/userContext'
 import axios from 'axios'
-import { fetchMovieReviews, fetchMovieDetails } from '../api/api.js';
+import { fetchMovieDetails } from '../api/api.js';
 import './ReviewModal.css';
 
 export default function ReviewModal({ closeReviewModal, movieId, addNewReview }) {
-    const { user } = useContext(UserContext);
-    //const { id } = useParams();
-    const [errorMessage, setErrorMessage] = useState(null);
-    //const [movie, setMovie] = useState([]);
-    const [rating, setRating] = useState(0);
-    const [reviewText, setReviewText] = useState("");
-    //const [reviews, setReviews] = useState([]);
-    //const [isModalOpen, setIsModalOpen] = useState(false);
-    //const [error, setError] = useState(null);
-    /*
-    useEffect(() => {
-        const getMovieDetails = async () => {
-            try {
-                const details = await fetchMovieDetails(id)
-                setMovie(details)
-            } catch (err) {
-                setError('Failed to fetch movie details')
-            }
-        };
-        getMovieDetails()
-    }, [id]);
-    */
+  const { user } = useContext(UserContext);
+  const [errorMessage, setErrorMessage] = useState(null);
+  const [rating, setRating] = useState(0);
+  const [reviewText, setReviewText] = useState("");
+  const [movie, setMovie] = useState(null);
+    
+  useEffect(() => {
+    const getMovieDetails = async () => {
+      try {
+        const details = await fetchMovieDetails(movieId)
+          setMovie(details)
+      } catch (err) {
+          setErrorMessage('Failed to fetch movie details')
+      }
+    };
+      getMovieDetails()
 
-    //Function to handle adding review
-    const handleAddReview = async (/*moviId*/) => {
-        if (!user?.token) {
-            setErrorMessage('You need to be logged in to add your review.')
-            return
-        }
+  }, [movieId]);
+  
 
-        try {
-            // Send review data to the backend
-            const response = await axios.post(process.env.REACT_APP_API_URL + '/reviews/add', {
-                userId: user.id,
-                movieId,
-                grade: rating,
-                review: reviewText,
-            })
-
-    //Add new review to the parent side
-    if (addNewReview) {
-      addNewReview(response.data)
+  //Function to handle adding review
+  const handleAddReview = async () => {
+    if (!user?.token) {
+      setErrorMessage('You need to be logged in to add your review.')
+      return
     }
-        /*
-        //Refresh review data to the backend
-        const updatedReviews = await fetchMovieReviews(id)
-            setReviews(updatedReviews)
-        */
+    try {
+      // Send review data to the backend
+      const response = await axios.post(process.env.REACT_APP_API_URL + '/reviews/add', {
+        userId: user.id,
+        movieId,
+        movieTitle: movie.title,
+        grade: rating,
+        review: reviewText,
+      }, {
+        headers: {
+          Authorization: `Bearer ${user.token}`,
+        }
+      })
+
+        //Add new review to the parent side
+        addNewReview(response.data)
 
         //Reset modal inputs ad close modal
             setReviewText('');
             setRating(0);
             closeReviewModal(false)
             alert('Review added succesfully!');
-        } catch (error) {
-            console.error('Failed to add review: ', error);
-            alert('Failed to add review.');
-        }
-    }
+    } catch (error) {
+        console.error('Failed to add review: ', error);
+        alert('Failed to add review.');
+      }
+  }
 
   return (
     <div className='modal-overlay'>

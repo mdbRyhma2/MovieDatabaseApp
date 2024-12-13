@@ -9,13 +9,12 @@ const insertGroup = async (group_name, owner_id) => {
     [group_name, owner_id]
   );
 };
-
-//function to fetch groups from database
+//Function to fetch groups from database
 const getGroups = async () => {
   return await pool.query("SELECT * FROM groups");
 };
 
-//function to fetch group from database by id
+//Function to fetch group from database by id
 const getGroupById = async (id) => {
   return await pool.query("SELECT * FROM groups WHERE id = $1", [id]);
 };

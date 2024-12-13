@@ -53,8 +53,18 @@ CREATE TABLE user_groups (
 CREATE TABLE movie_reviews (
     user_id INT NOT NULL,
     movie_id INT NOT NULL,
+    movie_title TEXT,
     grade SMALLINT NOT NULL CHECK (grade >=1 AND grade <=5),
     review TEXT NOT NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    PRIMARY KEY (user_id, movie_id)
+    PRIMARY KEY (user_id, movie_id),
+    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+);
+
+/*New table for Shared Lists*/
+CREATE TABLE shared_lists (
+    share_id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    user_id INT NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
 );

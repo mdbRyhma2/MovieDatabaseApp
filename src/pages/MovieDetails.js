@@ -18,22 +18,28 @@ function MovieDetails() {
   const [errorMessage, setErrorMessage] = useState(null)
   const [openReviewModal, setOpenReviewModal] = useState(false);
   const [trailerKey, setTrailerKey] = useState(null);
+  const [reviewsFetched, setReviewsFetched] = useState(false);
 
   useEffect(() => {
-
     const getMovieDetailsAndReviews = async () => {
       try {
         //Fetch movie details from api
         const details = await fetchMovieDetails(id);
         setMovie(details);
 
-        //Fetch reviews from backend
+        // Fetch reviews only if they haven't been fetched before
+        /*
+        if (!reviewsFetched) {
+          const reviewsData = await fetchMovieReviews(id);
+          setReviews(reviewsData);
+          setReviewsFetched(true); // Mark reviews as fetched
+        }*/
+
         const reviewsData = await fetchMovieReviews(id);
         setReviews(reviewsData);
 
         //Fetch the movie trailers from api
         const trailers = await fetchMovieTrailers(id);
-
         const trailer = trailers.find(video => video.type === 'Trailer');
         if (trailer) {
           setTrailerKey(trailer.key);
@@ -78,9 +84,7 @@ function MovieDetails() {
 
 
   const handleAddtoFavoritesClick = async () => {
-    
     try {
-
       const genreIds = movie.genres.map(genre => genre.id)
       await axios.post(process.env.REACT_APP_API_URL + '/favorites/addToFavorites', {
         userId: user.id,
@@ -145,13 +149,17 @@ function MovieDetails() {
     setSelectedGroup(event.target.value);
   };
 
+  //Handler for adding new review
+  const handleAddReview = (newReview) => {
+    setReviews((prevReviews) => [...prevReviews, newReview]);
+  }
+
   return (
     <div className="movie-details-container">
       <div className="movie-header">
         <h1 className="movie-title">{movie.title}</h1>
         <div className="movie-rating">☆☆☆☆☆</div>
       </div>
-
       <div className="movie-main-content">
         <div className="poster-and-player">
           <div className="poster-container">
@@ -243,26 +251,27 @@ function MovieDetails() {
           </div>
         </div>
 
-        <div className="reviews-container">
-          {reviews.map((review, index) => (
-            <div key={index} className="review-item">
-              <p className="review-header">
-                <strong>{review.email}</strong> - <em>{new Date(review.created_at).toLocaleDateString()}</em>
-              </p>
-              <p>Grade: {review.grade}</p>
-              <p>{review.review}</p>
-            </div>
-          ))}
-        </div>
-        {errorMessage && <p className="error-message">{errorMessage}</p>}
-        {openReviewModal && (
-          <ReviewModal
-            closeReviewModal={setOpenReviewModal}
-            movieId={movie.id}
-            addNewReview={(newReview => setReviews([...reviews, newReview]))}
-          />
-        )}
+      <div className="reviews-container">
+        {reviews.map((review, index) => (
+          <div key={index} className="review-item">
+            <p className="review-header">
+              <strong>{review.email}</strong> - <em>{new Date(review.created_at).toLocaleDateString()}</em>
+            </p>
+            <p>Grade: {review.grade}</p>
+            <p>{review.review}</p>
+          </div>
+        ))}
       </div>
+      {errorMessage && <p className="error-message">{errorMessage}</p>}
+
+      {openReviewModal && (
+        <ReviewModal
+          closeReviewModal={setOpenReviewModal}
+          movieId={movie.id}
+          addNewReview={handleAddReview}
+        />
+      )}
+    </div>
     </div>
   );
 }

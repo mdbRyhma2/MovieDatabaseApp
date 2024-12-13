@@ -11,6 +11,8 @@ export default function Profile() {
   const [profileData, setProfileData] = useState(null);
   const [favorites, setFavorites] = useState([]);
   const [error, setError] = useState(null);
+  const [shareLink, setShareLink] = useState("");
+  const [userReviews, setUserReviews] = useState([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   useEffect(() => {
@@ -28,6 +30,7 @@ export default function Profile() {
           );
           setProfileData(response.data); // Set the user data
           fetchFavorites();
+          fetchUserReviews();
         } catch (err) {
           setError("Failed to fetch profile data.");
           console.error(err);
@@ -107,6 +110,75 @@ export default function Profile() {
     }
   };
 
+  //Handler for sharing favorites
+  const handleShareFavorites = async () => {
+    try {
+      const response = await axios.post(
+        `${process.env.REACT_APP_API_URL}/favorites/createShareableList`, //Share favorites endpoint
+        {
+          userId: user.id, //Include user ID
+          favorites, //Include current favorites
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${user.token}`, //Send token for authorization
+          },
+        }
+      )
+
+      if (response.data.shareId) {
+        //Generate the shareable link using the shareId
+        const link = `${window.location.origin}/favorites/${response.data.shareId}`
+        setShareLink(link) //Store the generated link in state
+        alert("Share link created succesfully!");
+      }
+    } catch (error) {
+      console.error("Failed to create shareable list: ", error)
+      alert("Failed to create shareable list.") //Notify of failure
+    }
+  }
+
+  //Fetch users reviews
+  console.log(user.id)
+  const fetchUserReviews = async () => {
+    console.log('fetchUserReviews called');
+    try {
+      const response = await axios.get(
+        `${process.env.REACT_APP_API_URL}/reviews/user/${user.id}`, // Include userId in the path
+        {
+          headers: {
+            Authorization: `Bearer ${user.token}`, // Authorization header (optional if not required by backend)
+          },
+        }
+      );
+      console.log("User Reviews Response: ", response.data); // Log the fetched data
+      setUserReviews(response.data); // Store the fetched reviews in state
+    } catch (error) {
+      console.error("Error fetching user reviews:", error);
+    }
+  };
+
+  const handlerRemoveFromReviews = async (movie_id) => {
+    try {
+      const response = await axios.delete(
+        process.env.REACT_APP_API_URL + "/reviews/removeFromReviews",
+        {
+          data: {
+            userId: user.id,
+            movieId: movie_id,
+          },
+        }
+      );
+      if (response.status === 200) {
+        fetchUserReviews();
+        alert("Review removed!");
+      }
+    } catch (error) {
+      console.error("Failed to remove review", error);
+      alert("Failed to remove review.")
+    }
+  }
+
   return (
     <div className="profile">
       <div className="profile-info">
@@ -122,6 +194,18 @@ export default function Profile() {
         )}
       </div>
       <h3>Favourite movies</h3>
+      <button className="share-button" onClick={handleShareFavorites}>
+        Share favorite list
+      </button>
+      {/*Display the generated shareable link if it exists */}
+      {shareLink && (
+        <div className="share-link">
+          <p>Share this link with others: </p>
+          <a href={shareLink} target="_blank" rel="noopener noreferrer">
+            {shareLink}
+          </a>
+        </div>
+      )}
       <div className="movies-grid">
         {favorites.map((movie) => (
           <li key={movie.movie_id} className="movie-card">
@@ -143,6 +227,29 @@ export default function Profile() {
           </li>
         ))}
       </div>
+
+       {/* Display user's reviews */}
+       <h3>Your Reviews</h3>
+      <div className="user-reviews">
+        {userReviews.length > 0 ? (
+          userReviews.map((review) => (
+            <div key={review.movie_id} className="review-card">
+              <Link to={`/movie/${review.movie_id}`} className='review-movie-link'>
+                {review.movie_title}
+              </Link>
+              <p>Review: {review.review}</p>
+              <p>Grade: {review.grade}</p>
+              <p>Date: {new Date(review.created_at).toLocaleString()}</p>
+              <button onClick={() => handlerRemoveFromReviews(review.movie_id)}>
+                Remove review
+              </button>
+            </div>
+          ))
+        ) : (
+          <p>No reviews available.</p>
+        )}
+      </div>
+
       <button
         className="delete-account-button"
         /* onClick={() => handleDeleteAccount(user.id)} */

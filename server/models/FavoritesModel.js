@@ -34,7 +34,23 @@ const getAllFavorites = async (userId) => {
     )
 }
 
+//Sharing functionality
+const insertSharedList = async (shareId, userId, favorites) => {
+    
+    const result = await pool.query(
 
+        "INSERT INTO shared_lists (share_id, user_id, movie_id) VALUES ($1, $2, $3) RETURNING *",
+        [shareId, userId, JSON.stringify(favorites)]
+    )
+    return result.rowCount
+}
+const getSharedListById = async (shareId) => {
 
+    const result = await pool.query(
+        "SELECT favorites FROM shared_lists WHERE share_id = $1",
+        [shareId]
+    )
+    return result.rows[0]?.favorites
+}
 
-export { insertToFavorites , deleteFromFavorites, getAllFavorites }
+export { insertToFavorites , deleteFromFavorites, getAllFavorites, insertSharedList, getSharedListById }
