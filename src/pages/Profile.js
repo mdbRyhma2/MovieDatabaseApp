@@ -13,6 +13,7 @@ export default function Profile() {
   const [error, setError] = useState(null);
   const [shareLink, setShareLink] = useState("");
   const [userReviews, setUserReviews] = useState([]);
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   useEffect(() => {
     // Check if the user is logged in and has a valid token
@@ -43,7 +44,7 @@ export default function Profile() {
   }, [user.token]);
 
   const handleDeleteAccount = async (id) => {
-    console.log(process.env.REACT_APP_API_URL + "/user/delete/")
+    console.log(process.env.REACT_APP_API_URL + "/user/delete/");
     try {
       await axios.delete(process.env.REACT_APP_API_URL + "/user/delete/", {
         headers: {
@@ -57,7 +58,7 @@ export default function Profile() {
       alert("Account deleted!");
     } catch (error) {
       console.error("Failed to delete account:", error);
-      alert("Failed to delete account. /MD");
+      alert("Failed to delete account.");
     }
   };
 
@@ -76,11 +77,15 @@ export default function Profile() {
           },
         }
       );
+      console.log("fetchFavorites data", response.data)
       setFavorites(response.data);
       console.log(favorites);
     } catch (error) {
-      console.error(error);
-      console.log("error");
+      if (error.status === 404){
+        setFavorites([])
+        console.log("No favorites found")
+      }
+      console.log("error ", error.status);
     }
   };
 
@@ -99,7 +104,8 @@ export default function Profile() {
       fetchFavorites();
       alert("Movie removed from favorites!");
     } catch (error) {
-      console.error("Failed to remove movie:", error);
+
+      console.error("Failed to remove movie:", error.status);
       alert("Failed to remove movie from favorites. /MD");
     }
   };
@@ -246,10 +252,33 @@ export default function Profile() {
 
       <button
         className="delete-account-button"
-        onClick={() => handleDeleteAccount(user.id)}
+        /* onClick={() => handleDeleteAccount(user.id)} */
+        onClick={() => setIsModalOpen(true)} // Open modal
       >
         Delete account
       </button>
+
+      {isModalOpen && (
+        <div className="delete-modal">
+          <div className="delete-modal-content">
+            <h3>Confirm Account Deletion</h3>
+            <p>
+              Are you sure you want to delete your account? This action cannot be undone.
+            </p>
+            <div className="delete-modal-actions">
+              <button
+                onClick={() => {
+                  handleDeleteAccount(user.id);
+                  setIsModalOpen(false); // Close modal
+                }}
+              >
+                Confirm
+              </button>
+              <button onClick={() => setIsModalOpen(false)}>Cancel</button>
+            </div>
+          </div>  
+        </div>
+      )}
     </div>
   );
 }

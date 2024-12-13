@@ -1,5 +1,8 @@
 import { pool } from "../helpers/db.js"
 
+// Models for favorites
+
+// Add to favorites
 const insertToFavorites = async (userId, movieId, movieTitle, poster_path, genres, releaseDate, overview) => {
 
     const result =  await pool.query(
@@ -11,6 +14,7 @@ const insertToFavorites = async (userId, movieId, movieTitle, poster_path, genre
     return result.rowCount
 }
 
+// Delete from favorites
 const deleteFromFavorites = async (userId, movieId) => {
    
     const result =  await pool.query(
@@ -22,6 +26,7 @@ const deleteFromFavorites = async (userId, movieId) => {
     return result.rowCount
 }
 
+// Get all favorites
 const getAllFavorites = async (userId) => {
 
     return await pool.query("SELECT * from favorite_movies WHERE user_id = $1" ,
