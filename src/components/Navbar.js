@@ -1,12 +1,15 @@
 import React, { useState, useEffect } from "react";
-import { Link, useNavigate, useLocation } from "react-router-dom";
-/* import "./Navbar.css";
- */ import { useUser } from "../context/useUser";
-import searchIcon from "../images/search.png";
+import { useNavigate, useLocation, NavLink } from "react-router-dom";
+import "./Navbar.css";
+import { useUser } from "../context/useUser";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faSearch } from "@fortawesome/free-solid-svg-icons";
 
-export default function Navbar() {
+export default function CustomNavbar() {
   const { user, logOut } = useUser(); // Accessing user data and the setter function
   const [searchParam, setSearchParam] = useState("");
+  const [isMenuOpen, setIsMenuOpen] = useState(false); // State to toggle menu
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false); // State for dropdown
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -17,6 +20,9 @@ export default function Navbar() {
       setSearchParam(query);
       navigate(location.pathname, { replace: true }); // Tyhjennetään edellinen haku enpointista
     }
+    // Close dropdown and menu when user changes page
+    setIsDropdownOpen(false);
+    setIsMenuOpen(false);
   }, [location]);
 
   const handleSearchSubmit = (e) => {
@@ -27,145 +33,101 @@ export default function Navbar() {
     }
   };
 
-  const handleAdvancedSearch = () => {
-    navigate("/search");
-  };
-
   const handleLogout = () => {
     logOut(); // Call the logOut function from the context
     navigate("/"); // Redirect to the homepage after logout
   };
 
-  /* return (
+  const toggleMenu = () => {
+    setIsMenuOpen(!isMenuOpen); // Toggle menu visibility
+  };
+
+  const toggleDropdown = () => {
+    setIsDropdownOpen(!isDropdownOpen); // Toggle dropdown visibility
+  };
+
+  return (
     <nav className="navbar">
       <div className="navbar-container">
         <a className="navbar-brand" href="/">
           Movie App
         </a>
-        <div className="navbar-desktop" id="navbarSupportedContent">
-          <ul className="navbar-links">
+        {/* Menu for smaller screens */}
+        <div className="navbar-mobile" onClick={toggleMenu}>
+          <span className="menu-icon">&#9776;</span>
+        </div>
+        <div className={`navbar-desktop ${isMenuOpen ? "active" : ""}`}>
+          <ul className={`navbar-links ${isMenuOpen ? "active" : ""}`}>
             <li className="nav-item">
-              <Link className="nav-link" to="/movies">
+              <NavLink
+                className={({ isActive }) => `nav-link ${isActive ? "active" : ""}`}
+                to="/movies"
+              >
                 Movies
-              </Link>
+              </NavLink>
             </li>
             <li className="nav-item">
-              <Link className="nav-link" to="/showtimes">
+              <NavLink
+                className={({ isActive }) => `nav-link ${isActive ? "active" : ""}`}
+                to="/showtimes"
+              >
                 Showtimes
-              </Link>
+              </NavLink>
             </li>
             <li className="nav-item">
-              <Link className="nav-link" to="/groups">
+              <NavLink
+                className={({ isActive }) => `nav-link ${isActive ? "active" : ""}`}
+                to="/groups"
+              >
                 Groups
-              </Link>
+              </NavLink>
             </li>
-            <form onSubmit={handleSearchSubmit}>
+            <li className="nav-item">
+              <NavLink
+                className={({ isActive }) => `nav-link ${isActive ? "active" : ""}`}
+                to="/search"
+              >
+                Search
+              </NavLink>
+            </li>
+            {/* Search bar */}
+            <form className="search-form" onSubmit={handleSearchSubmit}>
               <input
+                className="search-input"
                 type="text"
                 placeholder="Search..."
                 value={searchParam}
                 onChange={(e) => setSearchParam(e.target.value)}
               />
-              <button className="navbar-button" type="submit">Search</button>
-            </form>
-            <li className="nav-item">
-              <button className="navbar-button" onClick={handleAdvancedSearch}>
-                Advanced Search
+              <button type="submit" className="search-icon-button">
+                <FontAwesomeIcon icon={faSearch} className="search-icon" />
               </button>
-            </li>
-            <li className="nav-item">
-              {user.token ? (
-                <>
-                <button className="navbar-button" onClick={() => navigate("/profile")}>
-                  Profile
-                </button>
-                <button className="navbar-button" onClick={handleLogout}>
-                  Log Out
-                </button>
-                </>
-              ) : (
-                <button className="navbar-button" onClick={() => navigate('/login')}>
+            </form>
+            {/* User menu dropdown */}
+            <li className="nav-item dropdown">
+              {!user.token ? (
+                <button className="navbar-button" onClick={() => navigate("/login")}>
                   Login
                 </button>
+              ) : (
+                <div className="dropdown-container">
+                  <button
+                    className="navbar-button dropdown-toggle"
+                    onClick={toggleDropdown}
+                  >
+                    {user.username}
+                  </button>
+                  {isDropdownOpen && (
+                    <ul className="dropdown-menu">
+                      <li onClick={() => navigate("/profile")}>Profile</li>
+                      <li onClick={handleLogout}>Logout</li>
+                    </ul>
+                  )}
+                </div>
               )}
             </li>
           </ul>
         </div>
-      </div>
-    </nav>
-  ); */
-
-  return (
-    <nav class="navbar navbar-expand-lg navbar-light bg-light">
-      <a class="navbar-brand" href="/">
-        Movie App
-      </a>
-      <button
-        class="navbar-toggler"
-        type="button"
-        data-toggle="collapse"
-        data-target="#navbarNavDropdown"
-        aria-controls="navbarNavDropdown"
-        aria-expanded="false"
-        aria-label="Toggle navigation"
-      >
-        <span class="navbar-toggler-icon"></span>
-      </button>
-      <div class="collapse navbar-collapse" id="navbarNavDropdown">
-        <ul class="navbar-nav">
-          <li class="nav-item active">
-            <a class="nav-link" href="/">
-              Home
-            </a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="/showtimes">
-              Showtimes
-            </a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="/groups">
-              Groups
-            </a>
-          </li>
-          {/* <form class="form-inline my-2 my-lg-0">
-            <input
-              class="form-control mr-sm-2"
-              type="search"
-              placeholder="Search"
-              aria-label="Search"
-            />
-            <button class="btn btn-outline-success my-2 my-sm-0" type="submit">
-              Search
-            </button>
-          </form> */}
-          {user.token ? (
-            <>
-              <li className="nav-item dropdown">
-              <a
-                className="nav-link dropdown-toggle"
-                href="#"
-                id="navbarDropdownMenuLink"
-                role="button"
-                data-bs-toggle="dropdown"
-                aria-expanded="false"
-              >
-                {user.username}
-              </a>
-              <ul className="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
-                <li><a className="dropdown-item" href="/profile">Profile</a></li>
-                <li><a className="dropdown-item" href="#" onClick={handleLogout}>Logout</a></li>
-              </ul>
-            </li>
-            </>
-          ) : (
-            <li class="nav-item">
-            <a class="nav-link" href="/login">
-              Login
-            </a>
-          </li>
-          )}
-        </ul>
       </div>
     </nav>
   );

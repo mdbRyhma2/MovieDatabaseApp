@@ -1,5 +1,4 @@
 
-import { response } from 'express'
 import { insertToFavorites, deleteFromFavorites, getAllFavorites } from '../models/FavoritesModel.js'
 
 const postAddToFavorites = async (req, res, next) => {
@@ -18,6 +17,7 @@ const postAddToFavorites = async (req, res, next) => {
     }
 
 }
+
 
 const postRemoveFromFavorite = async (req, res, next) => {
 
@@ -55,5 +55,6 @@ const postGetFavorites = async (req, res, next) => {
         res.status(500).json({ error: "Failed to remove movie from favorites." })
     }
 }
+
 
 export { postAddToFavorites, postRemoveFromFavorite, postGetFavorites }
