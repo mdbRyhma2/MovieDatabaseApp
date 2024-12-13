@@ -70,8 +70,6 @@ function MovieDetails() {
 
   }, [id]);
 
-  }, [id /*, reviewsFetched*/]);
-
   if (loading) {
     return <p>Loading...</p>;
   }
