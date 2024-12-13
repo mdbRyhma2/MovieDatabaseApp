@@ -61,14 +61,6 @@ export default function CustomNavbar() {
             <li className="nav-item">
               <NavLink
                 className={({ isActive }) => `nav-link ${isActive ? "active" : ""}`}
-                to="/movies"
-              >
-                Movies
-              </NavLink>
-            </li>
-            <li className="nav-item">
-              <NavLink
-                className={({ isActive }) => `nav-link ${isActive ? "active" : ""}`}
                 to="/showtimes"
               >
                 Showtimes
