@@ -1,21 +1,9 @@
-body {
-    font-family: Arial, sans-serif;
-    margin: 0;
-    padding: 0;
-    background-color: #f4f4f4;
-  }
-
-  #root {
-     margin-top: 20px; 
-  }
-  
-  .container {
-    width: 80%;
+.groups-container {
     max-width: 1200px;
-    background: white;
     padding: 20px;
-    border-radius: 10px;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+    margin: 0 auto;
+    height: 100vh;
+    font-family: Arial, sans-serif;
   }
   
   .group-image {
