@@ -20,6 +20,7 @@ app.use("/groups", groupsRouter);
 app.use("/group", groupsRouter);
 app.use("/favorites", favoritesRouter)
 app.use("/reviews", reviewRouter);
+//app.use("/share", shareRouter);
 
 app.use((err, req, res, next) => {
   const statusCode = err.statusCode || 500;

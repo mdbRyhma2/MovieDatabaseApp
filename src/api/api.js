@@ -101,7 +101,7 @@ export const fetchMovieReviews = async (movieId) => {
         });
         return response.data;
     }catch (error) {
-        console.error('Error fetchung reviews: ', error.message)
+        console.error('Error fetching reviews: ', error.message)
         return []
     }
 }

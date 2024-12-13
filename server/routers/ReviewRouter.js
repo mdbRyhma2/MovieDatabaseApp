@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { postAddReview, getMovieReviews } from '../controllers/ReviewController.js'
+import { postAddReview, getMovieReviews, getAllMovieReviews, getUserReviews, postRemoveFromReviews } from '../controllers/ReviewController.js'
 
 const router = Router();
 
@@ -10,6 +10,13 @@ router.post("/add", postAddReview)
 router.get("/:movieId", getMovieReviews)
 
 //Route to get all reviews
+router.get("/", getAllMovieReviews)
+
+//Router to get reviews for a logged in user
+router.get("/user/:userId", getUserReviews)
+
+//Router to remove reviews
+router.delete("/removeFromReviews", postRemoveFromReviews)
 
 
 export default router

@@ -40,4 +40,30 @@
 .slick-prev, .slick-next {
     z-index: 2;
     color: black; /* Style arrows */
-  }
+}
+.review-card {
+    background: #fff;
+    border-radius: 10px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    padding: 10px;
+    text-align: center;
+    transition: transform 0.3 ease, box-shadow 0.3 ease;
+    height: 350px;
+}
+.review-movie-link {
+    color:#333;
+    text-decoration: none;
+    font-weight: bold;
+    transition: color 0.3s ease, text-decoration 0.3s ease;
+}
+.review-movie-link:hover {
+    color: #0056b3;
+    text-decoration: underline;
+}
+.review-movie-link:focus {
+    outline: 2px solid #0056b3;
+    outline-offset: 2px;
+}
+.review-title {
+    margin-top: 20px;
+}
