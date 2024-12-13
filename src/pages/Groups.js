@@ -51,7 +51,7 @@ export default function Groups() {
   }, []);
 
   return (
-    <div id="container">
+    <div className="groups-container">
       <div className="create-group">
         <h2>Create a New Group</h2>
         <form onSubmit={handleCreateGroup}>
