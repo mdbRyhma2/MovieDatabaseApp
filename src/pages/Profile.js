@@ -14,6 +14,7 @@ export default function Profile() {
   const [shareLink, setShareLink] = useState("");
   const [userReviews, setUserReviews] = useState([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [userGroups, setUserGroups] = useState([]);
 
   useEffect(() => {
     // Check if the user is logged in and has a valid token
@@ -31,6 +32,7 @@ export default function Profile() {
           setProfileData(response.data); // Set the user data
           fetchFavorites();
           fetchUserReviews();
+          fetchUserGroups();
         } catch (err) {
           setError("Failed to fetch profile data.");
           console.error(err);
@@ -43,6 +45,25 @@ export default function Profile() {
     }
   }, [user.token]);
 
+  // Fetch user's groups
+  const fetchUserGroups = async () => {
+    try {
+      const response = await axios.get(
+        `${process.env.REACT_APP_API_URL}/groups/getUserGroups/${user.id}`,
+        {
+          headers: {
+            Authorization: `Bearer ${user.token}`,
+          },
+        }
+      );
+      setUserGroups(response.data);
+    } catch (error) {
+      console.error("Error fetching user groups:", error);
+      setUserGroups([]);
+    }
+  };
+
+  // Delete account
   const handleDeleteAccount = async (id) => {
     console.log(process.env.REACT_APP_API_URL + "/user/delete/");
     try {
@@ -64,6 +85,7 @@ export default function Profile() {
 
   if (error) return <div>{error}</div>;
 
+  // Fetch favorite movies
   const fetchFavorites = async () => {
     try {
       const response = await axios.get(
@@ -77,18 +99,19 @@ export default function Profile() {
           },
         }
       );
-      console.log("fetchFavorites data", response.data)
+      console.log("fetchFavorites data", response.data);
       setFavorites(response.data);
       console.log(favorites);
     } catch (error) {
-      if (error.status === 404){
-        setFavorites([])
-        console.log("No favorites found")
+      if (error.status === 404) {
+        setFavorites([]);
+        console.log("No favorites found");
       }
       console.log("error ", error.status);
     }
   };
 
+  // Delete a favorite movie
   const handleRemoveFromFavoritesClick = async (movie_id) => {
     console.log(favorites);
     try {
@@ -104,13 +127,12 @@ export default function Profile() {
       fetchFavorites();
       alert("Movie removed from favorites!");
     } catch (error) {
-
       console.error("Failed to remove movie:", error.status);
       alert("Failed to remove movie from favorites. /MD");
     }
   };
 
-  //Handler for sharing favorites
+  // Handler for sharing favorites
   const handleShareFavorites = async () => {
     try {
       const response = await axios.post(
@@ -124,24 +146,24 @@ export default function Profile() {
             Authorization: `Bearer ${user.token}`, //Send token for authorization
           },
         }
-      )
+      );
 
       if (response.data.shareId) {
         //Generate the shareable link using the shareId
-        const link = `${window.location.origin}/favorites/${response.data.shareId}`
-        setShareLink(link) //Store the generated link in state
+        const link = `${window.location.origin}/favorites/${response.data.shareId}`;
+        setShareLink(link); //Store the generated link in state
         alert("Share link created succesfully!");
       }
     } catch (error) {
-      console.error("Failed to create shareable list: ", error)
-      alert("Failed to create shareable list.") //Notify of failure
+      console.error("Failed to create shareable list: ", error);
+      alert("Failed to create shareable list."); //Notify of failure
     }
-  }
+  };
 
-  //Fetch users reviews
-  console.log(user.id)
+  // Fetch users reviews
+  console.log(user.id);
   const fetchUserReviews = async () => {
-    console.log('fetchUserReviews called');
+    console.log("fetchUserReviews called");
     try {
       const response = await axios.get(
         `${process.env.REACT_APP_API_URL}/reviews/user/${user.id}`, // Include userId in the path
@@ -175,11 +197,12 @@ export default function Profile() {
       }
     } catch (error) {
       console.error("Failed to remove review", error);
-      alert("Failed to remove review.")
+      alert("Failed to remove review.");
     }
-  }
+  };
 
   return (
+    /* Displays user information */
     <div className="profile">
       <div className="profile-info">
         {profileData && (
@@ -193,6 +216,26 @@ export default function Profile() {
           </>
         )}
       </div>
+
+      {/* Displays user's groups */}
+      <h3>Your Groups</h3>
+      <div className="user-groups">
+        <ul>
+          {userGroups.map((group) => (
+            <li key={group.id}>
+              <Link
+                to={{
+                  pathname: `/group/${group.group_id}`,
+                  state: { userGroups: group },
+                }}
+              >
+                {group.group_name}
+              </Link>
+            </li>
+          ))}
+        </ul>
+      </div>
+
       <h3>Favourite movies</h3>
       <button className="share-button" onClick={handleShareFavorites}>
         Share favorite list
@@ -206,9 +249,11 @@ export default function Profile() {
           </a>
         </div>
       )}
-      <div className="movies-grid">
+
+      {/* Displays user's favorite movies */}
+      <div className="favorite-movies-grid">
         {favorites.map((movie) => (
-          <li key={movie.movie_id} className="movie-card">
+          <li key={movie.movie_id} className="favorite-movie-card">
             {movie.poster_path ? (
               <Link to={`/movie/${movie.movie_id}`}>
                 <img
@@ -220,21 +265,20 @@ export default function Profile() {
               <p>No Image Available</p>
             )}
             <Link to={`/movie/${movie.movie_id}`}>{movie.movie_title}</Link>
-
-            <button onClick={() => handleRemoveFromFavoritesClick(movie.movie_id)}>
+            <button className="remove-favorite-btn" onClick={() => handleRemoveFromFavoritesClick(movie.movie_id)}>
               Remove from favorites
             </button>
           </li>
         ))}
       </div>
 
-       {/* Display user's reviews */}
-       <h3>Your Reviews</h3>
+      {/* Display user's reviews */}
+      <h3>Your Reviews</h3>
       <div className="user-reviews">
         {userReviews.length > 0 ? (
           userReviews.map((review) => (
             <div key={review.movie_id} className="review-card">
-              <Link to={`/movie/${review.movie_id}`} className='review-movie-link'>
+              <Link to={`/movie/${review.movie_id}`} className="review-movie-link">
                 {review.movie_title}
               </Link>
               <p>Review: {review.review}</p>
@@ -251,8 +295,7 @@ export default function Profile() {
       </div>
 
       <button
-        className="delete-account-button"
-        /* onClick={() => handleDeleteAccount(user.id)} */
+        className="delete-account-btn"
         onClick={() => setIsModalOpen(true)} // Open modal
       >
         Delete account
@@ -276,7 +319,7 @@ export default function Profile() {
               </button>
               <button onClick={() => setIsModalOpen(false)}>Cancel</button>
             </div>
-          </div>  
+          </div>
         </div>
       )}
     </div>

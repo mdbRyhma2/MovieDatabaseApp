@@ -17,8 +17,8 @@ export default function Search() {
         { id: 16, name: 'Animation' },
         { id: 35, name: 'Comedy' },
         { id: 80, name: 'Crime' },
-        { id: 99, name: 'Documentary' },
         { id: 18, name: 'Drama' },
+        { id: 99, name: 'Documentary' },
         { id: 10751, name: 'Family' },
         { id: 14, name: 'Fantasy' },
         { id: 36, name: 'History' },
@@ -140,7 +140,7 @@ export default function Search() {
                     </select>
                 </div>*/}
                 <div >
-                    <label>Genres</label>
+                <label className="genres-label">Genres</label>
                     <div className='genres-container'>
                     <label className='genre-item'>
                         <input
@@ -165,8 +165,8 @@ export default function Search() {
                 </div>
                 </div>
                 <div className='filter'>
-                    <label>Release year</label>
                     <div className='slider-container'>
+                    <label>Release year</label>
                         <div className='range-labels'>
                             <span>{yearRange[0]}</span> - <span>{yearRange[1]}</span>
                         </div>

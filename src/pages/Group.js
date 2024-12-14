@@ -229,8 +229,9 @@ export default function Group({}) {
                   {member.username}
                   {member.role}
                   {isOwner && (
-                    <button onClick={() => {
-                      deleteGroupMember(member.id)}}>
+                    
+                    <button className="delete-member-btn" onClick={() => deleteGroupMember(member.id)}>
+
                       Delete user from group
                     </button>
                   )}
@@ -244,11 +245,11 @@ export default function Group({}) {
       )}
 
       {isMember ? (
-        <section className="movies">
+        <section className="group-movies">
           <h2>Movies</h2>
-          <div className="movies-grid">
+          <div className="group-movies-grid">
             {movies.map((movie) => (
-              <li key={movie.movie_id} className="movie-card">
+              <li key={movie.movie_id} className="group-movie-card">
                 {movie.poster_path ? (
                   <Link to={`/movie/${movie.movie_id}`}>
                     <img
@@ -260,7 +261,7 @@ export default function Group({}) {
                   <p>No Image Available</p>
                 )}
                 <Link to={`/movie/${movie.movie_id}`}>{movie.movie_title}</Link>
-                <button onClick={() => handleRemoveFromGroupMoviesClick(movie.movie_id)}>
+                <button className="delete-group-movie-btn" onClick={() => handleRemoveFromGroupMoviesClick(movie.movie_id)}>
                   Remove
                 </button>
               </li>
