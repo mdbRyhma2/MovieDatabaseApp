@@ -60,11 +60,3 @@ CREATE TABLE movie_reviews (
     PRIMARY KEY (user_id, movie_id),
     FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
 );
-
-/*New table for Shared Lists*/
-CREATE TABLE shared_lists (
-    share_id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-    user_id INT NOT NULL,
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
-);
