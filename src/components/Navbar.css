@@ -8,7 +8,7 @@
   top: 0;
   left: 0;
   z-index: 1000;
-  box-shadow: 0 4px 6px rgba(255, 255, 255, 0.8);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
 }
 
 .navbar-container {
@@ -114,8 +114,12 @@
 }
 
 /* Dropdown menu */
+.dropdown-toggle {
+  width: 130%;
+}
+
 .dropdown-container {
-  position: relative;
+  width: 80%;
 }
 
 .dropdown-menu {
@@ -123,6 +127,7 @@
   background-color: white;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
   display: block;
+  min-width: 110%;
 }
 
 .dropdown-menu li {
@@ -188,6 +193,7 @@
   .search-input {
     width: 60%;
   }
+
 }
 
 @media (max-width: 500px) {

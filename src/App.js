@@ -1,4 +1,3 @@
-
 import React from "react";
 import { Routes, Route } from "react-router-dom";
 import Home from "./pages/Home";
@@ -12,14 +11,16 @@ import Authentication, { AuthenticationMode } from "./pages/Authentication";
 import MovieDetails from "./pages/MovieDetails";
 import Profile from "./pages/Profile";
 import ProtectedRoute from "./components/ProtectedRoute";
+import Container from "./components/Container";
 
 export default function App() {
 
   return (
-    <div style={{ paddingTop: "6rem" }}>
+    <div>
       <Navbar />
       <Header />
 
+<Container>
       <Routes>
         <Route path="/" exact element={<Home />} />
         <Route path="/showtimes" element={<Showtimes />} />
@@ -45,6 +46,7 @@ export default function App() {
           <Route path="/delete/" element={<Profile />} />
         </Route>
       </Routes>
+      </Container>
     </div>
   );
 }
