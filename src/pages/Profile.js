@@ -274,19 +274,27 @@ export default function Profile() {
 
       {/* Display user's reviews */}
       <h3>Your Reviews</h3>
-      <div className="user-reviews">
+      <div className="user-reviews-grid">
         {userReviews.length > 0 ? (
           userReviews.map((review) => (
-            <div key={review.movie_id} className="review-card">
-              <Link to={`/movie/${review.movie_id}`} className="review-movie-link">
+            <div key={review.movie_id} className="user-reviews-card">
+              <Link to={`/movie/${review.movie_id}`} className="reviews-movie-link">
                 {review.movie_title}
               </Link>
-              <p>Review: {review.review}</p>
-              <p>Grade: {review.grade}</p>
-              <p>Date: {new Date(review.created_at).toLocaleString()}</p>
-              <button onClick={() => handlerRemoveFromReviews(review.movie_id)}>
+              <div className="review-details">
+              <p className="review-item">
+                <strong>Review:</strong> {review.review}
+              </p>
+              <p className="review-item">
+                <strong>Grade:</strong> {review.grade}
+              </p>
+              <p className="review-item">
+                <strong>Date:</strong> {new Date(review.created_at).toLocaleString()}
+              </p>
+              <button className="remove-review-btn" onClick={() => handlerRemoveFromReviews(review.movie_id)}>
                 Remove review
               </button>
+              </div>
             </div>
           ))
         ) : (
