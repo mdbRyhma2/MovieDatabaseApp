@@ -34,7 +34,7 @@
 .showtimes-ul {
     list-style-type: none;
     padding: 0;
-    width: 80%;
+    width: 100%;
     margin: 0 auto;
 }
 /*Showtime card*/
@@ -90,4 +90,20 @@
 }
 .clear-button:hover {
     background-color: #ff6f61;
+}
+
+/* Media queries for smaller screens */
+@media (max-width: 500px) {
+.date-input {
+    width: 40%;
+}
+
+.area-select {
+    width: 80%;
+}
+
+ .showtime-card {
+    width: 90%;
+} 
+
 }
