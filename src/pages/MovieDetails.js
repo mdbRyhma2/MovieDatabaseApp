@@ -158,7 +158,7 @@ function MovieDetails() {
     <div className="movie-details-container">
       <div className="movie-header">
         <h1 className="movie-title">{movie.title}</h1>
-        <div className="movie-rating">☆☆☆☆☆</div>
+        {/*<div className="movie-rating">☆☆☆☆☆</div>*/}
       </div>
       <div className="movie-main-content">
         <div className="poster-and-player">
@@ -247,7 +247,7 @@ function MovieDetails() {
             >
               Write a review
             </button>
-            <span className="view-all-link">View all</span>
+            {/*<span className="view-all-link">View all</span>*/}
           </div>
         </div>
 
