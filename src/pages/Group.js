@@ -80,7 +80,7 @@ export default function Group({}) {
       setMovies([]);
       setMembers([]);
     }
-  }, [id, user.id]);
+  }, [id]);
 
   // Delete group and navigate back to the groups list
   const deleteGroupPage = async () => {
@@ -125,10 +125,39 @@ export default function Group({}) {
     }
   };
 
-  // Leave a group or delete a member
-  const deleteGroupMember = async () => {
+  // Delete a member
+  const deleteGroupMember = async (userId) => {
     const confirmDelete = window.confirm(
       "Are you sure you want to delete this groupmember?"
+    );
+    console.log("ID", userId)
+    if (!confirmDelete) {
+      return;
+    }
+    try {
+      const response = await axios.delete(
+        `${process.env.REACT_APP_API_URL}/group/groupmember/${id}`,
+        {
+          data: {
+            user_id: userId,
+          },
+        }
+      );
+      alert("Groupmember deleted successfully");
+      //delete user from members array
+      setMembers((prevMembers) =>
+        prevMembers.filter((member) => member.username !== user.username)
+      );
+    } catch (error) {
+      console.error("Error deleting groupmember:", error);
+      alert("Failed to delete groupmember.");
+    }
+  };
+
+  // Leave a group
+  const leaveGroup = async () => {
+    const confirmDelete = window.confirm(
+      "Are you sure you want leave this groupmember?"
     );
     if (!confirmDelete) {
       return;
@@ -141,11 +170,6 @@ export default function Group({}) {
             user_id: user.id,
           },
         }
-      );
-      alert("Groupmember deleted successfully");
-      //delete user from members array
-      setMembers((prevMembers) =>
-        prevMembers.filter((member) => member.username !== user.username)
       );
       setIsMember(false); // Update member status
     } catch (error) {
@@ -187,7 +211,7 @@ export default function Group({}) {
               : "You are not a member of the group"}
           </p>
           {isMember ? (
-            <button onClick={deleteGroupMember}>Leave Group</button>
+            <button onClick={leaveGroup}>Leave Group</button>
           ) : (
             <button onClick={joinGroup}>Join Group</button>
           )}
@@ -205,7 +229,9 @@ export default function Group({}) {
                   {member.username}
                   {member.role}
                   {isOwner && (
-                    <button className="delete-member-btn" onClick={() => deleteGroupMember(member.user_id)}>
+                    
+                    <button className="delete-member-btn" onClick={() => deleteGroupMember(member.id)}>
+
                       Delete user from group
                     </button>
                   )}

@@ -40,7 +40,7 @@ const insertGroupMember = async (user_id, group_id, role="user") => {
 //function to fetch group members from database
 const getGroupMembers = async (group_id) => {
   return await pool.query(
-    `SELECT users.username
+    `SELECT users.username, users.id
       FROM users 
       JOIN user_groups ON users.id = user_groups.user_id
       WHERE user_groups.group_id = $1;`,
@@ -49,10 +49,10 @@ const getGroupMembers = async (group_id) => {
 };
 
 //function to delete groupmember
-const deleteGroupMember = async (user_id) => {
+const deleteGroupMember = async (group_id , user_id) => {
   return await pool.query(
-    "DELETE FROM user_groups WHERE user_id = $1 RETURNING *",
-    [user_id]
+    "DELETE FROM user_groups WHERE group_id = $1 AND user_id = $2 RETURNING *",
+    [group_id , user_id]
   );
 };
 

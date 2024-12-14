@@ -128,8 +128,9 @@ const joinGroupObject = (user_id, group_id) => {
 // Controller to handle groupmember delete
 const deleteGroupMemberObject = async (req, res, next) => {
   try {
+    const group_id = req.params.id
     const user_id = req.body.user_id;
-    const result = await deleteGroupMember(user_id);
+    const result = await deleteGroupMember(group_id, user_id);
     return res
       .status(200)
       .json({ message: "Groupmember deleted successfully" });
