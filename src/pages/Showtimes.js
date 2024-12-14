@@ -62,17 +62,15 @@ const handleDateChange = (e) => {
   setSelectedDate(formattedDate)
 }
 
-//Handler for clear all
-/*
-const handleClearAll = () =>{
-  setSelectedArea('')
-  setSelectedDate('')
-  setShowtimes([])
-}
-*/
-
 //Fetch data when the component mounts or selected filters change
 useEffect(() => {
+  //Set the current date as a default value for selectedDate
+  /*
+  const today = new Date().toISOString().split('T')[0]
+  if (!selectedDate) {
+    setSelectedDate(today)
+  }
+  */
   //Fetch theatre areas if not already loaded
   if (!areas.length) {
       axios
@@ -119,11 +117,6 @@ return (
               </option>
           ))}
       </select>
-      {/*
-      <button onClick={handleClearAll} className="clear-button">
-        Clear all
-      </button>
-      */}
     </div>
       <div className="showtimes-list">
           <h2 className="showtimes-title">Showtimes</h2>
@@ -144,7 +137,10 @@ return (
                           <h3 className="showtime-title">{show.title}</h3>
                           <p className="showtime-theatre">{show.theatre}</p>
                           <p className="showtime-time">
-                            <strong>{new Date(show.startTime).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit'})}</strong>
+                            <strong>
+                              Date: {new Date(show.startTime).toLocaleDateString()}<br/>
+                              Time: {new Date(show.startTime).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit'})}
+                            </strong>
                           </p>
                           <p className="showtime-genres-language">
                             <strong>Language: </strong>{show.language} | <strong>Genre: </strong>{show.genres}
