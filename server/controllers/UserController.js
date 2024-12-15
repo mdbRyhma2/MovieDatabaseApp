@@ -15,8 +15,12 @@ const postRegistration = async (req, res, next) => {
   try {
     const { email, username, password } = req.body;
 
-    if (!email || email.length === 0)
+    // Email validation regex
+    const emailRegex = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,6}$/;
+    if (!email || email.length === 0 || !emailRegex.test(email)) {
       return next(new ApiError("Invalid email for user", 400));
+    }
+
     if (!username || username.length === 0)
       return next(new ApiError("Invalid username for user", 400));
     if (!password || password.length < 8)
@@ -119,15 +123,6 @@ const postLogin = async (req, res, next) => {
   }
 };
 
-// Controller to handle user logout
-const postLogout = async (req, res, next) => {
-  try {
-    return res.status(200).json({ message: "Logged out successfully" });
-  } catch (error) {
-    return next(error);
-  }
-};
-
 // Controller to handle getting user info
 const getUserInfo = async (req, res, next) => {
   try {
@@ -147,6 +142,7 @@ const getUserInfo = async (req, res, next) => {
     const user = result[0];
     return res.status(200).json({
       username: user.username,
+      email: user.email,
       first_name: user.first_name,
       last_name: user.last_name,
     });
@@ -157,7 +153,6 @@ const getUserInfo = async (req, res, next) => {
 
 // Controller to handle account delete
 const deleteAccount = async (req, res, next) => {
-  console.log("user controller delete account")
   try {
     if (!req.body.id) {
       return next(new ApiError("Unauthorized access", 401));
@@ -172,4 +167,4 @@ const deleteAccount = async (req, res, next) => {
   }
 };
 
-export { postRegistration, postLogin, postLogout, getUserInfo, deleteAccount };
+export { postRegistration, postLogin, getUserInfo, deleteAccount };

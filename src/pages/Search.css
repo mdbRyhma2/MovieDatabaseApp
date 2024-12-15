@@ -20,10 +20,10 @@
 .search-filter h2 {
     margin-bottom: 20px;
 }
-.filter {
-    margin-bottom: 20px;
+.name-filter label, .genres-label, .year-filter label{
+    margin-top: 20px;
 }
-.filter label, .genres-label{
+.name-filter label, .year-filter label, .genres-label{
     display: block;
     font-weight: bold;
     margin-bottom: 8px;
@@ -51,6 +51,7 @@ input[type="text"] {
 .slider-container {
     width: 100%;
     position: relative;
+    margin-bottom: 20px;
 }
 .range-track {
     height: 6px;
@@ -122,6 +123,12 @@ input[type="text"] {
 }
 
 /* Media queries for smaller screens */
+@media (max-width: 1000px) {
+    .movies-grid {
+        grid-template-columns: repeat(4, 1fr);
+    }
+}
+
 @media (max-width: 800px) {
     .search-page {
         flex-direction: column;
@@ -145,20 +152,24 @@ input[type="text"] {
     }
 
     .slider-container {
-        width: 30%;
-        position: absolute;
-        bottom: 500px;
-        left: 300px;
+        width: 40%;
+        margin-bottom: 10px;
     }
 
     .movies-grid {
         grid-template-columns: repeat(3, 1fr);
     }
 
-    
+    .genres-label, .year-filter label {
+        margin-top: 8px;
+    }
 }
 
 @media (max-width: 500px) {
+    .slider-container {
+        width: 100%;
+    }
+
     .movies-grid {
         grid-template-columns: repeat(2, 1fr);
     }

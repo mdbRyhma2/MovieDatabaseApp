@@ -40,6 +40,18 @@ export default function Authentication({ authenticationMode }) {
     }
   };
 
+  // Handle change for email or username input
+  const handleInputChange = (e) => {
+    const value = e.target.value;
+    
+    // Check if the value contains '@' to decide if it's an email or username
+    if (value.includes("@")) {
+      setUser({ ...user, email: value, username: "" }); // Set email and clear username
+    } else {
+      setUser({ ...user, username: value, email: "" }); // Set username and clear email
+    }
+  };
+
   return (
     <div id="auth-container">
       <h3>{authenticationMode === AuthenticationMode.Login ? "Login" : "Sign up"}</h3>
@@ -53,18 +65,12 @@ export default function Authentication({ authenticationMode }) {
               <input
                 type="text"
                 value={user.email || user.username}
-                onChange={(e) => {
-                  const value = e.target.value;
-                  if (value.includes("@")) {
-                    setUser({ ...user, email: value });
-                  } else {
-                    setUser({ ...user, username: value });
-                  }
-                }}
+                onChange={handleInputChange}
               />
             </div>
           </>
         )}
+
         {/* Inputs for signup */}
         {authenticationMode === AuthenticationMode.Register && (
           <>

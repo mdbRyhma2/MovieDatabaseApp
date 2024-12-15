@@ -20,7 +20,7 @@ describe("POST register", () => {
     const short_password = "short1";
     const username = "username1";
     const response = await fetch(base_url + "/user/register", {
-      method: "post",
+      method: "POST",
       headers: {
         "Content-Type": "application/json",
       },
@@ -42,7 +42,7 @@ describe("POST register", () => {
     const invalid_password = "register123";
     const username = "username2";
     const response = await fetch(base_url + "/user/register", {
-      method: "post",
+      method: "POST",
       headers: {
         "Content-Type": "application/json",
       },
@@ -64,7 +64,7 @@ describe("POST register", () => {
     const invalid_password = "Register";
     const username = "username2";
     const response = await fetch(base_url + "/user/register", {
-      method: "post",
+      method: "POST",
       headers: {
         "Content-Type": "application/json",
       },
@@ -85,7 +85,7 @@ describe("POST register", () => {
   it("should register with valid email, username and password (first_name and last_name optional)", async () => {
     const username = "username2";
     const response = await fetch(base_url + "/user/register", {
-      method: "post",
+      method: "POST",
       headers: {
         "Content-Type": "application/json",
       },
@@ -105,9 +105,9 @@ describe("POST register", () => {
 
   it("should register without first_name and last_name", async () => {
     const username = "username3";
-    const email = `register2@foo.com`;
+    const email = `register3@foo.com`;
     const response = await fetch(base_url + "/user/register", {
-      method: "post",
+      method: "POST",
       headers: {
         "Content-Type": "application/json",
       },
@@ -130,7 +130,7 @@ describe("POST register", () => {
 describe("POST login", () => {
   const email = "login@foo.com";
   const username = "loginuser";
-  const password = "login123";
+  const password = "Login123";
 
   before(async () => {
     await insertTestUser(email, username, "FirstName", "LastName", password);
@@ -138,7 +138,7 @@ describe("POST login", () => {
 
   it("should login with valid email and password", async () => {
     const response = await fetch(base_url + "/user/login", {
-      method: "post",
+      method: "POST",
       headers: {
         "Content-Type": "application/json",
       },
@@ -152,7 +152,7 @@ describe("POST login", () => {
 
   it("should login with valid username and password", async () => {
     const response = await fetch(base_url + "/user/login", {
-      method: "post",
+      method: "POST",
       headers: {
         "Content-Type": "application/json",
       },
@@ -166,7 +166,7 @@ describe("POST login", () => {
 
   it("should not login with invalid email/username", async () => {
     const response = await fetch(base_url + "/user/login", {
-      method: "post",
+      method: "POST",
       headers: {
         "Content-Type": "application/json",
       },
@@ -181,7 +181,7 @@ describe("POST login", () => {
 
   it("should not login with invalid password", async () => {
     const response = await fetch(base_url + "/user/login", {
-      method: "post",
+      method: "POST",
       headers: {
         "Content-Type": "application/json",
       },
@@ -195,72 +195,235 @@ describe("POST login", () => {
   });
 });
 
-// Tests for logout
-describe("POST logout", () => {
-  const email = "logout@foo.com";
-  const username = "logoutuser";
-  const password = "Logout123";
-
+// Tests for delete account
+  describe("DELETE /user/delete", () => {
+  const email = "delete@foo.com";
+  const username = "deleteuser";
+  const password = "Delete123";
   let token;
+  let userId;
 
   before(async () => {
     const user = await insertTestUser(email, username, "FirstName", "LastName", password);
-    token = getToken(user.id);
+    userId = user.id;
+    token = getToken(userId);
   });
 
-  it("should logout successfully with a valid token", async () => {
-    const response = await fetch(base_url + "/user/logout", {
+  it("should delete account with valid token and user ID", async () => {
+    const response = await fetch(base_url + "/user/delete", {
+      method: "DELETE",
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": `Bearer ${token}`,
+      },
+      body: JSON.stringify({ id: userId }),
+    });
+    const data = await response.json();
+
+    expect(response.status).to.equal(200, data.error);
+    expect(data).to.be.an("object");
+    expect(data).to.include.all.keys("id");
+    expect(data.id).to.equal(userId);
+  });
+
+}); 
+
+// Tests for reviews
+// Test for posting a review
+describe("POST /reviews/add", () => {
+  const testMovieId = 99;
+  const testMovieTitle = "Fake Movie Title";
+
+  it("should successfully add a review for a movie", async () => {
+    const userId = 1;
+    const grade = 3;
+    const review = "Good movie!";
+
+    const response = await fetch(base_url + "/reviews/add", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
       },
-    });
-    const data = await response.json();
-
-    expect(response.status).to.equal(200);
-    expect(data).to.be.an("object");
-    expect(data).to.include.keys("message");
-    expect(data.message).to.equal("Logged out successfully");
-  });
-
-  it("should return an error when trying to access a protected route after logout", async () => {
-    const response = await fetch(base_url + "/user/profile", {
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
-      },
+      body: JSON.stringify({
+        userId: userId,
+        movieId: testMovieId,
+        movieTitle: testMovieTitle,
+        grade: grade,
+        review: review,
+      }),
     });
 
     const data = await response.json();
-
-    expect(response.status).to.equal(401);
-    expect(data).to.be.an("object");
-    expect(data.error).to.equal("Unauthorized access");
+    expect(response.status).to.equal(201);
+    expect(data.message).to.equal("Review added successfully!");
   });
 });
 
-// Test for delete
-describe("DELETE /user/profile", () => {
-  const email = "delete@foo.com";
-  const username = "delete";
-  const password = "delete123";
-  const user = insertTestUser(email, username, "FirstName", "LastName", password);
-  const token = getToken(user.id);
+// Test for getting reviews
+describe("GET /reviews/:movieId", () => {
+  const testMovieId = 99;
 
-  it("should delete the user account", async () => {
-    const response = await fetch(base_url + "/user/delete/1", {
-      method: "delete",
+  it("should successfully get reviews for a movie", async () => {
+    const response = await fetch(base_url + `/reviews/${testMovieId}`, {
+      method: "GET",
       headers: {
         "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
       },
     });
 
     const data = await response.json();
     expect(response.status).to.equal(200);
-    expect(data).to.be.an("object")
-    expect(data).to.include.all.keys("id");
+    expect(data).to.be.an("array");
+    expect(data[0]).to.have.property("review");
+    expect(data[0]).to.have.property("grade");
   });
+});
+
+// Tests for deleting a review
+describe("DELETE /reviews/removeFromReviews", () => {
+  const testMovieId = 99;
+  const userId = 1;
+
+  it("should successfully delete a review for a movie", async () => {
+    const response = await fetch(base_url + "/reviews/removeFromReviews", {
+      method: "DELETE",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        userId: userId,
+        movieId: testMovieId,
+      }),
+    });
+
+    const data = await response.json();
+    expect(response.status).to.equal(200);
+    expect(data.message).to.equal("Review succesfully removed!");
+  });
+
+  it("should return an error if review does not exist", async () => {
+    const invalidMovieId = 100;
+    const response = await fetch(base_url + "/reviews/removeFromReviews", {
+      method: "DELETE",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        userId: userId,
+        movieId: invalidMovieId,
+      }),
+    });
+
+    const data = await response.json();
+    expect(response.status).to.equal(400);
+    expect(data.error).to.equal("Review could not be removed.");
+  });
+});
+
+// Tests for favorites
+// Test for adding a favorite movie
+describe("POST /favorites/addToFavorites", () => {
+  const testMovieId = 99;
+  const testMovieTitle = "Fake Movie Title";
+  const testPosterPath = "/fakepath.jpg";
+  const testGenres = [12, 28];
+  const testReleaseDate = "2024-01-01";
+  const testOverview = "This is a fake overview.";
+
+  it("should successfully add a movie to favorites", async () => {
+    const userId = 1;
+
+    const response = await fetch(base_url + "/favorites/addToFavorites", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        userId: userId,
+        movieId: testMovieId,
+        movieTitle: testMovieTitle,
+        poster_path: testPosterPath,
+        genres: testGenres,
+        releaseDate: testReleaseDate,
+        overview: testOverview
+      }),
+    });
+
+    const data = await response.json();
+    expect(response.status).to.equal(200);
+    expect(data.message).to.equal("Movie added to favorites successfully!");
+  });
+});
+
+// Test for getting favorites
+describe("GET /favorites/getFavorites", () => {
+  it("should return all favorite movies for the user", async () => {
+    const response = await fetch(base_url + `/favorites/getFavorites?userId=1`, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+
+    const data = await response.json();
+
+    expect(response.status).to.equal(200);
+    expect(data).to.be.an("array");
+    expect(data).to.have.length.greaterThan(0);
+  });
+
+  it("should return a 404 error if no favorites are found", async () => {
+    const response = await fetch(base_url + `/favorites/getFavorites?userId=9999`, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+
+    const data = await response.json();
+
+    expect(response.status).to.equal(404);
+    expect(data.error).to.equal("Could not find favorites");
+  });
+
+});
+
+// Test for deleting favorites
+describe("GET /favorites/removeFromFavorites", () => {
+  it("should delete a movie", async () => {
+    const response = await fetch(base_url + `/favorites/removeFromFavorites`, {
+      method: "DELETE",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        userId: 1,
+        movieId: 99,
+      }),
+    });
+
+    const data = await response.json();
+
+    expect(response.status).to.equal(200);
+    expect(data.message).to.equal("Movie successfully removed from favorites!");
+  });
+
+  it("should return an error if the favorite doesnt exist", async () => {
+    const response = await fetch(base_url + `/favorites/removeFromFavorites`, {
+      method: "DELETE",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        userId: 1,
+        movieId: 9999,
+      }),
+    });
+
+    const data = await response.json();
+
+    expect(response.status).to.equal(400);
+    expect(data.error).to.equal("Movie not found in favorites or could not be removed.");
+  });
+
 });
