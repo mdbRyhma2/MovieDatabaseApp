@@ -106,13 +106,6 @@ export default function Search() {
     setYearRange(values);
   };
 
-  //Handler for language change
-  const handleLanguageChange = (e) => {
-    const selectedLanguage = e.target.value;
-    console.log("Selected language: " + selectedLanguage);
-    setSelectedLanguage(selectedLanguage);
-  };
-
   return (
     <div className="search-page">
       <aside className="search-filter">
