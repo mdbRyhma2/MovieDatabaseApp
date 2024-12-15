@@ -62,26 +62,15 @@ export default function Authentication({ authenticationMode }) {
             <div>
               {successMessage && <div className="success-message">{successMessage}</div>}
               <label>Email or username</label>
-              {/* <input
-                type="text"
-                value={user.email || user.username}
-                onChange={(e) => {
-                  const value = e.target.value;
-                  if (value.includes("@")) {
-                    setUser({ ...user, email: value });
-                  } else {
-                    setUser({ ...user, username: value });
-                  }
-                }}
-              /> */}
               <input
                 type="text"
-                value={user.email || user.username} // This will show either email or username
-                onChange={handleInputChange} // Updated handler
+                value={user.email || user.username}
+                onChange={handleInputChange}
               />
             </div>
           </>
         )}
+
         {/* Inputs for signup */}
         {authenticationMode === AuthenticationMode.Register && (
           <>

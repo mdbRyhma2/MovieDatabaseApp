@@ -210,8 +210,8 @@ export default function Profile() {
             <img src="/images/pfp.png" alt="Profile picture" />
             <div className="profile-details">
               <h2>{profileData.username}</h2>
-              <p>{profileData.first_name}</p>
-              <p>{profileData.last_name}</p>
+              <p>{profileData.email}</p>
+              <p>{profileData.first_name} {profileData.last_name}</p>
             </div>
           </>
         )}

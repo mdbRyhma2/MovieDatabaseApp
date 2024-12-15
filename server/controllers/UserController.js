@@ -142,6 +142,7 @@ const getUserInfo = async (req, res, next) => {
     const user = result[0];
     return res.status(200).json({
       username: user.username,
+      email: user.email,
       first_name: user.first_name,
       last_name: user.last_name,
     });
