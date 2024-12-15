@@ -7,13 +7,17 @@
     padding: 20px;
 }
 .event-card {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
     background: #fff;
     border-radius: 10px;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
     padding: 10px;
     text-align: center;
     transition: transform 0.3 ease, box-shadow 0.3 ease;
-    height: 350px;
+    height: 400px;
 }
 .event-card:hover {
     transform: scale(1.05);
@@ -37,18 +41,45 @@
     object-fit: cover;
     margin-bottom: 10px;
 }
-.slick-prev, .slick-next {
+#home-container.slick-prev, 
+#home-container.slick-next {
     z-index: 2;
     color: black; /* Style arrows */
 }
+#home-container .slick-prev::before, 
+#home-container .slick-next::before {
+    font-size: 24px;
+    color: black;
+}
+
+/* Specific styles for the reviews slider */
+.review-slider .slick-prev,
+.review-slider .slick-next {
+    z-index: 2;
+    color: black;
+}
+
+.review-slider .slick-prev::before, 
+.review-slider .slick-next::before {
+    font-size: 24px;
+    color: black;
+}
 .review-card {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
     background: #fff;
     border-radius: 10px;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
     padding: 10px;
     text-align: center;
     transition: transform 0.3 ease, box-shadow 0.3 ease;
-    height: 350px;
+    height: 400px;
+}
+.review-card:hover {
+    transform: scale(1.05);
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
 }
 .review-movie-link {
     color:#333;
@@ -66,4 +97,10 @@
 }
 .review-title {
     margin-top: 20px;
+}
+.review-card p {
+    font-size: 14px;
+    color: black;
+    margin-top: 20px;
+    
 }

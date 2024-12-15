@@ -246,7 +246,7 @@ function MovieDetails() {
             >
               Write a review
             </button>
-            <span className="view-all-link">View all</span>
+            {/*<span className="view-all-link">View all</span>*/}
           </div>
         </div>
 
