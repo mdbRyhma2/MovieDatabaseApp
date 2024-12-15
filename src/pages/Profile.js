@@ -237,19 +237,6 @@ export default function Profile() {
       </div>
 
       <h3>Favourite movies</h3>
-      <button className="share-button" onClick={handleShareFavorites}>
-        Share favorite list
-      </button>
-      {/*Display the generated shareable link if it exists */}
-      {shareLink && (
-        <div className="share-link">
-          <p>Share this link with others: </p>
-          <a href={shareLink} target="_blank" rel="noopener noreferrer">
-            {shareLink}
-          </a>
-        </div>
-      )}
-
       {/* Displays user's favorite movies */}
       <div className="favorite-movies-grid">
         {favorites.map((movie) => (

@@ -1,10 +1,4 @@
-
-import { response } from 'express'
 import { insertToFavorites, deleteFromFavorites, getAllFavorites } from '../models/FavoritesModel.js'
-import { insertSharedList, getSharedListById } from '../models/FavoritesModel.js'
-
-//Don't know yet what this is
-import { v4 as uuidv4 } from "uuid";
 
 const postAddToFavorites = async (req, res, next) => {
     try {
@@ -23,7 +17,6 @@ const postAddToFavorites = async (req, res, next) => {
 
 }
 
-
 const postRemoveFromFavorite = async (req, res, next) => {
 
     try {
@@ -40,7 +33,6 @@ const postRemoveFromFavorite = async (req, res, next) => {
         res.status(500).json({ error: "Failed to remove movie from favorites." })
     }
 }
-
 
 const postGetFavorites = async (req, res, next) => {
 
@@ -61,41 +53,4 @@ const postGetFavorites = async (req, res, next) => {
     }
 }
 
-//Sharing functionality
-const postCreateShareableList = async (req, res) => {
-    try{
-        const { userId, favorites } = req.body
-        if (!favorites || !Array.isArray(favorites) || favorites.length === 0){
-            return res.status(400).json({ error: "Favorites list is required and cannot be empty." })
-        }
-        const shareId = uuidv4(); //Generate a unique ID for the shared list.
-        const affectedRows = await insertSharedList(shareId, userId, favorites)
-
-        if (affectedRows > 0) {
-            res.status(201).json({ shareId, message: "Shared list created succesfully!" })
-        } else {
-            res.status(400).json({ error: "Failed to create shared list." })
-        }
-    } catch (error) {
-        console.log(error.message)
-        res.status(500).json({ error: "Failed to create shared list" })
-    }
-}
-
-const getSharedList = async (req, res) => {
-    try {
-        const { shareId } = req.params
-        const favorites = await getSharedListById(shareId)
-
-        if (favorites) {
-            res.status(200).json(JSON.parse(favorites))
-        } else {
-            res.satus(404).json({ error: "Shared list not found." })
-        }
-    } catch (error) {
-        console.log(error.message)
-        res.status(500).json({ error: "Faile to retrieve shared list." })
-    }
-}
-
-export { postAddToFavorites, postRemoveFromFavorite, postGetFavorites, postCreateShareableList, getSharedList }
+export { postAddToFavorites, postRemoveFromFavorite, postGetFavorites }

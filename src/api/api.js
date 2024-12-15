@@ -32,7 +32,7 @@ export const fetchMoviesWithoutKeywords = async (minReleaseYear, maxReleaseYear,
 
 
     if (selectedGenres.length > 0) {
-        const genreString = selectedGenres.join('%7C'); // lisätään OR merkki
+        const genreString = selectedGenres.join('%7C'); // Add OR
         endpoint += `&with_genres=` + genreString
     }
 

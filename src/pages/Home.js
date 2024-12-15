@@ -57,17 +57,8 @@ export default function Home() {
     const fetchReviews = async () => {
       try {
         const response = await axios.get(`${process.env.REACT_APP_API_URL}/reviews/`);
-        /*
-        // Filter out duplicates based on 'movie_id' or any unique field
-        const uniqueReviews = response.data.filter((review, index, self) => 
-          index === self.findIndex((r) => (
-            r.movie_id === review.movie_id // Adjust this if necessary based on how the reviews are structured
-          ))
-        );
-        */
 
         setReviews(response.data);
-        //console.log(uniqueReviews)
       } catch (error) {
         console.error("Error fetching reviews: ", error);
       }

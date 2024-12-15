@@ -11,7 +11,7 @@ export default function Groups() {
   const [groupData, setGroupData] = useState([]);
   const [error, setError] = useState(null);
 
-  //handle create group button click event
+  // Handle create group button click event
   const handleCreateGroup = async (e) => {
     e.preventDefault();
 
@@ -25,7 +25,7 @@ export default function Groups() {
       );
       setMessage(`Group "${response.data.group_name}" created`);
       setGroupData([...groupData, response.data]);
-      //when group is created, set input to null
+      // When group is created, set input to null
       setGroupName("");
     } catch (error) {
       console.error("Error creating group:", error);
@@ -33,7 +33,7 @@ export default function Groups() {
     }
   };
 
-  // fetch groups
+  // Fetch groups
   useEffect(() => {
     const fetchGroups = async () => {
       try {

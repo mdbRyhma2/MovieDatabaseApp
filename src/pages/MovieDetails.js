@@ -18,7 +18,6 @@ function MovieDetails() {
   const [errorMessage, setErrorMessage] = useState(null)
   const [openReviewModal, setOpenReviewModal] = useState(false);
   const [trailerKey, setTrailerKey] = useState(null);
-  const [reviewsFetched, setReviewsFetched] = useState(false);
 
   useEffect(() => {
     const getMovieDetailsAndReviews = async () => {
@@ -26,14 +25,6 @@ function MovieDetails() {
         //Fetch movie details from api
         const details = await fetchMovieDetails(id);
         setMovie(details);
-
-        // Fetch reviews only if they haven't been fetched before
-        /*
-        if (!reviewsFetched) {
-          const reviewsData = await fetchMovieReviews(id);
-          setReviews(reviewsData);
-          setReviewsFetched(true); // Mark reviews as fetched
-        }*/
 
         const reviewsData = await fetchMovieReviews(id);
         setReviews(reviewsData);
@@ -246,7 +237,6 @@ function MovieDetails() {
             >
               Write a review
             </button>
-            {/*<span className="view-all-link">View all</span>*/}
           </div>
         </div>
 

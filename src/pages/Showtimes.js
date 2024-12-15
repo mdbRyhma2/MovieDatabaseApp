@@ -64,13 +64,6 @@ const handleDateChange = (e) => {
 
 //Fetch data when the component mounts or selected filters change
 useEffect(() => {
-  //Set the current date as a default value for selectedDate
-  /*
-  const today = new Date().toISOString().split('T')[0]
-  if (!selectedDate) {
-    setSelectedDate(today)
-  }
-  */
   //Fetch theatre areas if not already loaded
   if (!areas.length) {
       axios

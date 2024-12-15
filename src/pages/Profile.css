@@ -158,19 +158,6 @@
   background: #ddd;
 }
 
-/* Media queries for smaller screens */
-@media (max-width: 800px) {
-  .favorite-movies-grid {
-    grid-template-columns: repeat(3, 1fr);
-  }
-}
-
-@media (max-width: 500px) {
-  .favorite-movies-grid {
-    grid-template-columns: repeat(2, 1fr);
-  }
-}
-
 /*Users reviews*/
 .user-reviews-grid {
   display: grid;
@@ -224,4 +211,17 @@
   cursor: pointer;
   transition: background-color 0.3s ease;
   align-self: flex-start;
+}
+
+/* Media queries for smaller screens */
+@media (max-width: 800px) {
+  .favorite-movies-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+@media (max-width: 500px) {
+  .favorite-movies-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
 }
